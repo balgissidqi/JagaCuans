@@ -123,13 +123,19 @@ export default function SpendingTracker() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
+    if (!userId) {
+      toast.error('Please log in to add spending')
+      return
+    }
+    
     try {
       const { error } = await supabase
         .from('spending_tracker')
         .insert({
           budget_id: formData.budget_id,
           description: formData.description,
-          amount: parseFloat(formData.amount)
+          amount: parseFloat(formData.amount),
+          user_id: userId
         })
 
       if (error) throw error
