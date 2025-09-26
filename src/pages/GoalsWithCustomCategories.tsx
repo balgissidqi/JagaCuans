@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { Plus, Target, Edit, Trash2 } from "lucide-react"
+import { Plus, Target, Edit, Trash2, TrendingUp } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -27,6 +27,9 @@ export default function GoalsWithCustomCategories() {
   const [loading, setLoading] = useState(true)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isCustomCategoryModalOpen, setIsCustomCategoryModalOpen] = useState(false)
+  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
+  const [selectedGoal, setSelectedGoal] = useState<SavingGoal | null>(null)
+  const [updateAmount, setUpdateAmount] = useState('')
   const [formData, setFormData] = useState({
     goal_name: '',
     target_amount: '',
@@ -111,6 +114,42 @@ export default function GoalsWithCustomCategories() {
       console.error('Error adding saving goal:', error)
       toast.error('Failed to add saving goal')
     }
+  }
+
+  const handleUpdateProgress = async (e: React.FormEvent) => {
+    e.preventDefault()
+    
+    if (!selectedGoal || !userId) return
+
+    try {
+      const newAmount = parseFloat(updateAmount)
+      if (isNaN(newAmount) || newAmount < 0) {
+        toast.error('Please enter a valid amount')
+        return
+      }
+
+      const { error } = await supabase
+        .from('saving_goals')
+        .update({ current_amount: newAmount })
+        .eq('goal_id', selectedGoal.goal_id)
+        .eq('user_id', userId)
+
+      if (error) throw error
+      
+      toast.success('Progress updated successfully!')
+      setIsUpdateModalOpen(false)
+      setSelectedGoal(null)
+      setUpdateAmount('')
+    } catch (error) {
+      console.error('Error updating progress:', error)
+      toast.error('Failed to update progress')
+    }
+  }
+
+  const openUpdateModal = (goal: SavingGoal) => {
+    setSelectedGoal(goal)
+    setUpdateAmount(goal.current_amount.toString())
+    setIsUpdateModalOpen(true)
   }
 
   if (loading) {
@@ -229,6 +268,16 @@ export default function GoalsWithCustomCategories() {
                     Deadline: {new Date(goal.deadline).toLocaleDateString('id-ID')}
                   </div>
                 )}
+                <div className="pt-2">
+                  <Button 
+                    size="sm" 
+                    className="w-full"
+                    onClick={() => openUpdateModal(goal)}
+                  >
+                    <TrendingUp className="h-4 w-4 mr-2" />
+                    Update Progress
+                  </Button>
+                </div>
               </CardContent>
             </Card>
           )
@@ -252,6 +301,46 @@ export default function GoalsWithCustomCategories() {
           // Optionally refresh data or navigate somewhere
         }}
       />
+
+      {/* Update Progress Modal */}
+      <Dialog open={isUpdateModalOpen} onOpenChange={setIsUpdateModalOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Update Progress: {selectedGoal?.goal_name}</DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleUpdateProgress} className="space-y-4">
+            <div>
+              <Label htmlFor="current_amount">Current Amount</Label>
+              <Input
+                id="current_amount"
+                type="number"
+                value={updateAmount}
+                onChange={(e) => setUpdateAmount(e.target.value)}
+                placeholder="0"
+                required
+                min="0"
+                step="0.01"
+              />
+              <div className="text-xs text-muted-foreground mt-1">
+                Target: {selectedGoal && formatRupiah(selectedGoal.target_amount)}
+              </div>
+            </div>
+            <div className="flex gap-2">
+              <Button 
+                type="button" 
+                variant="outline" 
+                className="flex-1"
+                onClick={() => setIsUpdateModalOpen(false)}
+              >
+                Cancel
+              </Button>
+              <Button type="submit" className="flex-1">
+                Update Progress
+              </Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
