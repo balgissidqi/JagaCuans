@@ -34,23 +34,35 @@ export function SpendingForm({ onSuccess, onCancel }: SpendingFormProps) {
 
   const fetchCategories = async () => {
     try {
+      // Get current user
+      const { data: { user }, error: userError } = await supabase.auth.getUser()
+      
+      if (userError || !user) {
+        console.error('User not authenticated')
+        return
+      }
+
+      // Fetch existing budgets as categories
       const { data, error } = await supabase
-        .from('categories')
-        .select('category_id, name')
-        .order('name')
+        .from('budgeting')
+        .select('id, category')
+        .eq('user_id', user.id)
+        .order('category')
 
       if (error) throw error
-      setCategories(data || [])
+      
+      // Convert budgets to category format
+      const budgetCategories = (data || []).map(budget => ({
+        category_id: budget.id,
+        name: budget.category
+      }))
+      
+      setCategories(budgetCategories)
     } catch (error) {
       console.error('Error fetching categories:', error)
       // Add default categories if none exist
       setCategories([
-        { category_id: 'food', name: 'Makanan' },
-        { category_id: 'transport', name: 'Transportasi' },
-        { category_id: 'shopping', name: 'Belanja' },
-        { category_id: 'entertainment', name: 'Hiburan' },
-        { category_id: 'health', name: 'Kesehatan' },
-        { category_id: 'other', name: 'Lainnya' }
+        { category_id: '', name: 'No categories available - Create a budget first' }
       ])
     }
   }
@@ -60,15 +72,39 @@ export function SpendingForm({ onSuccess, onCancel }: SpendingFormProps) {
     setLoading(true)
 
     try {
-      const { data, error } = await supabase.from('transactions').insert({
-        type: 'spending',
-        method: 'manual',
-        name: formData.name,
-        amount: parseFloat(formData.amount),
-        category_id: formData.category_id || null,
-        notes: formData.notes || null,
-        date: new Date(formData.date).toISOString(),
-        user_id: (await supabase.auth.getUser()).data.user?.id
+      // Get current user
+      const { data: { user }, error: userError } = await supabase.auth.getUser()
+      
+      if (userError || !user) {
+        toast.error('Please log in to add spending')
+        return
+      }
+
+      // First, get or create a budget for this category
+      let budgetId = formData.category_id
+      
+      if (!budgetId) {
+        // Create a default budget if none selected
+        const { data: budgetData, error: budgetError } = await supabase
+          .from('budgeting')
+          .insert({
+            category: 'Other',
+            amount: 1000000, // Default 1M budget
+            user_id: user.id,
+            period: 'monthly'
+          })
+          .select()
+          .single()
+
+        if (budgetError) throw budgetError
+        budgetId = budgetData.id
+      }
+
+      // Insert into spending_tracker table
+      const { error } = await supabase.from('spending_tracker').insert({
+        budget_id: budgetId,
+        description: formData.name,
+        amount: parseFloat(formData.amount)
       })
 
       if (error) throw error
