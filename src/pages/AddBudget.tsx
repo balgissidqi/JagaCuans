@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -30,6 +30,24 @@ export default function AddBudget() {
   })
   const [loading, setLoading] = useState(false)
   const [showCustomModal, setShowCustomModal] = useState(false)
+  const [customCategories, setCustomCategories] = useState([])
+
+  useEffect(() => {
+    fetchCustomCategories()
+  }, [])
+
+  const fetchCustomCategories = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) return
+
+      // For now, let's skip custom categories to avoid the table issue
+      // We'll implement this feature properly later
+      setCustomCategories([])
+    } catch (error) {
+      console.error('Error fetching custom categories:', error)
+    }
+  }
 
   const handleCategorySelect = (categoryName: string) => {
     if (categoryName === "Other") {
@@ -62,19 +80,44 @@ export default function AddBudget() {
         return
       }
 
-      const { error } = await supabase
+      // Check if budget with same category and notes already exists
+      const { data: existingBudget } = await supabase
         .from('budgeting')
-        .insert({
-          category: selectedCategory,
-          amount: parseFloat(formData.amount),
-          period: formData.period,
-          notes: formData.notes || null,
-          user_id: user.id
-        })
+        .select('*')
+        .eq('user_id', user.id)
+        .eq('category', selectedCategory)
+        .eq('notes', formData.notes || '')
+        .single()
 
-      if (error) throw error
+      if (existingBudget) {
+        // Update existing budget by adding new amount to old amount
+        const { error } = await supabase
+          .from('budgeting')
+          .update({
+            amount: existingBudget.amount + parseFloat(formData.amount),
+            period: formData.period,
+            updated_at: new Date().toISOString()
+          })
+          .eq('id', existingBudget.id)
+
+        if (error) throw error
+        toast.success('Budget berhasil diperbarui')
+      } else {
+        // Create new budget
+        const { error } = await supabase
+          .from('budgeting')
+          .insert({
+            category: selectedCategory,
+            amount: parseFloat(formData.amount),
+            period: formData.period,
+            notes: formData.notes || null,
+            user_id: user.id
+          })
+
+        if (error) throw error
+        toast.success('Budget berhasil ditambahkan')
+      }
       
-      toast.success('Budget berhasil ditambahkan')
       navigate('/budgeting')
     } catch (error) {
       console.error('Error adding budget:', error)
@@ -199,8 +242,7 @@ export default function AddBudget() {
         isOpen={showCustomModal}
         onClose={() => setShowCustomModal(false)}
         onSuccess={() => {
-          // Refresh or handle success
-          toast.success('Custom category created! You can now select it.')
+          toast.success('Custom category created! Feature coming soon.')
         }}
       />
     </div>

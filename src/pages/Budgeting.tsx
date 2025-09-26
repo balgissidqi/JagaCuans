@@ -1,9 +1,14 @@
 import { useState, useEffect } from "react"
-import { Plus, Wallet } from "lucide-react"
+import { Plus, Wallet, Edit2, Trash2 } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Textarea } from "@/components/ui/textarea"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { supabase } from "@/lib/supabaseClient"
 import { formatRupiah } from "@/utils/currency"
 import { toast } from "sonner"
@@ -15,6 +20,7 @@ interface Budget {
   spent: number
   user_id: string
   notes?: string
+  period?: string
 }
 
 const categoryColors = {
@@ -31,6 +37,12 @@ export default function Budgeting() {
   const navigate = useNavigate()
   const [budgets, setBudgets] = useState<Budget[]>([])
   const [loading, setLoading] = useState(true)
+  const [editingBudget, setEditingBudget] = useState<Budget | null>(null)
+  const [editForm, setEditForm] = useState({
+    amount: "",
+    period: "Monthly",
+    notes: ""
+  })
 
   // Get user from auth
   const [userId, setUserId] = useState<string | null>(null)
@@ -87,6 +99,59 @@ export default function Budgeting() {
     }
   }
 
+  const handleEditBudget = (budget: Budget) => {
+    setEditingBudget(budget)
+    setEditForm({
+      amount: budget.amount.toString(),
+      period: budget.period || "Monthly",
+      notes: budget.notes || ""
+    })
+  }
+
+  const handleUpdateBudget = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!editingBudget) return
+
+    try {
+      const { error } = await supabase
+        .from('budgeting')
+        .update({
+          amount: parseFloat(editForm.amount),
+          period: editForm.period,
+          notes: editForm.notes || null,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', editingBudget.id)
+
+      if (error) throw error
+      
+      toast.success('Budget berhasil diperbarui')
+      setEditingBudget(null)
+      fetchBudgets()
+    } catch (error) {
+      console.error('Error updating budget:', error)
+      toast.error('Failed to update budget')
+    }
+  }
+
+  const handleDeleteBudget = async (budgetId: string) => {
+    if (!confirm('Are you sure you want to delete this budget?')) return
+
+    try {
+      const { error } = await supabase
+        .from('budgeting')
+        .delete()
+        .eq('id', budgetId)
+
+      if (error) throw error
+      
+      toast.success('Budget berhasil dihapus')
+      fetchBudgets()
+    } catch (error) {
+      console.error('Error deleting budget:', error)
+      toast.error('Failed to delete budget')
+    }
+  }
 
   const totalBudget = budgets.reduce((sum, budget) => sum + budget.amount, 0)
   const totalSpent = budgets.reduce((sum, budget) => sum + budget.spent, 0)
@@ -200,6 +265,26 @@ export default function Budgeting() {
                     {isOverBudget ? 'Over Budget!' : formatRupiah(budget.amount - budget.spent) + ' left'}
                   </span>
                 </div>
+                
+                {/* Update and Delete Buttons */}
+                <div className="flex gap-2 pt-2">
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="flex-1"
+                    onClick={() => handleEditBudget(budget)}
+                  >
+                    Update
+                  </Button>
+                  <Button 
+                    variant="destructive" 
+                    size="sm" 
+                    className="flex-1"
+                    onClick={() => handleDeleteBudget(budget.id)}
+                  >
+                    Delete
+                  </Button>
+                </div>
               </CardContent>
             </Card>
           )
@@ -215,6 +300,64 @@ export default function Budgeting() {
           </div>
         </Card>
       )}
+
+      {/* Edit Budget Modal */}
+      <Dialog open={!!editingBudget} onOpenChange={() => setEditingBudget(null)}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Edit Budget - {editingBudget?.category}</DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleUpdateBudget} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="edit-amount">Budget Amount</Label>
+              <Input
+                id="edit-amount"
+                type="number"
+                value={editForm.amount}
+                onChange={(e) => setEditForm({...editForm, amount: e.target.value})}
+                placeholder="0"
+                required
+                min="0"
+                step="0.01"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label>Period</Label>
+              <Select value={editForm.period} onValueChange={(value) => setEditForm({...editForm, period: value})}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Weekly">Weekly</SelectItem>
+                  <SelectItem value="Monthly">Monthly</SelectItem>
+                  <SelectItem value="Yearly">Yearly</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="edit-notes">Notes</Label>
+              <Textarea
+                id="edit-notes"
+                value={editForm.notes}
+                onChange={(e) => setEditForm({...editForm, notes: e.target.value})}
+                placeholder="Add notes..."
+                rows={3}
+              />
+            </div>
+
+            <div className="flex gap-3">
+              <Button type="button" variant="outline" onClick={() => setEditingBudget(null)} className="flex-1">
+                Cancel
+              </Button>
+              <Button type="submit" className="flex-1">
+                Update Budget
+              </Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
