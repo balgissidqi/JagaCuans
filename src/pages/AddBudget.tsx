@@ -6,10 +6,11 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { supabase } from "@/lib/supabaseClient"
+import { supabase } from "@/integrations/supabase/client"
 import { formatRupiah } from "@/utils/currency"
 import { toast } from "sonner"
 import { Utensils, Car, PiggyBank, GraduationCap, MoreHorizontal, CheckCircle, Lock } from "lucide-react"
+import { CustomCategoryModal } from "@/components/CustomCategoryModal"
 
 const categories = [
   { name: "Food", icon: Utensils, color: "bg-orange-500" },
@@ -28,9 +29,15 @@ export default function AddBudget() {
     notes: ""
   })
   const [loading, setLoading] = useState(false)
+  const [showCustomModal, setShowCustomModal] = useState(false)
 
-  // Mock user ID for demo - in real app this would come from auth
-  const userId = "123e4567-e89b-12d3-a456-426614174000"
+  const handleCategorySelect = (categoryName: string) => {
+    if (categoryName === "Other") {
+      setShowCustomModal(true)
+    } else {
+      setSelectedCategory(categoryName)
+    }
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -48,6 +55,13 @@ export default function AddBudget() {
     setLoading(true)
     
     try {
+      const { data: { user }, error: userError } = await supabase.auth.getUser()
+      
+      if (userError || !user) {
+        toast.error('Please log in to add budget')
+        return
+      }
+
       const { error } = await supabase
         .from('budgeting')
         .insert({
@@ -55,7 +69,7 @@ export default function AddBudget() {
           amount: parseFloat(formData.amount),
           period: formData.period,
           notes: formData.notes || null,
-          user_id: userId
+          user_id: user.id
         })
 
       if (error) throw error
@@ -93,7 +107,7 @@ export default function AddBudget() {
                   <button
                     key={category.name}
                     type="button"
-                    onClick={() => setSelectedCategory(category.name)}
+                    onClick={() => handleCategorySelect(category.name)}
                     className={`p-4 rounded-xl border-2 transition-all duration-200 ${
                       selectedCategory === category.name
                         ? category.name === 'Fun' 
@@ -180,6 +194,15 @@ export default function AddBudget() {
         </CardContent>
         </Card>
       </div>
+
+      <CustomCategoryModal 
+        isOpen={showCustomModal}
+        onClose={() => setShowCustomModal(false)}
+        onSuccess={() => {
+          // Refresh or handle success
+          toast.success('Custom category created! You can now select it.')
+        }}
+      />
     </div>
   )
 }
