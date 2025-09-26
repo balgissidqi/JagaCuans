@@ -46,16 +46,29 @@ export function ExpenseChart() {
           groupBy = "day"
       }
 
-      const { data: transactions } = await supabase
-        .from('transactions')
-        .select('amount, created_at, type')
+      // First get user's budgets
+      const { data: budgets } = await supabase
+        .from('budgeting')
+        .select('id')
         .eq('user_id', user.id)
-        .eq('type', 'expense')
+
+      if (!budgets || budgets.length === 0) {
+        setChartData([])
+        return
+      }
+
+      const budgetIds = budgets.map(b => b.id)
+
+      // Then get spending data from spending_tracker
+      const { data: spendings } = await supabase
+        .from('spending_tracker')
+        .select('amount, created_at')
+        .in('budget_id', budgetIds)
         .gte('created_at', startDate.toISOString())
         .order('created_at', { ascending: true })
 
-      if (transactions) {
-        const processedData = processTransactionData(transactions, period)
+      if (spendings) {
+        const processedData = processTransactionData(spendings, period)
         setChartData(processedData)
       }
     } catch (error) {
@@ -65,11 +78,11 @@ export function ExpenseChart() {
     }
   }
 
-  const processTransactionData = (transactions: any[], period: Period): ChartData[] => {
+  const processTransactionData = (spendings: any[], period: Period): ChartData[] => {
     const dataMap = new Map<string, number>()
 
-    transactions.forEach(transaction => {
-      const date = new Date(transaction.created_at)
+    spendings.forEach(spending => {
+      const date = new Date(spending.created_at)
       let key: string
 
       switch (period) {
@@ -88,7 +101,7 @@ export function ExpenseChart() {
           key = date.getDate().toString()
       }
 
-      dataMap.set(key, (dataMap.get(key) || 0) + Math.abs(transaction.amount))
+      dataMap.set(key, (dataMap.get(key) || 0) + Math.abs(spending.amount))
     })
 
     // Generate complete dataset with zero values for missing periods
