@@ -87,6 +87,7 @@ export default function Budgeting() {
         .from('budgeting')
         .select('*')
         .eq('user_id', userId)
+        .gt('amount', 0) // Only show actual budgets, not custom category placeholders
         .order('created_at', { ascending: false })
 
       if (error) throw error
