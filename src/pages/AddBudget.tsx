@@ -148,33 +148,7 @@ export default function AddBudget() {
             <div>
               <CardTitle className="text-2xl font-bold text-foreground">Add Budget</CardTitle>
               <p className="text-muted-foreground mt-2">Set spending limits for different categories</p>
-                
-                {/* Custom Categories */}
-                {customCategories.map((category, index) => {
-                  const iconMatch = category.notes?.match(/Custom category with icon: (.+)/)
-                  const icon = iconMatch ? iconMatch[1] : '📁'
-                  
-                  return (
-                    <button
-                      key={`custom-${index}`}
-                      type="button"
-                      onClick={() => setSelectedCategory(category.category)}
-                      className={`p-4 rounded-xl border-2 transition-all duration-200 ${
-                        selectedCategory === category.category
-                          ? 'border-primary bg-primary/10'
-                          : 'border-gray-200 hover:border-gray-300'
-                      }`}
-                    >
-                      <div className="flex flex-col items-center gap-2">
-                        <div className="w-10 h-10 rounded-lg bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white text-lg">
-                          {icon}
-                        </div>
-                        <span className="text-xs font-medium text-center">{category.category}</span>
-                      </div>
-                    </button>
-                  )
-                })}
-              </div>
+            </div>
             <CheckCircle className="h-6 w-6 text-green-600" />
           </div>
         </CardHeader>
@@ -206,6 +180,35 @@ export default function AddBudget() {
                   </button>
                 ))}
               </div>
+              
+              {/* Custom Categories Section */}
+              {customCategories.length > 0 && (
+                <div className="mt-4">
+                  <Label className="text-sm text-muted-foreground mb-2 block">Custom Categories</Label>
+                  <div className="flex flex-wrap gap-2">
+                    {customCategories.map((category, index) => {
+                      const iconMatch = category.notes?.match(/Custom category with icon: (.+)/)
+                      const icon = iconMatch ? iconMatch[1] : '📁'
+                      
+                      return (
+                        <button
+                          key={`custom-${index}`}
+                          type="button"
+                          onClick={() => setSelectedCategory(category.category)}
+                          className={`flex items-center gap-2 px-3 py-2 rounded-lg border-2 transition-all duration-200 ${
+                            selectedCategory === category.category
+                              ? 'border-primary bg-primary/10'
+                              : 'border-gray-200 hover:border-gray-300'
+                          }`}
+                        >
+                          <span className="text-lg">{icon}</span>
+                          <span className="text-sm font-medium">{category.category}</span>
+                        </button>
+                      )
+                    })}
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Budget Amount */}
@@ -280,7 +283,8 @@ export default function AddBudget() {
         isOpen={showCustomModal}
         onClose={() => setShowCustomModal(false)}
         onSuccess={() => {
-          toast.success('Custom category created! Feature coming soon.')
+          fetchCustomCategories()
+          toast.success('Custom category created! You can now select it.')
         }}
       />
     </div>
