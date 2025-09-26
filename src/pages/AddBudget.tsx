@@ -30,7 +30,7 @@ export default function AddBudget() {
   })
   const [loading, setLoading] = useState(false)
   const [showCustomModal, setShowCustomModal] = useState(false)
-  const [customCategories, setCustomCategories] = useState([])
+  const [customCategories, setCustomCategories] = useState<Array<{category: string, notes: string}>>([])
 
   useEffect(() => {
     fetchCustomCategories()
@@ -41,9 +41,19 @@ export default function AddBudget() {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) return
 
-      // For now, let's skip custom categories to avoid the table issue
-      // We'll implement this feature properly later
-      setCustomCategories([])
+      // Fetch custom categories (those with amount 0 and custom notes)
+      const { data } = await supabase
+        .from('budgeting')
+        .select('category, notes')
+        .eq('user_id', user.id)
+        .eq('amount', 0)
+        .like('notes', 'Custom category with icon:%')
+
+      const uniqueCategories = data?.filter((item, index, self) => 
+        index === self.findIndex(t => t.category === item.category)
+      ) || []
+
+      setCustomCategories(uniqueCategories)
     } catch (error) {
       console.error('Error fetching custom categories:', error)
     }
@@ -80,14 +90,16 @@ export default function AddBudget() {
         return
       }
 
-      // Check if budget with same category and notes already exists
-      const { data: existingBudget } = await supabase
+      // Check if budget with same category and notes already exists (exclude custom category placeholders)
+      const { data: existingBudgets } = await supabase
         .from('budgeting')
         .select('*')
         .eq('user_id', user.id)
         .eq('category', selectedCategory)
         .eq('notes', formData.notes || '')
-        .single()
+        .gt('amount', 0) // Only consider actual budgets, not custom category placeholders
+
+      const existingBudget = existingBudgets?.[0]
 
       if (existingBudget) {
         // Update existing budget by adding new amount to old amount
@@ -136,7 +148,33 @@ export default function AddBudget() {
             <div>
               <CardTitle className="text-2xl font-bold text-foreground">Add Budget</CardTitle>
               <p className="text-muted-foreground mt-2">Set spending limits for different categories</p>
-            </div>
+                
+                {/* Custom Categories */}
+                {customCategories.map((category, index) => {
+                  const iconMatch = category.notes?.match(/Custom category with icon: (.+)/)
+                  const icon = iconMatch ? iconMatch[1] : '📁'
+                  
+                  return (
+                    <button
+                      key={`custom-${index}`}
+                      type="button"
+                      onClick={() => setSelectedCategory(category.category)}
+                      className={`p-4 rounded-xl border-2 transition-all duration-200 ${
+                        selectedCategory === category.category
+                          ? 'border-primary bg-primary/10'
+                          : 'border-gray-200 hover:border-gray-300'
+                      }`}
+                    >
+                      <div className="flex flex-col items-center gap-2">
+                        <div className="w-10 h-10 rounded-lg bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white text-lg">
+                          {icon}
+                        </div>
+                        <span className="text-xs font-medium text-center">{category.category}</span>
+                      </div>
+                    </button>
+                  )
+                })}
+              </div>
             <CheckCircle className="h-6 w-6 text-green-600" />
           </div>
         </CardHeader>

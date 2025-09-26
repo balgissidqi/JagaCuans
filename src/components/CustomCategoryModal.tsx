@@ -34,12 +34,19 @@ export function CustomCategoryModal({ isOpen, onClose, onSuccess }: CustomCatego
         return
       }
 
-      // For now, we'll just show success message
-      // Custom categories feature will be implemented properly later
-      // when the database schema is ready
-      
-      // Simulating success for now
-      await new Promise(resolve => setTimeout(resolve, 500))
+      // Save custom category to budgeting table with zero amount
+      // This makes it available as a category option without creating a budget
+      const { error } = await supabase
+        .from('budgeting')
+        .insert({
+          category: categoryName,
+          amount: 0,
+          user_id: user.id,
+          notes: `Custom category with icon: ${selectedIcon}`,
+          period: 'Monthly'
+        })
+
+      if (error) throw error
 
       toast.success('Custom category added successfully!')
       setCategoryName('')
