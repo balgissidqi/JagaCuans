@@ -18,13 +18,13 @@ import {
 } from "@/components/ui/sidebar"
 
 const items = [
-  { title: "Dashboard", url: "/", icon: Home },
-  { title: "Budget", url: "/budgeting", icon: Wallet },
-  { title: "Spending", url: "/spending", icon: TrendingDown },
-  { title: "Goals", url: "/goals", icon: Target },
-  { title: "Challenge", url: "/challenge", icon: Trophy },
-  { title: "Education", url: "/education", icon: GraduationCap },
-  { title: "Profile", url: "/profile", icon: User },
+  { title: "Dashboard", url: "/dashboard", icon: Home },
+  { title: "Budget", url: "/dashboard/budgeting", icon: Wallet },
+  { title: "Spending", url: "/dashboard/spending", icon: TrendingDown },
+  { title: "Goals", url: "/dashboard/goals", icon: Target },
+  { title: "Challenge", url: "/dashboard/challenge", icon: Trophy },
+  { title: "Education", url: "/dashboard/education", icon: GraduationCap },
+  { title: "Profile", url: "/dashboard/profile", icon: User },
 ]
 
 export function AppSidebar() {
