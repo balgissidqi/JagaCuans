@@ -1,7 +1,9 @@
-import { Home, Wallet, TrendingDown, Target, Trophy, GraduationCap, User, LogOut } from "lucide-react"
+import { Home, Wallet, TrendingDown, Target, Trophy, GraduationCap, User, LogOut, X } from "lucide-react"
 import { NavLink, useLocation, useNavigate } from "react-router-dom"
 import { supabase } from "@/integrations/supabase/client"
 import { toast } from "sonner"
+import { useIsMobile } from "@/hooks/use-mobile"
+import { Button } from "@/components/ui/button"
 
 import {
   Sidebar,
@@ -28,11 +30,12 @@ const items = [
 ]
 
 export function AppSidebar() {
-  const { state } = useSidebar()
+  const { state, setOpenMobile } = useSidebar()
   const location = useLocation()
   const navigate = useNavigate()
   const currentPath = location.pathname
   const collapsed = state === "collapsed"
+  const isMobile = useIsMobile()
 
   const isActive = (path: string) => currentPath === path
   const getNavCls = ({ isActive }: { isActive: boolean }) =>
@@ -55,17 +58,30 @@ export function AppSidebar() {
     <Sidebar
       className={collapsed ? "w-16" : "w-64"}
       collapsible="icon"
+      side="left"
     >
       <SidebarHeader className="p-6 border-b">
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-primary-foreground font-bold text-sm">
-            JC
-          </div>
-          {!collapsed && (
-            <div>
-              <h1 className="font-bold text-lg text-foreground">JagaCuan</h1>
-              <p className="text-xs text-muted-foreground">Finance Manager</p>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-primary-foreground font-bold text-sm">
+              JC
             </div>
+            {(!collapsed || isMobile) && (
+              <div>
+                <h1 className="font-bold text-lg text-foreground">JagaCuan</h1>
+                <p className="text-xs text-muted-foreground">Finance Manager</p>
+              </div>
+            )}
+          </div>
+          {isMobile && (
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              onClick={() => setOpenMobile(false)}
+              className="h-8 w-8"
+            >
+              <X className="h-4 w-4" />
+            </Button>
           )}
         </div>
       </SidebarHeader>
@@ -81,14 +97,15 @@ export function AppSidebar() {
               {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
-                    <NavLink 
-                      to={item.url} 
-                      end 
-                      className={({ isActive }) => getNavCls({ isActive })}
-                     >
-                       <item.icon className="h-4 w-4" />
-                       {!collapsed && <span>{item.title}</span>}
-                     </NavLink>
+                     <NavLink 
+                       to={item.url} 
+                       end 
+                       className={({ isActive }) => getNavCls({ isActive })}
+                       onClick={() => isMobile && setOpenMobile(false)}
+                      >
+                        <item.icon className="h-4 w-4" />
+                        {(!collapsed || isMobile) && <span>{item.title}</span>}
+                      </NavLink>
                    </SidebarMenuButton>
                  </SidebarMenuItem>
                ))}
@@ -97,16 +114,16 @@ export function AppSidebar() {
          </SidebarGroup>
        </SidebarContent>
 
-       <SidebarFooter className="p-4 border-t">
-         <SidebarMenu>
-           <SidebarMenuItem>
-             <SidebarMenuButton onClick={handleLogout} className="text-destructive hover:text-destructive hover:bg-destructive/10">
-               <LogOut className="h-4 w-4" />
-               {!collapsed && <span>Logout</span>}
-             </SidebarMenuButton>
-           </SidebarMenuItem>
-         </SidebarMenu>
-       </SidebarFooter>
+        <SidebarFooter className="p-4 border-t">
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarMenuButton onClick={handleLogout} className="text-destructive hover:text-destructive hover:bg-destructive/10">
+                <LogOut className="h-4 w-4" />
+                {(!collapsed || isMobile) && <span>Logout</span>}
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarFooter>
      </Sidebar>
   )
 }

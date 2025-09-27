@@ -1,12 +1,20 @@
-import { Bell, User } from "lucide-react"
+import { Bell, User, Menu } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { NavLink } from "react-router-dom"
+import { SidebarTrigger } from "@/components/ui/sidebar"
+import { useIsMobile } from "@/hooks/use-mobile"
 
 export function Navbar() {
+  const isMobile = useIsMobile()
+
   return (
     <nav className="h-16 border-b bg-card px-6 flex items-center justify-between">
       <div className="flex items-center gap-2">
+        {isMobile && (
+          <SidebarTrigger className="mr-2">
+            <Menu className="h-5 w-5" />
+          </SidebarTrigger>
+        )}
         <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-primary-foreground font-bold text-sm">
           JC
         </div>
