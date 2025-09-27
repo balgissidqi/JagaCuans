@@ -51,7 +51,15 @@ export type Database = {
           updated_at?: string
           user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "budgeting_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["user_id"]
+          },
+        ]
       }
       categories: {
         Row: {
@@ -328,7 +336,9 @@ export type Database = {
           deleted_at: string | null
           description: string
           id: string
+          income: number | null
           updated_at: string | null
+          user_id: string
         }
         Insert: {
           amount: number
@@ -338,7 +348,9 @@ export type Database = {
           deleted_at?: string | null
           description: string
           id?: string
+          income?: number | null
           updated_at?: string | null
+          user_id: string
         }
         Update: {
           amount?: number
@@ -348,7 +360,9 @@ export type Database = {
           deleted_at?: string | null
           description?: string
           id?: string
+          income?: number | null
           updated_at?: string | null
+          user_id?: string
         }
         Relationships: [
           {
@@ -357,6 +371,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "budgeting"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "spending_tracker_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["user_id"]
           },
         ]
       }
