@@ -6,6 +6,9 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AppSidebar } from "@/components/AppSidebar";
 import { Navbar } from "@/components/Navbar";
+import { AuthProvider } from "@/hooks/useAuth";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
+import { AuthRoute } from "@/components/AuthRoute";
 import Index from "./pages/Index";
 import Budgeting from "./pages/Budgeting";
 import AddBudget from "./pages/AddBudget";
@@ -24,46 +27,58 @@ const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          {/* Landing page as homepage */}
-          <Route path="/" element={<LandingPage />} />
-          
-          {/* Auth routes without sidebar */}
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<RegisterPage />} />
-          
-          {/* App routes with sidebar */}
-          <Route path="/dashboard/*" element={
-            <SidebarProvider>
-              <div className="min-h-screen flex w-full bg-background">
-                <AppSidebar />
-                <main className="flex-1">
-                  <Navbar />
-                  <div className="p-0">
-                    <Routes>
-                      <Route path="/" element={<Index />} />
-                      <Route path="/budgeting" element={<Budgeting />} />
-                      <Route path="/add-budget" element={<AddBudget />} />
-                      <Route path="/spending" element={<SpendingTracker />} />
-                      <Route path="/goals" element={<GoalsWithCustomCategories />} />
-                      <Route path="/education" element={<Education />} />
-                      <Route path="/challenge" element={<Challenge />} />
-                      <Route path="/profile" element={<Profile />} />
-                      {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-                      <Route path="*" element={<NotFound />} />
-                    </Routes>
+    <AuthProvider>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <Routes>
+            {/* Landing page as homepage */}
+            <Route path="/" element={<LandingPage />} />
+            
+            {/* Auth routes - redirect to dashboard if already logged in */}
+            <Route path="/login" element={
+              <AuthRoute>
+                <LoginPage />
+              </AuthRoute>
+            } />
+            <Route path="/register" element={
+              <AuthRoute>
+                <RegisterPage />
+              </AuthRoute>
+            } />
+            
+            {/* Protected app routes with sidebar */}
+            <Route path="/dashboard/*" element={
+              <ProtectedRoute>
+                <SidebarProvider>
+                  <div className="min-h-screen flex w-full bg-background">
+                    <AppSidebar />
+                    <main className="flex-1">
+                      <Navbar />
+                      <div className="p-0">
+                        <Routes>
+                          <Route path="/" element={<Index />} />
+                          <Route path="/budgeting" element={<Budgeting />} />
+                          <Route path="/add-budget" element={<AddBudget />} />
+                          <Route path="/spending" element={<SpendingTracker />} />
+                          <Route path="/goals" element={<GoalsWithCustomCategories />} />
+                          <Route path="/education" element={<Education />} />
+                          <Route path="/challenge" element={<Challenge />} />
+                          <Route path="/profile" element={<Profile />} />
+                          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                          <Route path="*" element={<NotFound />} />
+                        </Routes>
+                      </div>
+                    </main>
                   </div>
-                </main>
-              </div>
-            </SidebarProvider>
-          } />
-        </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
+                </SidebarProvider>
+              </ProtectedRoute>
+            } />
+          </Routes>
+        </BrowserRouter>
+      </TooltipProvider>
+    </AuthProvider>
   </QueryClientProvider>
 );
 

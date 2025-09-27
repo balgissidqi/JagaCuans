@@ -69,7 +69,6 @@ const Index = () => {
       
       if (userError || !user) {
         console.error('User not authenticated:', userError)
-        navigate('/login')
         return
       }
 
@@ -127,35 +126,35 @@ const Index = () => {
       icon: DollarSign,
       bgColor: "bg-budgeting-bg",
       iconColor: "text-budgeting-color",
-      url: "/budgeting"
+      url: "/dashboard/budgeting"
     },
     {
       title: "Spending",
       icon: TrendingDown,
       bgColor: "bg-spending-bg", 
       iconColor: "text-spending-color",
-      url: "/spending"
+      url: "/dashboard/spending"
     },
     {
       title: "Goals",
       icon: Target,
       bgColor: "bg-goals-bg",
       iconColor: "text-goals-color", 
-      url: "/goals"
+      url: "/dashboard/goals"
     },
     {
       title: "Education",
       icon: GraduationCap,
       bgColor: "bg-education-bg",
       iconColor: "text-education-color",
-      url: "/education"
+      url: "/dashboard/education"
     },
     {
       title: "Challenges",
       icon: Trophy,
       bgColor: "bg-challenges-bg",
       iconColor: "text-challenges-color",
-      url: "/challenges"
+      url: "/dashboard/challenge"
     }
   ]
 
@@ -225,7 +224,7 @@ const Index = () => {
         <div className="flex gap-3">
           <Button 
             className="bg-primary hover:bg-primary/90 text-primary-foreground"
-            onClick={() => navigate('/spending')}
+            onClick={() => navigate('/dashboard/spending')}
           >
             <Plus className="h-4 w-4 mr-2" />
             Add Expense
@@ -233,7 +232,7 @@ const Index = () => {
           <Button 
             variant="outline" 
             className="border-income text-income hover:bg-income/10"
-            onClick={() => navigate('/spending')}
+            onClick={() => navigate('/dashboard/spending')}
           >
             <TrendingUp className="h-4 w-4 mr-2" />
             Add Income
