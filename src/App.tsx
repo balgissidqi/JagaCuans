@@ -29,13 +29,15 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
+          {/* Landing page as homepage */}
+          <Route path="/" element={<LandingPage />} />
+          
           {/* Auth routes without sidebar */}
-          <Route path="/landing" element={<LandingPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           
           {/* App routes with sidebar */}
-          <Route path="/*" element={
+          <Route path="/dashboard/*" element={
             <SidebarProvider>
               <div className="min-h-screen flex w-full bg-background">
                 <AppSidebar />

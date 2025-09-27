@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -112,11 +113,13 @@ export default function LandingPage() {
               agar lebih bijak mengatur uang dengan cara yang fun dan mudah dipahami.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <Button size="lg" className="text-lg px-8 py-6 h-auto">
-                Mulai Sekarang <ArrowRight className="ml-2 h-5 w-5" />
+              <Button asChild size="lg" className="text-lg px-8 py-6 h-auto">
+                <Link to="/register">
+                  Mulai Sekarang <ArrowRight className="ml-2 h-5 w-5" />
+                </Link>
               </Button>
-              <Button variant="outline" size="lg" className="text-lg px-8 py-6 h-auto">
-                Pelajari Lebih Lanjut
+              <Button asChild variant="outline" size="lg" className="text-lg px-8 py-6 h-auto">
+                <Link to="/login">Pelajari Lebih Lanjut</Link>
               </Button>
             </div>
           </div>
@@ -223,7 +226,9 @@ export default function LandingPage() {
                     <span>Edukasi finansial</span>
                   </li>
                 </ul>
-                <Button className="w-full">Langganan Sekarang</Button>
+                <Button asChild className="w-full">
+                  <Link to="/register">Langganan Sekarang</Link>
+                </Button>
               </CardContent>
             </Card>
             
@@ -255,7 +260,9 @@ export default function LandingPage() {
                     <span>Premium support</span>
                   </li>
                 </ul>
-                <Button className="w-full" size="lg">Langganan Sekarang</Button>
+                <Button asChild className="w-full" size="lg">
+                  <Link to="/register">Langganan Sekarang</Link>
+                </Button>
               </CardContent>
             </Card>
           </div>
@@ -334,11 +341,11 @@ export default function LandingPage() {
             Bergabung dengan ribuan remaja yang sudah bijak mengelola keuangan bersama JagaCuan
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" variant="secondary" className="text-lg px-8 py-6 h-auto">
-              Coba Gratis Sekarang
+            <Button asChild size="lg" variant="secondary" className="text-lg px-8 py-6 h-auto">
+              <Link to="/register">Coba Gratis Sekarang</Link>
             </Button>
-            <Button size="lg" variant="outline" className="text-lg px-8 py-6 h-auto border-white text-white hover:bg-white hover:text-primary">
-              Download App
+            <Button asChild size="lg" variant="outline" className="text-lg px-8 py-6 h-auto border-white text-white hover:bg-white hover:text-primary">
+              <Link to="/login">Masuk ke Akun</Link>
             </Button>
           </div>
         </div>
