@@ -104,7 +104,8 @@ export function SpendingForm({ onSuccess, onCancel }: SpendingFormProps) {
       const { error } = await supabase.from('spending_tracker').insert({
         budget_id: budgetId,
         description: formData.name,
-        amount: parseFloat(formData.amount)
+        amount: parseFloat(formData.amount),
+        user_id: user.id
       })
 
       if (error) throw error
