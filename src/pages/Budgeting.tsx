@@ -172,7 +172,7 @@ export default function Budgeting() {
         
         <Button 
           className="flex items-center gap-2"
-          onClick={() => navigate('/add-budget')}
+          onClick={() => navigate('/dashboard/budgeting/add')}
         >
           <Plus className="h-4 w-4" />
           Add Budget

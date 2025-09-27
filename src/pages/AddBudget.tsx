@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { supabase } from "@/integrations/supabase/client"
 import { formatRupiah } from "@/utils/currency"
 import { toast } from "sonner"
-import { Utensils, Car, PiggyBank, GraduationCap, MoreHorizontal, CheckCircle, Lock } from "lucide-react"
+import { Utensils, Car, PiggyBank, GraduationCap, MoreHorizontal, CheckCircle, Lock, ArrowLeft } from "lucide-react"
 import { CustomCategoryModal } from "@/components/CustomCategoryModal"
 
 const categories = [
@@ -130,7 +130,7 @@ export default function AddBudget() {
         toast.success('Budget berhasil ditambahkan')
       }
       
-      navigate('/budgeting')
+      navigate('/dashboard/budgeting')
     } catch (error) {
       console.error('Error adding budget:', error)
       toast.error('Failed to add budget')
@@ -145,9 +145,19 @@ export default function AddBudget() {
         <Card className="bg-card rounded-2xl shadow-lg border-0">
         <CardHeader className="relative">
           <div className="flex items-start justify-between">
-            <div>
-              <CardTitle className="text-2xl font-bold text-foreground">Add Budget</CardTitle>
-              <p className="text-muted-foreground mt-2">Set spending limits for different categories</p>
+            <div className="flex items-center gap-4">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => navigate('/dashboard/budgeting')}
+                className="h-10 w-10 rounded-full hover:bg-accent"
+              >
+                <ArrowLeft className="h-5 w-5" />
+              </Button>
+              <div>
+                <CardTitle className="text-2xl font-bold text-foreground">Add Budget</CardTitle>
+                <p className="text-muted-foreground mt-2">Set spending limits for different categories</p>
+              </div>
             </div>
             <CheckCircle className="h-6 w-6 text-green-600" />
           </div>

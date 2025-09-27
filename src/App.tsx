@@ -60,7 +60,7 @@ const App = () => (
                         <Routes>
                           <Route path="/" element={<Index />} />
                           <Route path="/budgeting" element={<Budgeting />} />
-                          <Route path="/add-budget" element={<AddBudget />} />
+                          <Route path="/budgeting/add" element={<AddBudget />} />
                           <Route path="/spending" element={<SpendingTracker />} />
                           <Route path="/goals" element={<GoalsWithCustomCategories />} />
                           <Route path="/education" element={<Education />} />
