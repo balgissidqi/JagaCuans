@@ -15,6 +15,7 @@ interface SpendingFormProps {
 interface Category {
   category_id: string
   name: string
+  notes?: string
 }
 
 export function SpendingForm({ onSuccess, onCancel }: SpendingFormProps) {
@@ -48,13 +49,18 @@ export function SpendingForm({ onSuccess, onCancel }: SpendingFormProps) {
         .select('id, category, notes')
         .eq('user_id', user.id)
         .order('category')
+        .limit(50)
+
+
+        // console.log("Fetched budgets:", data)
 
       if (error) throw error
       
       // Convert budgets to category format
       const budgetCategories = (data || []).map(budget => ({
         category_id: budget.id,
-        name: budget.category
+        name: budget.category,
+        notes: budget.notes
       }))
       
       setCategories(budgetCategories)
@@ -156,7 +162,12 @@ export function SpendingForm({ onSuccess, onCancel }: SpendingFormProps) {
           <SelectContent>
             {categories.map((category) => (
               <SelectItem key={category.category_id} value={category.category_id}>
-                {category.name}
+                <div className="flex flex-col">
+                  <span>{category.name}</span>
+                  {category.notes && (
+                    <span className="text-xs text-muted-foreground">{category.notes}</span>
+                  )}
+                </div>
               </SelectItem>
             ))}
           </SelectContent>

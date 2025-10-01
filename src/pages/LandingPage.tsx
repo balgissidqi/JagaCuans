@@ -197,7 +197,7 @@ export default function LandingPage() {
             
            <h1 className="text-6xl md:text-7xl font-extrabold mb-6 leading-snug text-center">
             <span className="block text-white">JagaCuan</span>
-            <span className="block text-transparent bg-clip-text bg-gradient-to-r from-yellow-200 to-yellow-400 text-3xl md:text-4xl font-semibold mt-4">
+            <span className="block text-transparent bg-clip-text bg-gradient-to-r from-yellow-200 to-yellow-400 text-3xl md:text-5xl font-bold mt-4">
               Belajar Lebih Mudah & Menyenangkan
             </span>
           </h1>
