@@ -194,14 +194,16 @@ export default function LandingPage() {
               💡 Platform Edukasi Keuangan #1 untuk Remaja
             </Badge>
             
-            <h1 className="text-5xl md:text-7xl font-extrabold mb-6 leading-tight">
-              Belajar Kelola Uang<br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-200 to-yellow-400">
-                Lebih Mudah & Menyenangkan
-              </span>
-            </h1>
             
-            <p className="text-xl md:text-2xl mb-10 text-white/90 leading-relaxed max-w-3xl mx-auto">
+           <h1 className="text-6xl md:text-7xl font-extrabold mb-6 leading-snug text-center">
+            <span className="block text-white">JagaCuan</span>
+            <span className="block text-transparent bg-clip-text bg-gradient-to-r from-yellow-200 to-yellow-400 text-5xl md:text-6xl mt-3">
+              Belajar Lebih Mudah & Menyenangkan
+            </span>
+          </h1>
+
+            
+            <p className="text-xl md:text-xl mb-10 text-white/90 leading-relaxed max-w-3xl mx-auto">
               Platform edukasi finansial modern yang membantu remaja mengelola uang dengan bijak, 
               mencapai tujuan finansial, dan membangun kebiasaan keuangan yang sehat.
             </p>
