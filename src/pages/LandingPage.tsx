@@ -183,10 +183,10 @@ export default function LandingPage() {
       <section 
         className="relative pt-32 pb-20 px-4 overflow-hidden bg-cover bg-center"
         style={{
-          backgroundImage: `linear-gradient(135deg, rgba(37, 99, 235, 0.95), rgba(124, 58, 237, 0.95)), url(${heroImage})`
+          backgroundImage: `linear-gradient(135deg, rgba(37, 99, 235, 0.2), rgba(124, 58, 237, 0.6)), url(${heroImage})`
         }}
       >
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/90 to-[hsl(258,90%,66%)]/90"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/90 to-[hsl(258,90%,-66%)]/90"></div>
         
         <div className="container mx-auto relative z-10">
           <div className="max-w-4xl mx-auto text-center text-white">

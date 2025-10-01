@@ -45,7 +45,7 @@ export function SpendingForm({ onSuccess, onCancel }: SpendingFormProps) {
       // Fetch existing budgets as categories
       const { data, error } = await supabase
         .from('budgeting')
-        .select('id, category')
+        .select('id, category, notes')
         .eq('user_id', user.id)
         .order('category')
 
