@@ -229,14 +229,14 @@ const Index = () => {
             <Plus className="h-4 w-4 mr-2" />
             Add Expense
           </Button>
-          <Button 
+          {/* <Button 
             variant="outline" 
             className="border-income text-income hover:bg-income/10"
             onClick={() => navigate('/dashboard/spending')}
           >
             <TrendingUp className="h-4 w-4 mr-2" />
             Add Income
-          </Button>
+          </Button> */}
         </div>
 
         {/* Quick Access */}
