@@ -20,6 +20,29 @@ import {
 import heroImage from "@/assets/hero-finance-learning.jpg";
 
 export default function LandingPage() {
+  const problems = [
+    {
+      icon: <Target className="h-6 w-6" />,
+      title: "Bingung Atur Uang Jajan",
+      description: "Uang saku sering habis di tengah bulan tanpa tahu kemana perginya"
+    },
+    {
+      icon: <Sparkles className="h-6 w-6" />,
+      title: "Sulit Menabung",
+      description: "Niat menabung ada, tapi selalu gagal karena tidak ada target yang jelas"
+    },
+    {
+      icon: <Award className="h-6 w-6" />,
+      title: "Kurang Paham Finansial",
+      description: "Belum pernah belajar cara mengelola keuangan dengan baik dan benar"
+    },
+    {
+      icon: <Lightbulb className="h-6 w-6" />,
+      title: "Gak Ada Motivasi",
+      description: "Malas catat pengeluaran karena ribet dan tidak ada feedback yang jelas"
+    }
+  ];
+
   const features = [
     {
       icon: <Wallet className="h-8 w-8" />,
@@ -59,29 +82,6 @@ export default function LandingPage() {
     }
   ];
 
-  const benefits = [
-    {
-      icon: <Target className="h-6 w-6" />,
-      title: "Capai Tujuan Finansial",
-      description: "Rencanakan dan wujudkan impianmu dengan strategi keuangan yang tepat"
-    },
-    {
-      icon: <Sparkles className="h-6 w-6" />,
-      title: "Belajar Sambil Bermain",
-      description: "Edukasi finansial yang fun dengan gamification dan reward system"
-    },
-    {
-      icon: <Award className="h-6 w-6" />,
-      title: "Raih Achievement",
-      description: "Kumpulkan badge dan sertifikat dengan menyelesaikan berbagai tantangan"
-    },
-    {
-      icon: <Lightbulb className="h-6 w-6" />,
-      title: "Tips & Trik Finansial",
-      description: "Dapatkan insight dan tips praktis untuk mengelola keuangan sehari-hari"
-    }
-  ];
-
   const testimonials = [
     {
       name: "Sarah, 17 tahun",
@@ -100,6 +100,53 @@ export default function LandingPage() {
     }
   ];
 
+  const pricingPlans = [
+    {
+      name: "Gratis",
+      price: "Rp 0",
+      period: "/bulan",
+      description: "Cocok untuk mulai belajar mengelola keuangan",
+      features: [
+        "Budget bulanan unlimited",
+        "Tracking pengeluaran harian",
+        "1 target tabungan aktif",
+        "Akses edukasi dasar",
+        "Challenge bulanan"
+      ],
+      popular: false
+    },
+    {
+      name: "Premium",
+      price: "Rp 29.000",
+      period: "/bulan",
+      description: "Untuk yang serius mengelola keuangan",
+      features: [
+        "Semua fitur Gratis",
+        "Target tabungan unlimited",
+        "Analisis pengeluaran detail",
+        "Edukasi premium + sertifikat",
+        "Challenge eksklusif",
+        "Konsultasi finansial",
+        "Export laporan keuangan"
+      ],
+      popular: true
+    },
+    {
+      name: "Tahunan",
+      price: "Rp 290.000",
+      period: "/tahun",
+      description: "Hemat 2 bulan dengan paket tahunan",
+      features: [
+        "Semua fitur Premium",
+        "Hemat Rp 58.000",
+        "Prioritas support",
+        "Early access fitur baru",
+        "Badge eksklusif"
+      ],
+      popular: false
+    }
+  ];
+
   return (
     <div className="min-h-screen bg-background">
       {/* Navbar - Semi-transparent */}
@@ -114,9 +161,10 @@ export default function LandingPage() {
             </div>
             
             <div className="hidden md:flex items-center gap-8">
+              <a href="#problems" className="text-foreground hover:text-primary transition-colors font-medium">Masalah</a>
               <a href="#features" className="text-foreground hover:text-primary transition-colors font-medium">Fitur</a>
-              <a href="#benefits" className="text-foreground hover:text-primary transition-colors font-medium">Manfaat</a>
               <a href="#testimonials" className="text-foreground hover:text-primary transition-colors font-medium">Testimoni</a>
+              <a href="#pricing" className="text-foreground hover:text-primary transition-colors font-medium">Harga</a>
             </div>
             
             <div className="flex items-center gap-3">
@@ -154,8 +202,8 @@ export default function LandingPage() {
             </h1>
             
             <p className="text-xl md:text-2xl mb-10 text-white/90 leading-relaxed max-w-3xl mx-auto">
-              Platform edukasi finansial modern yang membantu remaja usia 15-25 tahun 
-              mengelola uang dengan bijak, mencapai tujuan finansial, dan membangun kebiasaan keuangan yang sehat.
+              Platform edukasi finansial modern yang membantu remaja mengelola uang dengan bijak, 
+              mencapai tujuan finansial, dan membangun kebiasaan keuangan yang sehat.
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
@@ -194,28 +242,28 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Benefits Section */}
-      <section id="benefits" className="py-20 bg-background">
+      {/* Problem Section */}
+      <section id="problems" className="py-20 bg-background">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <Badge className="mb-4 bg-primary/10 text-primary border-0">✨ Kenapa JagaCuan?</Badge>
+            <Badge className="mb-4 bg-primary/10 text-primary border-0">😥 Masalah yang Sering Dihadapi</Badge>
             <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
-              Manfaat yang Kamu Dapatkan
+              Masalah Finansial Remaja
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              JagaCuan hadir sebagai solusi lengkap untuk edukasi dan manajemen keuangan remaja
+              JagaCuan hadir untuk membantu mengatasi kesulitan keuangan yang sering dialami remaja
             </p>
           </div>
           
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
-            {benefits.map((benefit, index) => (
-              <Card key={index} className="group hover:shadow-2xl transition-all duration-300 border-2 hover:border-primary/50 bg-gradient-to-br from-white to-primary/5">
+            {problems.map((problem, index) => (
+              <Card key={index} className="group hover:shadow-2xl transition-all duration-300 border-2 hover:border-primary/50 bg-gradient-to-br from-white to-red-500/5">
                 <CardContent className="p-6 text-center">
-                  <div className="inline-flex p-4 rounded-2xl mb-4 bg-gradient-to-br from-primary to-[hsl(258,90%,66%)] text-white group-hover:scale-110 transition-transform shadow-lg">
-                    {benefit.icon}
+                  <div className="inline-flex p-4 rounded-2xl mb-4 bg-gradient-to-br from-red-500 to-orange-500 text-white group-hover:scale-110 transition-transform shadow-lg">
+                    {problem.icon}
                   </div>
-                  <h3 className="font-bold text-lg mb-3">{benefit.title}</h3>
-                  <p className="text-muted-foreground text-sm leading-relaxed">{benefit.description}</p>
+                  <h3 className="font-bold text-lg mb-3">{problem.title}</h3>
+                  <p className="text-muted-foreground text-sm leading-relaxed">{problem.description}</p>
                 </CardContent>
               </Card>
             ))}
@@ -294,6 +342,54 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* Pricing Section */}
+      <section id="pricing" className="py-20 bg-gradient-to-br from-primary/5 to-purple-500/5">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-16">
+            <Badge className="mb-4 bg-primary/10 text-primary border-0">💰 Harga</Badge>
+            <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
+              Pilih Paket yang Sesuai
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Mulai gratis dan upgrade kapan saja untuk fitur lebih lengkap
+            </p>
+          </div>
+          
+          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            {pricingPlans.map((plan, index) => (
+              <Card key={index} className={`relative hover:shadow-2xl transition-all duration-300 ${plan.popular ? 'border-primary border-2 shadow-xl scale-105' : 'border-2'}`}>
+                {plan.popular && (
+                  <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                    <Badge className="bg-gradient-to-r from-primary to-[hsl(258,90%,66%)] text-white border-0 px-4 py-1">
+                      ⭐ Paling Populer
+                    </Badge>
+                  </div>
+                )}
+                <CardContent className="p-8">
+                  <h3 className="font-bold text-2xl mb-2">{plan.name}</h3>
+                  <p className="text-muted-foreground text-sm mb-6">{plan.description}</p>
+                  <div className="mb-6">
+                    <span className="text-4xl font-bold text-foreground">{plan.price}</span>
+                    <span className="text-muted-foreground">{plan.period}</span>
+                  </div>
+                  <Button asChild className={`w-full mb-6 ${plan.popular ? 'bg-gradient-to-r from-primary to-[hsl(258,90%,66%)]' : ''}`}>
+                    <Link to="/register">Pilih Paket</Link>
+                  </Button>
+                  <ul className="space-y-3">
+                    {plan.features.map((feature, fIndex) => (
+                      <li key={fIndex} className="flex items-start gap-3">
+                        <Check className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+                        <span className="text-sm text-foreground">{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* CTA Section */}
       <section className="py-20 bg-gradient-to-r from-primary via-[hsl(258,90%,66%)] to-primary relative overflow-hidden">
         <div className="absolute inset-0 opacity-10">
@@ -306,7 +402,7 @@ export default function LandingPage() {
             Siap Mulai Perjalanan Finansialmu?
           </h2>
           <p className="text-xl md:text-2xl text-white/90 mb-10 max-w-3xl mx-auto leading-relaxed">
-            Bergabung dengan ribuan remaja yang sudah bijak mengelola keuangan bersama JagaCuan. Gratis untuk memulai!
+            Bergabung dengan ribuan remaja yang sudah bijak mengelola keuangan. Gratis untuk memulai!
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button asChild size="lg" className="bg-white text-primary hover:bg-gray-100 text-lg px-10 py-7 h-auto font-bold shadow-2xl">
@@ -333,16 +429,17 @@ export default function LandingPage() {
                 <span className="text-2xl font-bold">JagaCuan</span>
               </div>
               <p className="text-gray-400 mb-4 max-w-md leading-relaxed">
-                Platform edukasi keuangan modern yang membantu remaja mengelola uang dengan bijak dan menyenangkan sejak dini.
+                Platform edukasi keuangan modern yang membantu remaja mengelola uang dengan bijak dan menyenangkan.
               </p>
             </div>
             
             <div>
               <h4 className="font-bold mb-4 text-lg">Navigasi</h4>
               <ul className="space-y-3 text-gray-400">
+                <li><a href="#problems" className="hover:text-white transition-colors">Masalah</a></li>
                 <li><a href="#features" className="hover:text-white transition-colors">Fitur</a></li>
-                <li><a href="#benefits" className="hover:text-white transition-colors">Manfaat</a></li>
                 <li><a href="#testimonials" className="hover:text-white transition-colors">Testimoni</a></li>
+                <li><a href="#pricing" className="hover:text-white transition-colors">Harga</a></li>
                 <li><Link to="/register" className="hover:text-white transition-colors">Daftar</Link></li>
               </ul>
             </div>
