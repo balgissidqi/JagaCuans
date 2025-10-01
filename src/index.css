@@ -17,8 +17,10 @@ All colors MUST be HSL.
     --popover: 0 0% 100%;
     --popover-foreground: 222 47% 11%;
 
-    --primary: 262 100% 65%;
+    --primary: 217 91% 60%; /* Modern blue #2563EB */
     --primary-foreground: 0 0% 100%;
+    
+    --accent-purple: 258 90% 66%; /* Soft purple #7C3AED */
 
     --secondary: 210 40% 96%;
     --secondary-foreground: 222 47% 11%;
@@ -34,7 +36,7 @@ All colors MUST be HSL.
 
     --border: 214 32% 91%;
     --input: 214 32% 91%;
-    --ring: 262 100% 65%;
+    --ring: 217 91% 60%;
 
     --radius: 0.75rem;
 
@@ -61,7 +63,8 @@ All colors MUST be HSL.
     --challenges-color: 217 91% 60%;
 
     /* Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(262 100% 65%), hsl(262 100% 75%));
+    --gradient-primary: linear-gradient(135deg, hsl(217 91% 60%), hsl(258 90% 66%)); /* Blue to purple */
+    --gradient-hero: linear-gradient(135deg, hsl(217 91% 60% / 0.1), hsl(258 90% 66% / 0.1));
     --gradient-expense: linear-gradient(135deg, hsl(0 84% 60%), hsl(0 84% 70%));
     --gradient-income: linear-gradient(135deg, hsl(142 76% 36%), hsl(142 76% 46%));
     --gradient-savings: linear-gradient(135deg, hsl(142 76% 36%), hsl(142 76% 46%));
