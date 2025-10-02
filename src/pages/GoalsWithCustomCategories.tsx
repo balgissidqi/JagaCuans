@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { Plus, Target, Edit, Trash2, TrendingUp } from "lucide-react"
+import { Plus, Target, Edit, Trash2, TrendingUp, History } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -11,6 +11,7 @@ import { supabase } from "@/integrations/supabase/client"
 import { formatRupiah } from "@/utils/currency"
 import { toast } from "sonner"
 import { CustomCategoryModal } from "@/components/CustomCategoryModal"
+import { ScrollArea } from "@/components/ui/scroll-area"
 
 interface SavingGoal {
   goal_id: string
@@ -21,6 +22,15 @@ interface SavingGoal {
   user_id: string
 }
 
+interface GoalHistory {
+  history_id: string
+  goal_id: string
+  amount_added: number
+  previous_amount: number
+  new_amount: number
+  created_at: string
+}
+
 export default function GoalsWithCustomCategories() {
   const navigate = useNavigate()
   const [savingGoals, setSavingGoals] = useState<SavingGoal[]>([])
@@ -28,8 +38,10 @@ export default function GoalsWithCustomCategories() {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isCustomCategoryModalOpen, setIsCustomCategoryModalOpen] = useState(false)
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
+  const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false)
   const [selectedGoal, setSelectedGoal] = useState<SavingGoal | null>(null)
   const [updateAmount, setUpdateAmount] = useState('')
+  const [goalHistory, setGoalHistory] = useState<GoalHistory[]>([])
   const [formData, setFormData] = useState({
     goal_name: '',
     target_amount: '',
@@ -124,25 +136,41 @@ export default function GoalsWithCustomCategories() {
 
     try {
       const additionalAmount = parseFloat(updateAmount)
-      if (isNaN(additionalAmount) || additionalAmount < 0) {
+      if (isNaN(additionalAmount) || additionalAmount <= 0) {
         toast.error('Please enter a valid amount')
         return
       }
 
-      const newTotal = selectedGoal.current_amount + additionalAmount
+      const previousAmount = selectedGoal.current_amount
+      const newTotal = previousAmount + additionalAmount
 
-      const { error } = await supabase
+      // Update goal amount
+      const { error: updateError } = await supabase
         .from('saving_goals')
         .update({ current_amount: newTotal })
         .eq('goal_id', selectedGoal.goal_id)
         .eq('user_id', userId)
 
-      if (error) throw error
+      if (updateError) throw updateError
+
+      // Insert history record
+      const { error: historyError } = await supabase
+        .from('saving_goals_history')
+        .insert({
+          goal_id: selectedGoal.goal_id,
+          user_id: userId,
+          amount_added: additionalAmount,
+          previous_amount: previousAmount,
+          new_amount: newTotal
+        })
+
+      if (historyError) throw historyError
       
       toast.success('Progress updated successfully!')
       setIsUpdateModalOpen(false)
       setSelectedGoal(null)
       setUpdateAmount('')
+      fetchSavingGoals()
     } catch (error) {
       console.error('Error updating progress:', error)
       toast.error('Failed to update progress')
@@ -153,6 +181,26 @@ export default function GoalsWithCustomCategories() {
     setSelectedGoal(goal)
     setUpdateAmount('')
     setIsUpdateModalOpen(true)
+  }
+
+  const openHistoryModal = async (goal: SavingGoal) => {
+    setSelectedGoal(goal)
+    setIsHistoryModalOpen(true)
+    
+    // Fetch history for this goal
+    try {
+      const { data, error } = await supabase
+        .from('saving_goals_history')
+        .select('*')
+        .eq('goal_id', goal.goal_id)
+        .order('created_at', { ascending: false })
+
+      if (error) throw error
+      setGoalHistory(data || [])
+    } catch (error) {
+      console.error('Error fetching history:', error)
+      toast.error('Failed to load history')
+    }
   }
 
   if (loading) {
@@ -271,14 +319,24 @@ export default function GoalsWithCustomCategories() {
                     Deadline: {new Date(goal.deadline).toLocaleDateString('id-ID')}
                   </div>
                 )}
-                <div className="pt-2">
+                <div className="pt-2 space-y-2">
                   <Button 
                     size="sm" 
                     className="w-full"
                     onClick={() => openUpdateModal(goal)}
+                    disabled={goal.current_amount >= goal.target_amount}
                   >
                     <TrendingUp className="h-4 w-4 mr-2" />
-                    Update Progress
+                    {goal.current_amount >= goal.target_amount ? 'Goal Achieved!' : 'Update Progress'}
+                  </Button>
+                  <Button 
+                    size="sm" 
+                    variant="outline"
+                    className="w-full"
+                    onClick={() => openHistoryModal(goal)}
+                  >
+                    <History className="h-4 w-4 mr-2" />
+                    View History
                   </Button>
                 </div>
               </CardContent>
@@ -343,6 +401,46 @@ export default function GoalsWithCustomCategories() {
               </Button>
             </div>
           </form>
+        </DialogContent>
+      </Dialog>
+
+      {/* History Modal */}
+      <Dialog open={isHistoryModalOpen} onOpenChange={setIsHistoryModalOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>History: {selectedGoal?.goal_name}</DialogTitle>
+          </DialogHeader>
+          <ScrollArea className="h-[400px] pr-4">
+            <div className="space-y-3">
+              {goalHistory.length === 0 ? (
+                <div className="text-center text-muted-foreground py-8">
+                  <History className="h-12 w-12 mx-auto mb-2 opacity-50" />
+                  <p>Belum ada riwayat update</p>
+                </div>
+              ) : (
+                goalHistory.map((history) => (
+                  <Card key={history.history_id} className="p-4">
+                    <div className="flex justify-between items-start">
+                      <div className="space-y-1">
+                        <div className="text-sm font-medium text-foreground">
+                          Menambahkan {formatRupiah(history.amount_added)}
+                        </div>
+                        <div className="text-xs text-muted-foreground">
+                          {formatRupiah(history.previous_amount)} → {formatRupiah(history.new_amount)}
+                        </div>
+                      </div>
+                      <div className="text-xs text-muted-foreground">
+                        {new Date(history.created_at).toLocaleString('id-ID', {
+                          dateStyle: 'short',
+                          timeStyle: 'short'
+                        })}
+                      </div>
+                    </div>
+                  </Card>
+                ))
+              )}
+            </div>
+          </ScrollArea>
         </DialogContent>
       </Dialog>
     </div>

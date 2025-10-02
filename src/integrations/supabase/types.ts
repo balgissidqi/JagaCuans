@@ -150,6 +150,36 @@ export type Database = {
           },
         ]
       }
+      income: {
+        Row: {
+          amount: number
+          category: string
+          created_at: string
+          date: string
+          id: string
+          notes: string | null
+          user_id: string | null
+        }
+        Insert: {
+          amount: number
+          category: string
+          created_at?: string
+          date?: string
+          id?: string
+          notes?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          amount?: number
+          category?: string
+          created_at?: string
+          date?: string
+          id?: string
+          notes?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       leaderboard: {
         Row: {
           created_at: string
@@ -324,6 +354,47 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "users"
             referencedColumns: ["user_id"]
+          },
+        ]
+      }
+      saving_goals_history: {
+        Row: {
+          amount_added: number
+          created_at: string
+          goal_id: string
+          history_id: string
+          new_amount: number
+          notes: string | null
+          previous_amount: number
+          user_id: string
+        }
+        Insert: {
+          amount_added: number
+          created_at?: string
+          goal_id: string
+          history_id?: string
+          new_amount: number
+          notes?: string | null
+          previous_amount: number
+          user_id: string
+        }
+        Update: {
+          amount_added?: number
+          created_at?: string
+          goal_id?: string
+          history_id?: string
+          new_amount?: number
+          notes?: string | null
+          previous_amount?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "saving_goals_history_goal_id_fkey"
+            columns: ["goal_id"]
+            isOneToOne: false
+            referencedRelation: "saving_goals"
+            referencedColumns: ["goal_id"]
           },
         ]
       }
