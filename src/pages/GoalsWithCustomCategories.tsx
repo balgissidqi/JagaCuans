@@ -110,6 +110,7 @@ export default function GoalsWithCustomCategories() {
       toast.success('Saving goal added successfully!')
       setIsModalOpen(false)
       setFormData({ goal_name: '', target_amount: '', deadline: '' })
+      fetchSavingGoals() // Refresh data immediately
     } catch (error) {
       console.error('Error adding saving goal:', error)
       toast.error('Failed to add saving goal')
