@@ -122,15 +122,17 @@ export default function GoalsWithCustomCategories() {
     if (!selectedGoal || !userId) return
 
     try {
-      const newAmount = parseFloat(updateAmount)
-      if (isNaN(newAmount) || newAmount < 0) {
+      const additionalAmount = parseFloat(updateAmount)
+      if (isNaN(additionalAmount) || additionalAmount < 0) {
         toast.error('Please enter a valid amount')
         return
       }
 
+      const newTotal = selectedGoal.current_amount + additionalAmount
+
       const { error } = await supabase
         .from('saving_goals')
-        .update({ current_amount: newAmount })
+        .update({ current_amount: newTotal })
         .eq('goal_id', selectedGoal.goal_id)
         .eq('user_id', userId)
 
@@ -148,7 +150,7 @@ export default function GoalsWithCustomCategories() {
 
   const openUpdateModal = (goal: SavingGoal) => {
     setSelectedGoal(goal)
-    setUpdateAmount(goal.current_amount.toString())
+    setUpdateAmount('')
     setIsUpdateModalOpen(true)
   }
 
@@ -310,19 +312,20 @@ export default function GoalsWithCustomCategories() {
           </DialogHeader>
           <form onSubmit={handleUpdateProgress} className="space-y-4">
             <div>
-              <Label htmlFor="current_amount">Current Amount</Label>
+              <Label htmlFor="additional_amount">Jumlah Tambahan</Label>
               <Input
-                id="current_amount"
+                id="additional_amount"
                 type="number"
                 value={updateAmount}
                 onChange={(e) => setUpdateAmount(e.target.value)}
-                placeholder="0"
+                placeholder="Masukkan jumlah yang ingin ditambahkan"
                 required
                 min="0"
                 step="0.01"
               />
-              <div className="text-xs text-muted-foreground mt-1">
-                Target: {selectedGoal && formatRupiah(selectedGoal.target_amount)}
+              <div className="text-xs text-muted-foreground mt-2 space-y-1">
+                <div>Saldo saat ini: {selectedGoal && formatRupiah(selectedGoal.current_amount)}</div>
+                <div>Target: {selectedGoal && formatRupiah(selectedGoal.target_amount)}</div>
               </div>
             </div>
             <div className="flex gap-2">
