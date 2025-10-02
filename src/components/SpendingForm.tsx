@@ -159,13 +159,15 @@ export function SpendingForm({ onSuccess, onCancel }: SpendingFormProps) {
           <SelectTrigger>
             <SelectValue placeholder="Select category" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="bg-background z-50">
             {categories.map((category) => (
               <SelectItem key={category.category_id} value={category.category_id}>
-                <div className="flex flex-col">
-                  <span>{category.name}</span>
+                <div className="flex flex-col gap-0.5 py-1">
+                  <span className="font-medium">{category.name}</span>
                   {category.notes && (
-                    <span className="text-xs text-muted-foreground">{category.notes}</span>
+                    <span className="text-xs text-muted-foreground">
+                      Catatan: {category.notes}
+                    </span>
                   )}
                 </div>
               </SelectItem>
