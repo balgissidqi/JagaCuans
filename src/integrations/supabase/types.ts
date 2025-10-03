@@ -61,6 +61,39 @@ export type Database = {
           },
         ]
       }
+      budgeting_history: {
+        Row: {
+          amount_changed: number
+          budget_id: string
+          created_at: string
+          history_id: string
+          new_spent: number
+          notes: string | null
+          previous_spent: number
+          user_id: string
+        }
+        Insert: {
+          amount_changed: number
+          budget_id: string
+          created_at?: string
+          history_id?: string
+          new_spent: number
+          notes?: string | null
+          previous_spent: number
+          user_id: string
+        }
+        Update: {
+          amount_changed?: number
+          budget_id?: string
+          created_at?: string
+          history_id?: string
+          new_spent?: number
+          notes?: string | null
+          previous_spent?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
       categories: {
         Row: {
           category_id: string

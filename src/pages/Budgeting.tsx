@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react"
-import { Plus, Wallet } from "lucide-react"
+import { Plus, Wallet, History } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -24,6 +24,17 @@ interface Budget {
   period?: "Weekly" | "Monthly" | "Yearly"
 }
 
+interface BudgetHistory {
+  history_id: string
+  budget_id: string
+  user_id: string
+  amount_changed: number
+  previous_spent: number
+  new_spent: number
+  notes: string | null
+  created_at: string
+}
+
 const categoryColors: Record<string, string> = {
   "Food & Drinks": "bg-orange-500",
   "Transportation": "bg-blue-500",
@@ -45,6 +56,8 @@ export default function Budgeting() {
     notes: ""
   })
   const [userId, setUserId] = useState<string | null>(null)
+  const [viewingHistory, setViewingHistory] = useState<string | null>(null)
+  const [budgetHistory, setBudgetHistory] = useState<BudgetHistory[]>([])
 
   // Fetch user
   useEffect(() => {
@@ -156,6 +169,23 @@ export default function Budgeting() {
     }
   }
 
+  const handleViewHistory = async (budgetId: string) => {
+    setViewingHistory(budgetId)
+    try {
+      const { data, error } = await supabase
+        .from("budgeting_history")
+        .select("*")
+        .eq("budget_id", budgetId)
+        .order("created_at", { ascending: false })
+      
+      if (error) throw error
+      setBudgetHistory(data || [])
+    } catch (error) {
+      console.error("Error fetching budget history:", error)
+      toast.error("Failed to load history")
+    }
+  }
+
   const totalBudget = budgets.reduce((sum, b) => sum + b.amount, 0)
   const totalSpent = budgets.reduce((sum, b) => sum + b.spent, 0)
   const remaining = totalBudget - totalSpent
@@ -260,6 +290,9 @@ export default function Budgeting() {
                   <Button variant="outline" size="sm" className="flex-1" onClick={() => handleEditBudget(budget)}>
                     Update
                   </Button>
+                  <Button variant="outline" size="sm" onClick={() => handleViewHistory(budget.id)}>
+                    <History className="h-4 w-4" />
+                  </Button>
                   <Button variant="destructive" size="sm" className="flex-1" onClick={() => handleDeleteBudget(budget.id)}>
                     Delete
                   </Button>
@@ -335,6 +368,47 @@ export default function Budgeting() {
               </Button>
             </div>
           </form>
+        </DialogContent>
+      </Dialog>
+
+      {/* History Modal */}
+      <Dialog open={!!viewingHistory} onOpenChange={() => setViewingHistory(null)}>
+        <DialogContent className="sm:max-w-lg">
+          <DialogHeader>
+            <DialogTitle>Budget History</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 max-h-96 overflow-y-auto">
+            {budgetHistory.length === 0 ? (
+              <p className="text-center text-muted-foreground py-8">No history yet</p>
+            ) : (
+              budgetHistory.map((history) => (
+                <Card key={history.history_id} className="p-4">
+                  <div className="flex justify-between items-start mb-2">
+                    <div className="space-y-1">
+                      <p className="text-sm font-medium">
+                        {history.amount_changed >= 0 ? "+" : ""}{formatRupiah(history.amount_changed)}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        {formatRupiah(history.previous_spent)} → {formatRupiah(history.new_spent)}
+                      </p>
+                    </div>
+                    <p className="text-xs text-muted-foreground">
+                      {new Date(history.created_at).toLocaleDateString("id-ID", {
+                        day: "numeric",
+                        month: "short",
+                        year: "numeric",
+                        hour: "2-digit",
+                        minute: "2-digit"
+                      })}
+                    </p>
+                  </div>
+                  {history.notes && (
+                    <p className="text-xs text-muted-foreground mt-2">{history.notes}</p>
+                  )}
+                </Card>
+              ))
+            )}
+          </div>
         </DialogContent>
       </Dialog>
     </div>
