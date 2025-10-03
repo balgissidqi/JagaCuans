@@ -48,12 +48,17 @@ export default function LoginPage() {
       console.log('Login data:', data)
       toast.success("Login berhasil!")
       navigate('/dashboard')
-    } catch (error: any) {
-      console.error('Login error:', error)
-      toast.error(error.message || "Email atau password salah")
-    } finally {
-      setLoading(false)
-    }
+    } catch (error: unknown) {
+  console.error("Login error:", error)
+
+  if (error instanceof Error) {
+    toast.error(error.message)
+  } else {
+    toast.error("Email atau password salah")
+  }
+} finally {
+  setLoading(false)
+}
   }
 
   return (

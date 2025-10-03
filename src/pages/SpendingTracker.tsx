@@ -98,7 +98,7 @@ export default function SpendingTracker() {
           setSpendings(spendingsData || []);
         } catch (error) {
           console.error("Error fetching data:", error);
-          toast.error("Failed to load data");
+          // toast.error("Failed to load data");
         } finally {
           setLoading(false);
         }
@@ -445,7 +445,7 @@ const sortedDates = Object.keys(groupedSpendings).sort((a, b) => {
             <Plus className="h-16 w-16 mx-auto mb-4 opacity-50" />
             <h3 className="text-lg font-medium mb-2">No budget categories</h3>
             <p className="text-sm">
-              Create budget categories first to track spending
+              Create your budget categories first to track and create spending
             </p>
           </div>
         </Card>
