@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { Plus, Target, Edit, Trash2, TrendingUp, History } from "lucide-react"
+import { Plus, Target, TrendingUp, History } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -18,7 +18,7 @@ interface SavingGoal {
   goal_name: string
   current_amount: number
   target_amount: number
-  deadline?: string
+  deadline?: string | null
   user_id: string
 }
 
@@ -57,7 +57,6 @@ export default function GoalsWithCustomCategories() {
     if (userId) {
       fetchSavingGoals()
       
-      // Setup realtime subscription
       const channel = supabase
         .channel('saving-goals-changes')
         .on('postgres_changes', 
@@ -67,13 +66,14 @@ export default function GoalsWithCustomCategories() {
         .subscribe()
 
       return () => {
-        supabase.removeChannel(channel)
+        if (channel) supabase.removeChannel(channel)
       }
     }
   }, [userId])
 
   const getCurrentUser = async () => {
-    const { data: { user }, error } = await supabase.auth.getUser()
+    const { data, error } = await supabase.auth.getUser()
+    const user = data?.user
     if (error || !user) {
       navigate('/login')
       return
@@ -83,7 +83,7 @@ export default function GoalsWithCustomCategories() {
 
   const fetchSavingGoals = async () => {
     if (!userId) return
-    
+    setLoading(true)
     try {
       const { data, error } = await supabase
         .from('saving_goals')
@@ -106,23 +106,29 @@ export default function GoalsWithCustomCategories() {
     
     if (!userId) return
 
+    const targetAmount = parseFloat(formData.target_amount)
+    if (isNaN(targetAmount) || targetAmount <= 0) {
+      toast.error('Invalid target amount')
+      return
+    }
+
     try {
       const { error } = await supabase
         .from('saving_goals')
         .insert({
           goal_name: formData.goal_name,
-          target_amount: parseFloat(formData.target_amount),
+          target_amount: targetAmount,
           deadline: formData.deadline || null,
           current_amount: 0,
           user_id: userId
         })
 
       if (error) throw error
-      
+
       toast.success('Saving goal added successfully!')
       setIsModalOpen(false)
       setFormData({ goal_name: '', target_amount: '', deadline: '' })
-      fetchSavingGoals() // Refresh data immediately
+      fetchSavingGoals()
     } catch (error) {
       console.error('Error adding saving goal:', error)
       toast.error('Failed to add saving goal')
@@ -134,17 +140,16 @@ export default function GoalsWithCustomCategories() {
     
     if (!selectedGoal || !userId) return
 
-    try {
-      const additionalAmount = parseFloat(updateAmount)
-      if (isNaN(additionalAmount) || additionalAmount <= 0) {
-        toast.error('Please enter a valid amount')
-        return
-      }
+    const additionalAmount = parseFloat(updateAmount)
+    if (isNaN(additionalAmount) || additionalAmount <= 0) {
+      toast.error('Please enter a valid amount')
+      return
+    }
 
+    try {
       const previousAmount = selectedGoal.current_amount
       const newTotal = previousAmount + additionalAmount
 
-      // Update goal amount
       const { error: updateError } = await supabase
         .from('saving_goals')
         .update({ current_amount: newTotal })
@@ -153,7 +158,6 @@ export default function GoalsWithCustomCategories() {
 
       if (updateError) throw updateError
 
-      // Insert history record
       const { error: historyError } = await supabase
         .from('saving_goals_history')
         .insert({
@@ -165,7 +169,7 @@ export default function GoalsWithCustomCategories() {
         })
 
       if (historyError) throw historyError
-      
+
       toast.success('Progress updated successfully!')
       setIsUpdateModalOpen(false)
       setSelectedGoal(null)
@@ -187,7 +191,6 @@ export default function GoalsWithCustomCategories() {
     setSelectedGoal(goal)
     setIsHistoryModalOpen(true)
     
-    // Fetch history for this goal
     try {
       const { data, error } = await supabase
         .from('saving_goals_history')
@@ -209,12 +212,13 @@ export default function GoalsWithCustomCategories() {
 
   return (
     <div className="p-6 space-y-6">
+      {/* Header */}
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-foreground">Financial Goals</h1>
           <p className="text-muted-foreground mt-1">Set and track your financial objectives</p>
         </div>
-        
+
         <div className="flex gap-2">
           <Button 
             variant="outline"
@@ -223,7 +227,7 @@ export default function GoalsWithCustomCategories() {
             <Plus className="h-4 w-4 mr-2" />
             Custom Category
           </Button>
-          
+
           <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
             <DialogTrigger asChild>
               <Button>
@@ -316,7 +320,7 @@ export default function GoalsWithCustomCategories() {
                 </div>
                 {goal.deadline && (
                   <div className="text-xs text-muted-foreground">
-                    Deadline: {new Date(goal.deadline).toLocaleDateString('id-ID')}
+                    Deadline: {goal.deadline ? new Date(goal.deadline).toLocaleDateString('id-ID') : '-'}
                   </div>
                 )}
                 <div className="pt-2 space-y-2">
@@ -358,16 +362,14 @@ export default function GoalsWithCustomCategories() {
       <CustomCategoryModal
         isOpen={isCustomCategoryModalOpen}
         onClose={() => setIsCustomCategoryModalOpen(false)}
-        onSuccess={() => {
-          // Optionally refresh data or navigate somewhere
-        }}
+        onSuccess={() => {}}
       />
 
       {/* Update Progress Modal */}
       <Dialog open={isUpdateModalOpen} onOpenChange={setIsUpdateModalOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Update Progress: {selectedGoal?.goal_name}</DialogTitle>
+            <DialogTitle>Update Progress: {selectedGoal?.goal_name ?? '-'}</DialogTitle>
           </DialogHeader>
           <form onSubmit={handleUpdateProgress} className="space-y-4">
             <div>
@@ -383,8 +385,8 @@ export default function GoalsWithCustomCategories() {
                 step="0.01"
               />
               <div className="text-xs text-muted-foreground mt-2 space-y-1">
-                <div>Saldo saat ini: {selectedGoal && formatRupiah(selectedGoal.current_amount)}</div>
-                <div>Target: {selectedGoal && formatRupiah(selectedGoal.target_amount)}</div>
+                <div>Saldo saat ini: {selectedGoal?.current_amount ? formatRupiah(selectedGoal.current_amount) : 0}</div>
+                <div>Target: {selectedGoal?.target_amount ? formatRupiah(selectedGoal.target_amount) : 0}</div>
               </div>
             </div>
             <div className="flex gap-2">
@@ -408,7 +410,7 @@ export default function GoalsWithCustomCategories() {
       <Dialog open={isHistoryModalOpen} onOpenChange={setIsHistoryModalOpen}>
         <DialogContent className="max-w-2xl">
           <DialogHeader>
-            <DialogTitle>History: {selectedGoal?.goal_name}</DialogTitle>
+            <DialogTitle>History: {selectedGoal?.goal_name ?? '-'}</DialogTitle>
           </DialogHeader>
           <ScrollArea className="h-[400px] pr-4">
             <div className="space-y-3">

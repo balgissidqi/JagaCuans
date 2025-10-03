@@ -196,12 +196,13 @@ export default function Budgeting() {
       const { error: historyError } = await supabase.from("budgeting_history").insert({
         budget_id: editingBudget.id,
         user_id: userId,
-        amount_changed: newAmount - editingBudget.amount,
-        previous_spent: editingBudget.amount,
-        new_spent: newAmount,
+        amount_changed: newAmount - editingBudget.amount, 
+        previous_spent: editingBudget.spent,             
+        new_spent: editingBudget.spent,      
         notes: editForm.notes || null,
         created_at: new Date().toISOString()
       })
+
 
       if (historyError) throw historyError
 

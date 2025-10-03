@@ -382,12 +382,13 @@ const sortedDates = Object.keys(groupedSpendings).sort((a, b) => {
                     <SelectValue placeholder="Select a category" />
                   </SelectTrigger>
                   <SelectContent>
-                    {budgets.map((budget) => (
-                      <SelectItem key={budget.id} value={budget.id}>
-                        {budget.category} (
-                        {formatRupiah(budget.amount - budget.spent)} left)
-                      </SelectItem>
-                    ))}
+                  {budgets
+                  .filter(budget => budget.amount > 0) // hanya yang punya nominal
+                  .map((budget) => (
+                    <SelectItem key={budget.id} value={budget.id}>
+                      {budget.category} ({formatRupiah(budget.amount - budget.spent)} left)
+                    </SelectItem>
+                  ))}
                   </SelectContent>
                 </Select>
               </div>

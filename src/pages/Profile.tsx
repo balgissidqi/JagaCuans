@@ -67,7 +67,7 @@ export default function Profile() {
       }
 
       // Fetch profile data
-      const { data: profileData, error: profileError } = await supabase
+      const { data: profileData } = await supabase
         .from('profiles')
         .select('*')
         .eq('id', user.id)
@@ -93,10 +93,11 @@ export default function Profile() {
         .select('current_amount, target_amount')
         .eq('user_id', user.id)
 
+      let completedGoals = 0
       if (savingsData && savingsData.length > 0) {
         const totalCurrent = savingsData.reduce((sum, goal) => sum + (goal.current_amount || 0), 0)
         const totalTarget = savingsData.reduce((sum, goal) => sum + (goal.target_amount || 0), 0)
-        const completedGoals = savingsData.filter(goal => 
+        completedGoals = savingsData.filter(goal => 
           goal.current_amount >= goal.target_amount && goal.target_amount > 0
         ).length
 
@@ -104,22 +105,23 @@ export default function Profile() {
         setGoalsAchieved(completedGoals)
       }
 
-      // Mock data for other sections (you can replace with real data later)
+      // Mock data for other sections
       setChallengesCompleted(Math.floor(Math.random() * 10) + 1)
       setQuizStats({ average: 85, total: 12 })
-      
+
+      // Achievements
       setAchievements([
-        { id: '1', title: 'Goal Achiever', description: 'Reached your first savings goal', type: 'gold', unlocked: goalsAchieved > 0 },
+        { id: '1', title: 'Goal Achiever', description: 'Reached your first savings goal', type: 'gold', unlocked: completedGoals > 0 },
         { id: '2', title: 'Consistent Saver', description: 'Saved money for 30 days straight', type: 'silver', unlocked: true },
         { id: '3', title: 'Quiz Master', description: 'Completed your first quiz', type: 'bronze', unlocked: true }
       ])
 
+      // Recent activity (mock)
       setRecentActivity([
         { id: '1', title: 'Completed savings goal', description: 'Emergency Fund', points: 100, date: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(), type: 'goal' },
         { id: '2', title: 'Added expense', description: 'Groceries - Rp 150,000', date: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(), type: 'expense' },
         { id: '3', title: 'Quiz completed', description: 'Financial Basics', points: 50, date: new Date().toISOString(), type: 'quiz' }
       ])
-
     } catch (error) {
       toast.error('Failed to load profile data')
       console.error('Error:', error)
@@ -137,38 +139,21 @@ export default function Profile() {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) return
 
-      // Delete old photo if exists
       if (profile?.photo_url) {
         const oldPath = profile.photo_url.split('/').pop()
-        if (oldPath) {
-          await supabase.storage
-            .from('profile-photos')
-            .remove([`${user.id}/${oldPath}`])
-        }
+        if (oldPath) await supabase.storage.from('profile-photos').remove([`${user.id}/${oldPath}`])
       }
 
-      // Upload new photo
       const fileExt = file.name.split('.').pop()
       const fileName = `${Date.now()}.${fileExt}`
       const filePath = `${user.id}/${fileName}`
 
-      const { error: uploadError } = await supabase.storage
-        .from('profile-photos')
-        .upload(filePath, file)
-
+      const { error: uploadError } = await supabase.storage.from('profile-photos').upload(filePath, file)
       if (uploadError) throw uploadError
 
-      // Get public URL
-      const { data: { publicUrl } } = supabase.storage
-        .from('profile-photos')
-        .getPublicUrl(filePath)
+      const { data: { publicUrl } } = supabase.storage.from('profile-photos').getPublicUrl(filePath)
 
-      // Update profile
-      const { error: updateError } = await supabase
-        .from('profiles')
-        .update({ photo_url: publicUrl })
-        .eq('id', user.id)
-
+      const { error: updateError } = await supabase.from('profiles').update({ photo_url: publicUrl }).eq('id', user.id)
       if (updateError) throw updateError
 
       setProfile(prev => prev ? { ...prev, photo_url: publicUrl } : null)
@@ -187,20 +172,10 @@ export default function Profile() {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user || !profile?.photo_url) return
 
-      // Delete photo from storage
       const oldPath = profile.photo_url.split('/').pop()
-      if (oldPath) {
-        await supabase.storage
-          .from('profile-photos')
-          .remove([`${user.id}/${oldPath}`])
-      }
+      if (oldPath) await supabase.storage.from('profile-photos').remove([`${user.id}/${oldPath}`])
 
-      // Update profile to remove photo_url
-      const { error: updateError } = await supabase
-        .from('profiles')
-        .update({ photo_url: null })
-        .eq('id', user.id)
-
+      const { error: updateError } = await supabase.from('profiles').update({ photo_url: null }).eq('id', user.id)
       if (updateError) throw updateError
 
       setProfile(prev => prev ? { ...prev, photo_url: null } : null)
@@ -213,9 +188,7 @@ export default function Profile() {
     }
   }
 
-  const handleEditProfile = () => {
-    setIsEditModalOpen(true)
-  }
+  const handleEditProfile = () => setIsEditModalOpen(true)
 
   const handleSaveProfile = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -223,22 +196,13 @@ export default function Profile() {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) return
 
-      const { error } = await supabase
-        .from('profiles')
-        .update({
-          name: editForm.name,
-          bio: editForm.bio
-        })
-        .eq('id', user.id)
-
-      if (error) throw error
-
-      setProfile(prev => prev ? {
-        ...prev,
+      const { error } = await supabase.from('profiles').update({
         name: editForm.name,
         bio: editForm.bio
-      } : null)
+      }).eq('id', user.id)
+      if (error) throw error
 
+      setProfile(prev => prev ? { ...prev, name: editForm.name, bio: editForm.bio } : null)
       toast.success('Profile updated successfully')
       setIsEditModalOpen(false)
     } catch (error) {
@@ -251,7 +215,6 @@ export default function Profile() {
     const date = new Date(dateString)
     const now = new Date()
     const diffInHours = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60))
-    
     if (diffInHours < 1) return 'Just now'
     if (diffInHours < 24) return `${diffInHours} hours ago`
     const diffInDays = Math.floor(diffInHours / 24)
@@ -278,16 +241,7 @@ export default function Profile() {
     }
   }
 
-  if (loading) {
-    return (
-      <div className="p-6 space-y-6">
-        <div className="animate-pulse">
-          <div className="h-8 bg-muted rounded w-48 mb-2"></div>
-          <div className="h-4 bg-muted rounded w-64"></div>
-        </div>
-      </div>
-    )
-  }
+  if (loading) return <div className="p-6">Loading...</div>
 
   const savingsPercentage = savingsProgress.target > 0 ? (savingsProgress.current / savingsProgress.target) * 100 : 0
 
@@ -312,31 +266,13 @@ export default function Profile() {
                   {profile?.name?.charAt(0)?.toUpperCase() || <User />}
                 </AvatarFallback>
               </Avatar>
-              <input
-                type="file"
-                ref={fileInputRef}
-                className="hidden"
-                accept="image/*"
-                onChange={handlePhotoUpload}
-              />
+              <input type="file" ref={fileInputRef} className="hidden" accept="image/*" onChange={handlePhotoUpload} />
               <div className="absolute -bottom-2 -right-2 flex gap-1">
-                <Button 
-                  size="icon" 
-                  variant="secondary" 
-                  className="h-8 w-8 rounded-full"
-                  onClick={() => fileInputRef.current?.click()}
-                  disabled={uploading}
-                >
+                <Button size="icon" variant="secondary" className="h-8 w-8 rounded-full" onClick={() => fileInputRef.current?.click()} disabled={uploading}>
                   <Camera className="h-4 w-4" />
                 </Button>
                 {profile?.photo_url && (
-                  <Button 
-                    size="icon" 
-                    variant="destructive" 
-                    className="h-8 w-8 rounded-full"
-                    onClick={handleDeletePhoto}
-                    disabled={uploading}
-                  >
+                  <Button size="icon" variant="destructive" className="h-8 w-8 rounded-full" onClick={handleDeletePhoto} disabled={uploading}>
                     <Trash2 className="h-4 w-4" />
                   </Button>
                 )}
@@ -355,117 +291,79 @@ export default function Profile() {
         </CardContent>
       </Card>
 
-      {/* Progress & Performance Grid */}
+      {/* Progress Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {/* Savings Progress */}
         <Card className="rounded-xl">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium">Savings Progress</CardTitle>
-          </CardHeader>
+          <CardHeader className="pb-3"><CardTitle className="text-sm font-medium">Savings Progress</CardTitle></CardHeader>
           <CardContent>
-            <div className="space-y-3">
-              <Progress value={savingsPercentage} className="h-2" />
-              <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Rp {savingsProgress.current.toLocaleString()}</span>
-                <span className="font-medium">Rp {savingsProgress.target.toLocaleString()}</span>
-              </div>
-              <p className="text-xs text-muted-foreground">{Math.round(savingsPercentage)}% completed</p>
+            <Progress value={savingsPercentage} className="h-2" />
+            <div className="flex justify-between text-sm mt-1">
+              <span className="text-muted-foreground">Rp {savingsProgress.current.toLocaleString()}</span>
+              <span className="font-medium">Rp {savingsProgress.target.toLocaleString()}</span>
             </div>
+            <p className="text-xs text-muted-foreground">{Math.round(savingsPercentage)}% completed</p>
           </CardContent>
         </Card>
 
-        {/* Challenges Completed */}
         <Card className="rounded-xl">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium">Challenges</CardTitle>
-          </CardHeader>
+          <CardHeader className="pb-3"><CardTitle className="text-sm font-medium">Challenges</CardTitle></CardHeader>
           <CardContent>
-            <div className="space-y-2">
-              <div className="text-3xl font-bold text-foreground">{challengesCompleted}</div>
-              <p className="text-xs text-muted-foreground">Challenges completed</p>
-            </div>
+            <div className="text-3xl font-bold text-foreground">{challengesCompleted}</div>
+            <p className="text-xs text-muted-foreground">Challenges completed</p>
           </CardContent>
         </Card>
 
-        {/* Quiz Performance */}
         <Card className="rounded-xl">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium">Quiz Performance</CardTitle>
-          </CardHeader>
+          <CardHeader className="pb-3"><CardTitle className="text-sm font-medium">Quiz Performance</CardTitle></CardHeader>
           <CardContent>
-            <div className="space-y-2">
-              <div className="text-3xl font-bold text-foreground">{quizStats.average}%</div>
-              <p className="text-xs text-muted-foreground">{quizStats.total} quizzes taken</p>
-            </div>
+            <div className="text-3xl font-bold text-foreground">{quizStats.average}%</div>
+            <p className="text-xs text-muted-foreground">{quizStats.total} quizzes taken</p>
           </CardContent>
         </Card>
 
-        {/* Goals Achieved */}
         <Card className="rounded-xl">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium">Goals Achieved</CardTitle>
-          </CardHeader>
+          <CardHeader className="pb-3"><CardTitle className="text-sm font-medium">Goals Achieved</CardTitle></CardHeader>
           <CardContent>
-            <div className="space-y-2">
-              <div className="text-3xl font-bold text-foreground">{goalsAchieved}</div>
-              <p className="text-xs text-muted-foreground">Financial goals reached</p>
-            </div>
+            <div className="text-3xl font-bold text-foreground">{goalsAchieved}</div>
+            <p className="text-xs text-muted-foreground">Financial goals reached</p>
           </CardContent>
         </Card>
       </div>
 
       {/* Achievements & Recent Activity */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Achievements */}
         <Card className="rounded-xl">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Trophy className="h-5 w-5" />
-              Achievements
-            </CardTitle>
-          </CardHeader>
+          <CardHeader><CardTitle className="flex items-center gap-2"><Trophy className="h-5 w-5" /> Achievements</CardTitle></CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {achievements.map((achievement) => (
-                <div key={achievement.id} className="flex items-center gap-3">
-                  {getAchievementIcon(achievement.type)}
+              {achievements.map(a => (
+                <div key={a.id} className="flex items-center gap-3">
+                  {getAchievementIcon(a.type)}
                   <div className="flex-1">
-                    <h4 className="font-medium text-sm">{achievement.title}</h4>
-                    <p className="text-xs text-muted-foreground">{achievement.description}</p>
+                    <h4 className="font-medium text-sm">{a.title}</h4>
+                    <p className="text-xs text-muted-foreground">{a.description}</p>
                   </div>
-                  {achievement.unlocked && (
-                    <Badge variant="secondary" className="text-xs">Unlocked</Badge>
-                  )}
+                  {a.unlocked && <Badge variant="secondary" className="text-xs">Unlocked</Badge>}
                 </div>
               ))}
             </div>
           </CardContent>
         </Card>
 
-        {/* Recent Activity */}
         <Card className="rounded-xl">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Calendar className="h-5 w-5" />
-              Recent Activity
-            </CardTitle>
-          </CardHeader>
+          <CardHeader><CardTitle className="flex items-center gap-2"><Calendar className="h-5 w-5" /> Recent Activity</CardTitle></CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {recentActivity.map((activity) => (
-                <div key={activity.id} className="flex items-start gap-3">
-                  <div className="mt-1">
-                    {getActivityIcon(activity.type)}
-                  </div>
+              {recentActivity.map(a => (
+                <div key={a.id} className="flex items-start gap-3">
+                  <div className="mt-1">{getActivityIcon(a.type)}</div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between">
-                      <h4 className="font-medium text-sm truncate">{activity.title}</h4>
-                      {activity.points && (
-                        <Badge variant="outline" className="text-xs">+{activity.points} pts</Badge>
-                      )}
+                      <h4 className="font-medium text-sm truncate">{a.title}</h4>
+                      {a.points && <Badge variant="outline" className="text-xs">+{a.points} pts</Badge>}
                     </div>
-                    <p className="text-xs text-muted-foreground">{activity.description}</p>
-                    <p className="text-xs text-muted-foreground mt-1">{formatRelativeDate(activity.date)}</p>
+                    <p className="text-xs text-muted-foreground">{a.description}</p>
+                    <p className="text-xs text-muted-foreground mt-1">{formatRelativeDate(a.date)}</p>
                   </div>
                 </div>
               ))}
@@ -477,39 +375,19 @@ export default function Profile() {
       {/* Edit Profile Modal */}
       <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
         <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle>Edit Profile</DialogTitle>
-          </DialogHeader>
+          <DialogHeader><DialogTitle>Edit Profile</DialogTitle></DialogHeader>
           <form onSubmit={handleSaveProfile} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="name">Name</Label>
-              <Input
-                id="name"
-                value={editForm.name}
-                onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
-                placeholder="Your name"
-                required
-              />
+              <Input id="name" value={editForm.name} onChange={e => setEditForm({ ...editForm, name: e.target.value })} placeholder="Your name" required />
             </div>
-
             <div className="space-y-2">
               <Label htmlFor="bio">Bio</Label>
-              <Textarea
-                id="bio"
-                value={editForm.bio}
-                onChange={(e) => setEditForm({ ...editForm, bio: e.target.value })}
-                placeholder="Tell us about yourself..."
-                rows={4}
-              />
+              <Textarea id="bio" value={editForm.bio} onChange={e => setEditForm({ ...editForm, bio: e.target.value })} placeholder="Tell us about yourself..." rows={4} />
             </div>
-
             <div className="flex gap-3">
-              <Button type="button" variant="outline" onClick={() => setIsEditModalOpen(false)} className="flex-1">
-                Cancel
-              </Button>
-              <Button type="submit" className="flex-1">
-                Save Changes
-              </Button>
+              <Button type="button" variant="outline" onClick={() => setIsEditModalOpen(false)} className="flex-1">Cancel</Button>
+              <Button type="submit" className="flex-1">Save Changes</Button>
             </div>
           </form>
         </DialogContent>

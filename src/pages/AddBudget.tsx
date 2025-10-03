@@ -24,13 +24,13 @@ export default function AddBudget() {
   const navigate = useNavigate()
   const [selectedCategory, setSelectedCategory] = useState("")
   const [formData, setFormData] = useState({
-    amount: "",
+    amount: "" as string | number,
     period: "Monthly",
     notes: ""
   })
   const [loading, setLoading] = useState(false)
   const [showCustomModal, setShowCustomModal] = useState(false)
-  const [customCategories, setCustomCategories] = useState<Array<{ category: string; notes: string }>>([])
+  const [customCategories, setCustomCategories] = useState<Array<{ category: string; notes: string | null }>>([])
 
   useEffect(() => {
     fetchCustomCategories()
@@ -38,18 +38,21 @@ export default function AddBudget() {
 
   const fetchCustomCategories = async () => {
     try {
-      const { data: { user } } = await supabase.auth.getUser()
+      const { data, error: userError } = await supabase.auth.getUser()
+      const user = data?.user
       if (!user) return
 
-      const { data } = await supabase
+      const { data: budgetData } = await supabase
         .from("budgeting")
         .select("category, notes")
         .eq("user_id", user.id)
         .eq("amount", 0)
-        .like("notes", "Custom category with icon:%")
+        .ilike("notes", "Custom category with icon:%")
 
       const uniqueCategories =
-        data?.filter((item, index, self) => index === self.findIndex((t) => t.category === item.category)) || []
+        budgetData?.filter(
+          (item, index, self) => index === self.findIndex((t) => t.category === item.category)
+        ) || []
 
       setCustomCategories(uniqueCategories)
     } catch (error) {
@@ -73,18 +76,17 @@ export default function AddBudget() {
       return
     }
 
-    if (!formData.amount || parseInt(formData.amount) <= 0) {
+    const amountValue = Number(formData.amount)
+    if (!amountValue || amountValue <= 0) {
       toast.error("Budget must be greater than 0")
       return
     }
 
-    // simpan sebagai integer (rupiah penuh, tanpa desimal)
-    const amountValue = Math.round(Number(formData.amount))
-
     setLoading(true)
 
     try {
-      const { data: { user }, error: userError } = await supabase.auth.getUser()
+      const { data, error: userError } = await supabase.auth.getUser()
+      const user = data?.user
       if (userError || !user) {
         toast.error("Please log in to add budget")
         return
@@ -101,11 +103,9 @@ export default function AddBudget() {
       if (fetchError) throw fetchError
 
       if (existingBudgets?.length) {
-        // === UPDATE EXISTING BUDGET ===
         const existingBudget = existingBudgets[0]
-        const newAmount = existingBudget.amount + amountValue
+        const newAmount = existingBudget.amount + Math.round(amountValue)
 
-        // Update budgeting
         const { error: updateError } = await supabase
           .from("budgeting")
           .update({
@@ -117,11 +117,10 @@ export default function AddBudget() {
 
         if (updateError) throw updateError
 
-        // Insert history
         const { error: historyError } = await supabase.from("budgeting_history").insert({
           budget_id: existingBudget.id,
           user_id: user.id,
-          amount_changed: amountValue,
+          amount_changed: Math.round(amountValue),
           previous_spent: existingBudget.amount,
           new_spent: newAmount,
           notes: formData.notes || null,
@@ -132,12 +131,11 @@ export default function AddBudget() {
 
         toast.success("Budget berhasil diperbarui & history dicatat")
       } else {
-        // === INSERT BUDGET BARU ===
         const { data: newBudget, error: insertError } = await supabase
           .from("budgeting")
           .insert({
             category: selectedCategory,
-            amount: amountValue,
+            amount: Math.round(amountValue),
             period: formData.period,
             notes: formData.notes || null,
             user_id: user.id
@@ -147,13 +145,12 @@ export default function AddBudget() {
 
         if (insertError) throw insertError
 
-        // Insert history awal
         const { error: historyError } = await supabase.from("budgeting_history").insert({
           budget_id: newBudget.id,
           user_id: user.id,
-          amount_changed: amountValue,
+          amount_changed: Math.round(amountValue),
           previous_spent: 0,
-          new_spent: amountValue,
+          new_spent: Math.round(amountValue),
           notes: formData.notes || null,
           created_at: new Date().toISOString()
         })
@@ -197,7 +194,6 @@ export default function AddBudget() {
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
-              {/* Category Selection */}
               <div className="space-y-3">
                 <Label>Category</Label>
                 <div className="grid grid-cols-5 gap-3">
@@ -207,11 +203,7 @@ export default function AddBudget() {
                       type="button"
                       onClick={() => handleCategorySelect(category.name)}
                       className={`p-4 rounded-xl border-2 transition-all duration-200 ${
-                        selectedCategory === category.name
-                          ? category.name === "Fun"
-                            ? "border-purple-500 bg-purple-50"
-                            : "border-primary bg-primary/10"
-                          : "border-gray-200 hover:border-gray-300"
+                        selectedCategory === category.name ? `border-primary bg-primary/10` : "border-gray-200 hover:border-gray-300"
                       }`}
                     >
                       <div className="flex flex-col items-center gap-2">
@@ -224,14 +216,13 @@ export default function AddBudget() {
                   ))}
                 </div>
 
-                {/* Custom Categories */}
                 {customCategories.length > 0 && (
                   <div className="mt-4">
                     <Label className="text-sm text-muted-foreground mb-2 block">Custom Categories</Label>
                     <div className="flex flex-wrap gap-2">
                       {customCategories.map((category, index) => {
                         const iconMatch = category.notes?.match(/Custom category with icon: (.+)/)
-                        const icon = iconMatch ? iconMatch[1] : "📁"
+                        const icon = iconMatch?.[1] ?? "📁"
 
                         return (
                           <button
@@ -239,9 +230,7 @@ export default function AddBudget() {
                             type="button"
                             onClick={() => setSelectedCategory(category.category)}
                             className={`flex items-center gap-2 px-3 py-2 rounded-lg border-2 transition-all duration-200 ${
-                              selectedCategory === category.category
-                                ? "border-primary bg-primary/10"
-                                : "border-gray-200 hover:border-gray-300"
+                              selectedCategory === category.category ? "border-primary bg-primary/10" : "border-gray-200 hover:border-gray-300"
                             }`}
                           >
                             <span className="text-lg">{icon}</span>
@@ -254,7 +243,6 @@ export default function AddBudget() {
                 )}
               </div>
 
-              {/* Budget Amount */}
               <div className="space-y-2">
                 <Label htmlFor="amount">Budget Amount</Label>
                 <div className="relative flex items-center">
@@ -262,7 +250,9 @@ export default function AddBudget() {
                     id="amount"
                     type="number"
                     value={formData.amount}
-                    onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, amount: e.target.value === "" ? "" : Number(e.target.value) })
+                    }
                     placeholder="RP 0"
                     className="pr-16"
                     required
@@ -272,13 +262,10 @@ export default function AddBudget() {
                   <span className="absolute right-3 text-muted-foreground font-medium">IDR</span>
                 </div>
                 {formData.amount && (
-                  <p className="text-sm text-muted-foreground">
-                    {formatRupiah(Math.round(Number(formData.amount)) || 0)}
-                  </p>
+                  <p className="text-sm text-muted-foreground">{formatRupiah(Math.round(Number(formData.amount)) || 0)}</p>
                 )}
               </div>
 
-              {/* Period */}
               <div className="space-y-2">
                 <Label>Period</Label>
                 <Select value={formData.period} onValueChange={(value) => setFormData({ ...formData, period: value })}>
@@ -293,7 +280,6 @@ export default function AddBudget() {
                 </Select>
               </div>
 
-              {/* Notes */}
               <div className="space-y-2">
                 <Label htmlFor="notes">Notes (Optional)</Label>
                 <Textarea
@@ -306,7 +292,6 @@ export default function AddBudget() {
                 />
               </div>
 
-              {/* Submit Button */}
               <Button
                 type="submit"
                 className="w-full bg-green-600 hover:bg-green-700 text-white h-12 text-base font-medium"
