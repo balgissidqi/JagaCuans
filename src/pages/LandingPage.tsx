@@ -1,4 +1,6 @@
 import { Link } from "react-router-dom";
+ import { useState } from "react";
+import { ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -115,12 +117,12 @@ export default function LandingPage() {
     },
     {
       name: "Tahunan",
-      price: "Rp 290.000",
+      price: "Rp 250.000",
       period: "/tahun",
       description: "Lebih hemat dengan paket tahunan",
       features: [
         "Semua fitur Premium",
-        "Hemat Rp 58.000",
+        "Hemat Rp 50.000",
         "Prioritas support",
         "Early access fitur baru",
         "Badge eksklusif"
@@ -147,6 +149,48 @@ export default function LandingPage() {
     }
   ];
 
+  const faqs = [
+  {
+    question: "Apakah JagaCuan benar-benar gratis?",
+    answer: "Ya, JagaCuan punya paket Gratis yang bisa kamu gunakan tanpa biaya. Kamu bisa upgrade ke Premium untuk fitur lebih lengkap."
+  },
+  {
+    question: "Apakah data keuanganku aman?",
+    answer: "Tentu, kami menggunakan enkripsi untuk melindungi data pribadi dan transaksi keuanganmu."
+  },
+  {
+    question: "Apakah bisa digunakan di HP?",
+    answer: "Ya, JagaCuan bisa diakses dari smartphone maupun laptop melalui browser."
+  },
+  {
+    question: "Apa bedanya Paket Premium dan Gratis?",
+    answer: "Premium punya fitur tambahan seperti target tabungan unlimited, analisis pengeluaran detail, challenge eksklusif, hingga akses fitur adukasi secara unlimited."
+  }
+];
+
+function FAQItem({ faq }: { faq: { question: string; answer: string } }) {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <div className="border rounded-lg overflow-hidden shadow-sm">
+      <button
+        className="w-full flex justify-between items-center px-6 py-4 text-left font-semibold text-foreground hover:bg-gray-50"
+        onClick={() => setOpen(!open)}
+      >
+        {faq.question}
+        <ChevronDown
+          className={`h-5 w-5 transition-transform ${open ? "rotate-180" : ""}`}
+        />
+      </button>
+      {open && (
+        <div className="px-6 pb-4 text-muted-foreground leading-relaxed">
+          {faq.answer}
+        </div>
+      )}
+    </div>
+  );
+}
+
   
 
   return (
@@ -167,6 +211,7 @@ export default function LandingPage() {
               <a href="#features" className="text-foreground hover:text-primary transition-colors font-medium">Fitur</a>
               <a href="#testimonials" className="text-foreground hover:text-primary transition-colors font-medium">Testimoni</a>
               <a href="#pricing" className="text-foreground hover:text-primary transition-colors font-medium">Harga</a>
+              <a href="#faq" className="text-foreground hover:text-primary transition-colors font-medium">FAQ</a>
             </div>
             
             <div className="flex items-center gap-3">
@@ -395,6 +440,28 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* FAQ Section */}
+<section id="faq" className="py-20 bg-gradient-to-br from-primary/5 to-purple-500/5">
+  <div className="container mx-auto px-4">
+    <div className="text-center mb-16">
+      <Badge className="mb-4 bg-primary/10 text-primary border-0">❓ FAQ</Badge>
+      <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
+        Pertanyaan yang Sering Diajukan
+      </h2>
+      <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+        Masih bingung tentang JagaCuan? Temukan jawabannya di sini.
+      </p>
+    </div>
+
+    <div className="space-y-4 max-w-3xl mx-auto">
+      {faqs.map((faq, index) => (
+        <FAQItem key={index} faq={faq} />
+      ))}
+    </div>
+  </div>
+</section>
+
+
 
       {/* CTA Section */}
       <section className="py-20 bg-gradient-to-r from-primary via-[hsl(258,90%,66%)] to-primary relative overflow-hidden">
@@ -446,6 +513,7 @@ export default function LandingPage() {
                 <li><a href="#features" className="hover:text-white transition-colors">Fitur</a></li>
                 <li><a href="#testimonials" className="hover:text-white transition-colors">Testimoni</a></li>
                 <li><a href="#pricing" className="hover:text-white transition-colors">Harga</a></li>
+                <li><a href="#faq" className="hover:text-white transition-colors">FAQ</a></li>
                 <li><Link to="/register" className="hover:text-white transition-colors">Daftar</Link></li>
               </ul>
             </div>
