@@ -1,10 +1,14 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { User, Camera, Edit3, Trophy, Award, Target, BookOpen, TrendingUp, Calendar } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Progress } from "@/components/ui/progress"
 import { Badge } from "@/components/ui/badge"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Textarea } from "@/components/ui/textarea"
 import { supabase } from "@/integrations/supabase/client"
 import { useNavigate } from "react-router-dom"
 import { toast } from "sonner"
@@ -13,7 +17,7 @@ interface UserProfile {
   id: string
   name: string
   email: string
-  avatar_url?: string
+  photo_url?: string
   bio?: string
 }
 
@@ -36,6 +40,7 @@ interface Activity {
 
 export default function Profile() {
   const navigate = useNavigate()
+  const fileInputRef = useRef<HTMLInputElement>(null)
   const [profile, setProfile] = useState<UserProfile | null>(null)
   const [savingsProgress, setSavingsProgress] = useState({ current: 0, target: 0, completed: 0 })
   const [challengesCompleted, setChallengesCompleted] = useState(0)
@@ -44,6 +49,9 @@ export default function Profile() {
   const [achievements, setAchievements] = useState<Achievement[]>([])
   const [recentActivity, setRecentActivity] = useState<Activity[]>([])
   const [loading, setLoading] = useState(true)
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false)
+  const [editForm, setEditForm] = useState({ name: "", bio: "" })
+  const [uploading, setUploading] = useState(false)
 
   useEffect(() => {
     fetchProfileData()
@@ -70,8 +78,12 @@ export default function Profile() {
           id: user.id,
           name: profileData.name || user.email?.split('@')[0] || 'User',
           email: user.email || '',
-          avatar_url: undefined, // No avatar_url field in current schema
-          bio: undefined // No bio field in current schema
+          photo_url: profileData.photo_url,
+          bio: profileData.bio
+        })
+        setEditForm({
+          name: profileData.name || user.email?.split('@')[0] || 'User',
+          bio: profileData.bio || ''
         })
       }
 
@@ -113,6 +125,93 @@ export default function Profile() {
       console.error('Error:', error)
     } finally {
       setLoading(false)
+    }
+  }
+
+  const handlePhotoUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    try {
+      setUploading(true)
+      const file = event.target.files?.[0]
+      if (!file) return
+
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) return
+
+      // Delete old photo if exists
+      if (profile?.photo_url) {
+        const oldPath = profile.photo_url.split('/').pop()
+        if (oldPath) {
+          await supabase.storage
+            .from('profile-photos')
+            .remove([`${user.id}/${oldPath}`])
+        }
+      }
+
+      // Upload new photo
+      const fileExt = file.name.split('.').pop()
+      const fileName = `${Date.now()}.${fileExt}`
+      const filePath = `${user.id}/${fileName}`
+
+      const { error: uploadError } = await supabase.storage
+        .from('profile-photos')
+        .upload(filePath, file)
+
+      if (uploadError) throw uploadError
+
+      // Get public URL
+      const { data: { publicUrl } } = supabase.storage
+        .from('profile-photos')
+        .getPublicUrl(filePath)
+
+      // Update profile
+      const { error: updateError } = await supabase
+        .from('profiles')
+        .update({ photo_url: publicUrl })
+        .eq('id', user.id)
+
+      if (updateError) throw updateError
+
+      setProfile(prev => prev ? { ...prev, photo_url: publicUrl } : null)
+      toast.success('Profile photo updated successfully')
+    } catch (error) {
+      console.error('Error uploading photo:', error)
+      toast.error('Failed to upload photo')
+    } finally {
+      setUploading(false)
+    }
+  }
+
+  const handleEditProfile = () => {
+    setIsEditModalOpen(true)
+  }
+
+  const handleSaveProfile = async (e: React.FormEvent) => {
+    e.preventDefault()
+    try {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) return
+
+      const { error } = await supabase
+        .from('profiles')
+        .update({
+          name: editForm.name,
+          bio: editForm.bio
+        })
+        .eq('id', user.id)
+
+      if (error) throw error
+
+      setProfile(prev => prev ? {
+        ...prev,
+        name: editForm.name,
+        bio: editForm.bio
+      } : null)
+
+      toast.success('Profile updated successfully')
+      setIsEditModalOpen(false)
+    } catch (error) {
+      console.error('Error updating profile:', error)
+      toast.error('Failed to update profile')
     }
   }
 
@@ -176,15 +275,24 @@ export default function Profile() {
           <div className="flex items-center gap-6">
             <div className="relative">
               <Avatar className="h-24 w-24">
-                <AvatarImage src={profile?.avatar_url} alt={profile?.name} />
+                <AvatarImage src={profile?.photo_url} alt={profile?.name} />
                 <AvatarFallback className="text-2xl font-bold">
                   {profile?.name?.charAt(0)?.toUpperCase() || <User />}
                 </AvatarFallback>
               </Avatar>
+              <input
+                type="file"
+                ref={fileInputRef}
+                className="hidden"
+                accept="image/*"
+                onChange={handlePhotoUpload}
+              />
               <Button 
                 size="icon" 
                 variant="secondary" 
                 className="absolute -bottom-2 -right-2 h-8 w-8 rounded-full"
+                onClick={() => fileInputRef.current?.click()}
+                disabled={uploading}
               >
                 <Camera className="h-4 w-4" />
               </Button>
@@ -194,7 +302,7 @@ export default function Profile() {
               <p className="text-muted-foreground">{profile?.email}</p>
               {profile?.bio && <p className="text-sm text-muted-foreground mt-1">{profile.bio}</p>}
             </div>
-            <Button variant="outline" className="gap-2">
+            <Button variant="outline" className="gap-2" onClick={handleEditProfile}>
               <Edit3 className="h-4 w-4" />
               Edit Profile
             </Button>
@@ -320,6 +428,47 @@ export default function Profile() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Edit Profile Modal */}
+      <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Edit Profile</DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleSaveProfile} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="name">Name</Label>
+              <Input
+                id="name"
+                value={editForm.name}
+                onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
+                placeholder="Your name"
+                required
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="bio">Bio</Label>
+              <Textarea
+                id="bio"
+                value={editForm.bio}
+                onChange={(e) => setEditForm({ ...editForm, bio: e.target.value })}
+                placeholder="Tell us about yourself..."
+                rows={4}
+              />
+            </div>
+
+            <div className="flex gap-3">
+              <Button type="button" variant="outline" onClick={() => setIsEditModalOpen(false)} className="flex-1">
+                Cancel
+              </Button>
+              <Button type="submit" className="flex-1">
+                Save Changes
+              </Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
