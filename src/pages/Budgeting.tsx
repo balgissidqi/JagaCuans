@@ -92,7 +92,24 @@ export default function Budgeting() {
     }
   }, [userId])
 
-  // Initial fetch + realtime subscription
+  // Fetch history for a budget
+  const fetchBudgetHistory = useCallback(async (budgetId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from("budgeting_history")
+        .select("*")
+        .eq("budget_id", budgetId)
+        .order("created_at", { ascending: false })
+
+      if (error) throw error
+      setBudgetHistory(data || [])
+    } catch (error) {
+      console.error("Error fetching budget history:", error)
+      toast.error("Failed to load history")
+    }
+  }, [])
+
+  // Initial fetch + realtime subscription for budgets
   useEffect(() => {
     if (!userId) return
     fetchBudgets()
@@ -121,6 +138,31 @@ export default function Budgeting() {
     return () => supabase.removeChannel(channel)
   }, [userId, fetchBudgets])
 
+  // Realtime subscription for budgeting_history
+  useEffect(() => {
+    if (!userId) return
+    const historyChannel = supabase
+      .channel("budgeting-history-changes")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "budgeting_history", filter: `user_id=eq.${userId}` },
+        (payload: RealtimePostgresChangesPayload<BudgetHistory>) => {
+          const newHistory = payload.new as BudgetHistory | null
+          if (!newHistory) return
+
+          setBudgetHistory(prev => {
+            if (newHistory.budget_id === viewingHistory) {
+              return [newHistory, ...prev]
+            }
+            return prev
+          })
+        }
+      )
+      .subscribe()
+
+    return () => supabase.removeChannel(historyChannel)
+  }, [userId, viewingHistory])
+
   const handleEditBudget = (budget: Budget) => {
     setEditingBudget(budget)
     setEditForm({
@@ -132,23 +174,43 @@ export default function Budgeting() {
 
   const handleUpdateBudget = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!editingBudget) return
+    if (!editingBudget || !userId) return
 
     try {
-      const { error } = await supabase
+      const newAmount = parseFloat(editForm.amount)
+
+      // Update budgeting table
+      const { error: updateError } = await supabase
         .from("budgeting")
         .update({
-          amount: parseFloat(editForm.amount),
+          amount: newAmount,
           period: editForm.period,
           notes: editForm.notes || null,
           updated_at: new Date().toISOString()
         })
         .eq("id", editingBudget.id)
 
-      if (error) throw error
+      if (updateError) throw updateError
+
+      // Insert into history
+      const { error: historyError } = await supabase.from("budgeting_history").insert({
+        budget_id: editingBudget.id,
+        user_id: userId,
+        amount_changed: newAmount - editingBudget.amount,
+        previous_spent: editingBudget.amount,
+        new_spent: newAmount,
+        notes: editForm.notes || null,
+        created_at: new Date().toISOString()
+      })
+
+      if (historyError) throw historyError
+
       toast.success("Budget berhasil diperbarui")
       setEditingBudget(null)
       fetchBudgets()
+      if (viewingHistory === editingBudget.id) {
+        fetchBudgetHistory(editingBudget.id)
+      }
     } catch (error) {
       console.error("Error updating budget:", error)
       toast.error("Failed to update budget")
@@ -171,19 +233,7 @@ export default function Budgeting() {
 
   const handleViewHistory = async (budgetId: string) => {
     setViewingHistory(budgetId)
-    try {
-      const { data, error } = await supabase
-        .from("budgeting_history")
-        .select("*")
-        .eq("budget_id", budgetId)
-        .order("created_at", { ascending: false })
-      
-      if (error) throw error
-      setBudgetHistory(data || [])
-    } catch (error) {
-      console.error("Error fetching budget history:", error)
-      toast.error("Failed to load history")
-    }
+    fetchBudgetHistory(budgetId)
   }
 
   const totalBudget = budgets.reduce((sum, b) => sum + b.amount, 0)
@@ -330,7 +380,7 @@ export default function Budgeting() {
                 placeholder="0"
                 required
                 min="0"
-                step="0.01"
+                step="1"
               />
             </div>
 
@@ -403,7 +453,7 @@ export default function Budgeting() {
                     </p>
                   </div>
                   {history.notes && (
-                    <p className="text-xs text-muted-foreground mt-2">{history.notes}</p>
+                    <p className="text-xs text-muted-foreground border-t pt-2">{history.notes}</p>
                   )}
                 </Card>
               ))

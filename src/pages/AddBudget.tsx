@@ -30,7 +30,7 @@ export default function AddBudget() {
   })
   const [loading, setLoading] = useState(false)
   const [showCustomModal, setShowCustomModal] = useState(false)
-  const [customCategories, setCustomCategories] = useState<Array<{category: string, notes: string}>>([])
+  const [customCategories, setCustomCategories] = useState<Array<{ category: string; notes: string }>>([])
 
   useEffect(() => {
     fetchCustomCategories()
@@ -48,9 +48,8 @@ export default function AddBudget() {
         .eq("amount", 0)
         .like("notes", "Custom category with icon:%")
 
-      const uniqueCategories = data?.filter((item, index, self) =>
-        index === self.findIndex(t => t.category === item.category)
-      ) || []
+      const uniqueCategories =
+        data?.filter((item, index, self) => index === self.findIndex((t) => t.category === item.category)) || []
 
       setCustomCategories(uniqueCategories)
     } catch (error) {
@@ -102,11 +101,15 @@ export default function AddBudget() {
       if (fetchError) throw fetchError
 
       if (existingBudgets?.length) {
+        // === UPDATE EXISTING BUDGET ===
         const existingBudget = existingBudgets[0]
+        const newAmount = existingBudget.amount + amountValue
+
+        // Update budgeting
         const { error: updateError } = await supabase
           .from("budgeting")
           .update({
-            amount: existingBudget.amount + amountValue,
+            amount: newAmount,
             period: formData.period,
             updated_at: new Date().toISOString()
           })
@@ -114,21 +117,50 @@ export default function AddBudget() {
 
         if (updateError) throw updateError
 
-        toast.success("Budget berhasil diperbarui")
+        // Insert history
+        const { error: historyError } = await supabase.from("budgeting_history").insert({
+          budget_id: existingBudget.id,
+          user_id: user.id,
+          amount_changed: amountValue,
+          previous_spent: existingBudget.amount,
+          new_spent: newAmount,
+          notes: formData.notes || null,
+          created_at: new Date().toISOString()
+        })
+
+        if (historyError) throw historyError
+
+        toast.success("Budget berhasil diperbarui & history dicatat")
       } else {
-        const { error: insertError } = await supabase
+        // === INSERT BUDGET BARU ===
+        const { data: newBudget, error: insertError } = await supabase
           .from("budgeting")
           .insert({
             category: selectedCategory,
-            amount: amountValue, // integer
+            amount: amountValue,
             period: formData.period,
             notes: formData.notes || null,
             user_id: user.id
           })
+          .select()
+          .single()
 
         if (insertError) throw insertError
 
-        toast.success("Budget berhasil ditambahkan")
+        // Insert history awal
+        const { error: historyError } = await supabase.from("budgeting_history").insert({
+          budget_id: newBudget.id,
+          user_id: user.id,
+          amount_changed: amountValue,
+          previous_spent: 0,
+          new_spent: amountValue,
+          notes: formData.notes || null,
+          created_at: new Date().toISOString()
+        })
+
+        if (historyError) throw historyError
+
+        toast.success("Budget baru berhasil ditambahkan & history dicatat")
       }
 
       navigate("/dashboard/budgeting")
