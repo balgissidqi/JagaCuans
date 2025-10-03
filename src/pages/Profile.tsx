@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react"
-import { User, Camera, Edit3, Trophy, Award, Target, BookOpen, TrendingUp, Calendar } from "lucide-react"
+import { User, Camera, Edit3, Trophy, Award, Target, BookOpen, TrendingUp, Calendar, Trash2 } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -181,6 +181,38 @@ export default function Profile() {
     }
   }
 
+  const handleDeletePhoto = async () => {
+    try {
+      setUploading(true)
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user || !profile?.photo_url) return
+
+      // Delete photo from storage
+      const oldPath = profile.photo_url.split('/').pop()
+      if (oldPath) {
+        await supabase.storage
+          .from('profile-photos')
+          .remove([`${user.id}/${oldPath}`])
+      }
+
+      // Update profile to remove photo_url
+      const { error: updateError } = await supabase
+        .from('profiles')
+        .update({ photo_url: null })
+        .eq('id', user.id)
+
+      if (updateError) throw updateError
+
+      setProfile(prev => prev ? { ...prev, photo_url: null } : null)
+      toast.success('Profile photo deleted successfully')
+    } catch (error) {
+      console.error('Error deleting photo:', error)
+      toast.error('Failed to delete photo')
+    } finally {
+      setUploading(false)
+    }
+  }
+
   const handleEditProfile = () => {
     setIsEditModalOpen(true)
   }
@@ -287,15 +319,28 @@ export default function Profile() {
                 accept="image/*"
                 onChange={handlePhotoUpload}
               />
-              <Button 
-                size="icon" 
-                variant="secondary" 
-                className="absolute -bottom-2 -right-2 h-8 w-8 rounded-full"
-                onClick={() => fileInputRef.current?.click()}
-                disabled={uploading}
-              >
-                <Camera className="h-4 w-4" />
-              </Button>
+              <div className="absolute -bottom-2 -right-2 flex gap-1">
+                <Button 
+                  size="icon" 
+                  variant="secondary" 
+                  className="h-8 w-8 rounded-full"
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={uploading}
+                >
+                  <Camera className="h-4 w-4" />
+                </Button>
+                {profile?.photo_url && (
+                  <Button 
+                    size="icon" 
+                    variant="destructive" 
+                    className="h-8 w-8 rounded-full"
+                    onClick={handleDeletePhoto}
+                    disabled={uploading}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                )}
+              </div>
             </div>
             <div className="flex-1">
               <h2 className="text-2xl font-bold text-foreground">{profile?.name}</h2>

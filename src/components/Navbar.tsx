@@ -3,9 +3,55 @@ import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { SidebarTrigger } from "@/components/ui/sidebar"
 import { useIsMobile } from "@/hooks/use-mobile"
+import { useEffect, useState } from "react"
+import { supabase } from "@/integrations/supabase/client"
 
 export function Navbar() {
   const isMobile = useIsMobile()
+  const [photoUrl, setPhotoUrl] = useState<string | null>(null)
+
+  useEffect(() => {
+    const fetchProfilePhoto = async () => {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (user) {
+        const { data } = await supabase
+          .from('profiles')
+          .select('photo_url')
+          .eq('id', user.id)
+          .single()
+        
+        if (data?.photo_url) {
+          setPhotoUrl(data.photo_url)
+        }
+      }
+    }
+
+    fetchProfilePhoto()
+
+    // Subscribe to profile changes
+    const channel = supabase
+      .channel('profile-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'profiles'
+        },
+        (payload) => {
+          if (payload.new.photo_url) {
+            setPhotoUrl(payload.new.photo_url)
+          } else {
+            setPhotoUrl(null)
+          }
+        }
+      )
+      .subscribe()
+
+    return () => {
+      supabase.removeChannel(channel)
+    }
+  }, [])
 
   return (
     <nav className="h-16 border-b bg-card px-6 flex items-center justify-between">
@@ -28,7 +74,7 @@ export function Navbar() {
         </Button>
         
         <Avatar className="h-8 w-8">
-          <AvatarImage src="/placeholder-avatar.jpg" alt="User" />
+          <AvatarImage src={photoUrl || undefined} alt="User" />
           <AvatarFallback>
             <User className="h-4 w-4" />
           </AvatarFallback>
