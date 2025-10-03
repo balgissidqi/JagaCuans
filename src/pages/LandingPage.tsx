@@ -82,24 +82,6 @@ export default function LandingPage() {
     }
   ];
 
-  const testimonials = [
-    {
-      name: "Sarah, 17 tahun",
-      text: "Akhirnya bisa nabung tanpa bingung! JagaCuan bikin aku paham cara atur uang.",
-      rating: 5
-    },
-    {
-      name: "Deni, 19 tahun", 
-      text: "Challenge-nya seru banget, jadi termotivasi buat capai target finansial.",
-      rating: 5
-    },
-    {
-      name: "Maya, 16 tahun",
-      text: "Bikin aku lebih sadar pentingnya atur uang dari sekarang. Recommended!",
-      rating: 5
-    }
-  ];
-
   const pricingPlans = [
     {
       name: "Gratis",
@@ -146,6 +128,26 @@ export default function LandingPage() {
       popular: false
     }
   ];
+
+  const testimonials = [
+    {
+      name: "Sarah, 17 tahun",
+      text: "Akhirnya bisa nabung tanpa bingung! JagaCuan bikin aku paham cara atur uang.",
+      rating: 5
+    },
+    {
+      name: "Deni, 19 tahun", 
+      text: "Challenge-nya seru banget, jadi termotivasi buat capai target finansial.",
+      rating: 5
+    },
+    {
+      name: "Maya, 16 tahun",
+      text: "Bikin aku lebih sadar pentingnya atur uang dari sekarang. Recommended!",
+      rating: 5
+    }
+  ];
+
+  
 
   return (
     <div className="min-h-screen bg-background">
@@ -303,48 +305,8 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Testimonials Section */}
-      <section id="testimonials" className="py-20 bg-background">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <Badge className="mb-4 bg-primary/10 text-primary border-0">💬 Testimoni</Badge>
-            <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
-              Kata Mereka yang Sudah Bergabung
-            </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Ribuan remaja telah merasakan manfaat JagaCuan dalam mengelola keuangan mereka
-            </p>
-          </div>
-          
-          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-            {testimonials.map((testimonial, index) => (
-              <Card key={index} className="p-8 hover:shadow-2xl transition-all duration-300 border-2 hover:border-primary/50 bg-gradient-to-br from-white to-primary/5">
-                <CardContent className="p-0">
-                  <div className="flex mb-4 gap-1">
-                    {[...Array(testimonial.rating)].map((_, i) => (
-                      <svg key={i} className="h-5 w-5 text-yellow-400 fill-current" viewBox="0 0 20 20">
-                        <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
-                      </svg>
-                    ))}
-                  </div>
-                  <p className="text-foreground mb-6 leading-relaxed italic">"{testimonial.text}"</p>
-                  <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary to-[hsl(258,90%,66%)] flex items-center justify-center text-white font-bold shadow-lg">
-                      {testimonial.name.charAt(0)}
-                    </div>
-                    <div>
-                      <div className="font-semibold">{testimonial.name}</div>
-                      <div className="text-sm text-muted-foreground">Pengguna JagaCuan</div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
 
-      {/* Pricing Section */}
+            {/* Pricing Section */}
       <section id="pricing" className="py-20 bg-gradient-to-br from-primary/5 to-purple-500/5">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
@@ -391,6 +353,48 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
+
+      {/* Testimonials Section */}
+      <section id="testimonials" className="py-20 bg-background">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-16">
+            <Badge className="mb-4 bg-primary/10 text-primary border-0">💬 Testimoni</Badge>
+            <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
+              Kata Mereka yang Sudah Bergabung
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Ribuan remaja telah merasakan manfaat JagaCuan dalam mengelola keuangan mereka
+            </p>
+          </div>
+          
+          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+            {testimonials.map((testimonial, index) => (
+              <Card key={index} className="p-8 hover:shadow-2xl transition-all duration-300 border-2 hover:border-primary/50 bg-gradient-to-br from-white to-primary/5">
+                <CardContent className="p-0">
+                  <div className="flex mb-4 gap-1">
+                    {[...Array(testimonial.rating)].map((_, i) => (
+                      <svg key={i} className="h-5 w-5 text-yellow-400 fill-current" viewBox="0 0 20 20">
+                        <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                      </svg>
+                    ))}
+                  </div>
+                  <p className="text-foreground mb-6 leading-relaxed italic">"{testimonial.text}"</p>
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary to-[hsl(258,90%,66%)] flex items-center justify-center text-white font-bold shadow-lg">
+                      {testimonial.name.charAt(0)}
+                    </div>
+                    <div>
+                      <div className="font-semibold">{testimonial.name}</div>
+                      <div className="text-sm text-muted-foreground">Pengguna JagaCuan</div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
 
       {/* CTA Section */}
       <section className="py-20 bg-gradient-to-r from-primary via-[hsl(258,90%,66%)] to-primary relative overflow-hidden">
