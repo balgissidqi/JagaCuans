@@ -117,7 +117,7 @@ export default function LandingPage() {
     },
     {
       name: "Premium",
-      price: "Rp 29.000",
+      price: "Rp 25.000",
       period: "/bulan",
       description: "Untuk yang serius mengelola keuangan",
       features: [
@@ -135,7 +135,7 @@ export default function LandingPage() {
       name: "Tahunan",
       price: "Rp 290.000",
       period: "/tahun",
-      description: "Hemat 2 bulan dengan paket tahunan",
+      description: "Lebih hemat dengan paket tahunan",
       features: [
         "Semua fitur Premium",
         "Hemat Rp 58.000",
