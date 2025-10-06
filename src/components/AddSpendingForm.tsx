@@ -205,20 +205,16 @@ export function AddSpendingForm({ onSuccess, onBack }: AddSpendingFormProps) {
               <SelectTrigger id="category-select" className="h-12 border-0 bg-muted/50 rounded-xl">
                 <SelectValue placeholder="Select budget category" />
               </SelectTrigger>
-              <SelectContent className="bg-popover z-50">
+              <SelectContent className="bg-popover border border-border z-50">
                 {budgetCategories.length === 0 ? (
                   <div className="p-4 text-sm text-muted-foreground text-center">
                     No budget categories yet. Create one first!
                   </div>
                 ) : (
                   budgetCategories.map((category) => (
-                    <SelectItem key={category.id} value={category.id}>
-                      <div className="flex flex-col gap-1 py-1">
-                        <span className="font-semibold">{category.category}</span>
-                        {category.notes && (
-                          <span className="text-xs text-muted-foreground">{category.notes}</span>
-                        )}
-                      </div>
+                    <SelectItem key={category.id} value={category.id} className="py-3">
+                      {category.category}
+                      {category.notes && ` - ${category.notes}`}
                     </SelectItem>
                   ))
                 )}
