@@ -32,11 +32,9 @@ export default function LoginPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    
     if (!validateForm()) return
-
     setLoading(true)
-    
+
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
         email: formData.email,
@@ -45,20 +43,16 @@ export default function LoginPage() {
 
       if (error) throw error
 
-      console.log('Login data:', data)
       toast.success("Login berhasil!")
-      navigate('/dashboard')
+      navigate("/dashboard")
     } catch (error: unknown) {
-  console.error("Login error:", error)
+      console.error("Login error:", error)
 
-  if (error instanceof Error) {
-    toast.error(error.message)
-  } else {
-    toast.error("Email atau password salah")
-  }
-} finally {
-  setLoading(false)
-}
+      // ✅ Gunakan pesan custom untuk semua error login
+      toast.error("Cek emailmu dan verifikasi terlebih dahulu.")
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
