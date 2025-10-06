@@ -261,7 +261,7 @@ function FAQItem({ faq }: { faq: { question: string; answer: string } }) {
                   Mulai Sekarang Gratis <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
               </Button>
-              <Button asChild variant="outline" size="lg" className="border-2 border-white text-white hover:bg-white/10 backdrop-blur-sm text-lg px-8 py-7 h-auto font-semibold">
+              <Button asChild variant="outline" size="lg" className="border-2 border-white text-black hover:bg-white/10 backdrop-blur-sm text-lg px-8 py-7 h-auto font-semibold">
                 <Link to="#features">Pelajari Fitur</Link>
               </Button>
             </div>
@@ -483,7 +483,7 @@ function FAQItem({ faq }: { faq: { question: string; answer: string } }) {
                 Daftar Sekarang <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
             </Button>
-            <Button asChild size="lg" variant="outline" className="border-2 border-white text-white hover:bg-white/10 backdrop-blur-sm text-lg px-10 py-7 h-auto font-bold">
+            <Button asChild size="lg" variant="outline" className="border-2 border-white text-black hover:bg-white/10 backdrop-blur-sm text-lg px-10 py-7 h-auto font-bold">
               <Link to="/login">Sudah Punya Akun?</Link>
             </Button>
           </div>
