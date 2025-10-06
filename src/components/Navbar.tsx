@@ -5,9 +5,11 @@ import { SidebarTrigger } from "@/components/ui/sidebar"
 import { useIsMobile } from "@/hooks/use-mobile"
 import { useEffect, useState } from "react"
 import { supabase } from "@/integrations/supabase/client"
+import { useNavigate } from "react-router-dom"
 
 export function Navbar() {
   const isMobile = useIsMobile()
+  const navigate = useNavigate()
   const [photoUrl, setPhotoUrl] = useState<string | null>(null)
 
   useEffect(() => {
@@ -73,7 +75,7 @@ export function Navbar() {
           <span className="absolute top-0 right-0 h-2 w-2 bg-red-500 rounded-full"></span>
         </Button>
         
-        <Avatar className="h-8 w-8">
+        <Avatar className="h-8 w-8 cursor-pointer hover:opacity-80 transition-opacity" onClick={() => navigate('/profile')}>
           <AvatarImage src={photoUrl || undefined} alt="User" />
           <AvatarFallback>
             <User className="h-4 w-4" />
