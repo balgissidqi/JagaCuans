@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from "react"
 import { DashboardCard } from "@/components/DashboardCard"
 import { QuickAccessCard } from "@/components/QuickAccessCard"

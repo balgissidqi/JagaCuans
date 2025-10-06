@@ -44,17 +44,17 @@ export default function LoginPage() {
       })
 
       if (error) {
-        if (error.message.includes("Invalid login credentials")) {
-          toast.error("Email atau password salah.")
-        } else if (error.message.includes("Email not confirmed")) {
-          toast.error("Cek emailmu dan lakukan verifikasi terlebih dahulu.")
-        } else if (error.message.includes("User not found")) {
-          toast.error("Email belum terdaftar, silakan buat akun terlebih dahulu.")
-        } else {
-          toast.error("Terjadi kesalahan saat login.")
-        }
-        return
-      }
+  console.error("Login error:", error.message)
+
+  if (error.message.includes("Email not confirmed")) {
+    toast.error("Akun belum diverifikasi. Cek emailmu dan klik tautan verifikasi sebelum login.")
+  } else if (error.message.includes("Invalid login credentials")) {
+    toast.error("Email atau password salah, atau akun belum diverifikasi.")
+  } else {
+    toast.error(error.message || "Terjadi kesalahan saat login.")
+  }
+  return
+}
 
       // ✅ Cek apakah email sudah diverifikasi
       const { data: userData } = await supabase.auth.getUser()
