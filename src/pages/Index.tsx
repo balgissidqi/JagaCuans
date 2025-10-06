@@ -55,23 +55,21 @@ const Index = () => {
 
       // 🔹 Ambil username dari tabel profiles
       const { data: profile, error: profileError } = await supabase
-        .from("profiles")
-        .select("name")
-        .eq("user_id", user.id)
-        .maybeSingle()
+      .from("profiles")
+      .select("name")
+      .eq("id", user.id) // ubah dari user_id ke id
+      .maybeSingle()
 
-      if (profileError) {
-        console.warn("Profile fetch error:", profileError)
-      }
+    if (profileError) {
+      console.warn("Profile fetch error:", profileError)
+    }
 
-      // 🔹 Gunakan username dulu, baru fallback ke name
-      if (profile?.name && profile.name.trim() !== "") {
-        setUserName(profile.name)
-      // } else if (profile?.name && profile.name.trim() !== "") {
-      //   setUserName(profile.name)
-      } else {
-        setUserName("User") // fallback terakhir, bukan dari email
-      }
+    if (profile?.name && profile.name.trim() !== "") {
+      setUserName(profile.name)
+    } else {
+      setUserName("User")
+    }
+
 
       // 🔹 Ambil data budgeting
       const { data: budgets } = await supabase
