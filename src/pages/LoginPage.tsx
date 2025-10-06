@@ -10,15 +10,16 @@ import { toast } from "sonner"
 export default function LoginPage() {
   const navigate = useNavigate()
   const [loading, setLoading] = useState(false)
+  const [showVerifyMessage, setShowVerifyMessage] = useState(false)
   const [formData, setFormData] = useState({
     email: "",
-    password: ""
+    password: "",
   })
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     })
   }
 
@@ -34,6 +35,7 @@ export default function LoginPage() {
     e.preventDefault()
     if (!validateForm()) return
     setLoading(true)
+    setShowVerifyMessage(false)
 
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
@@ -41,28 +43,62 @@ export default function LoginPage() {
         password: formData.password,
       })
 
-      if (error) throw error
+      if (error) {
+        // Jika error karena kredensial salah
+        if (error.message.includes("Invalid login credentials")) {
+          toast.error("Email atau password salah")
+        } else {
+          toast.error("Terjadi kesalahan, silakan coba lagi")
+        }
+        setLoading(false)
+        return
+      }
+
+      const user = data.user
+
+      // ✅ Cek apakah email sudah terverifikasi
+      if (!user?.email_confirmed_at) {
+        await supabase.auth.signOut()
+        setShowVerifyMessage(true)
+        toast.warning("Email kamu belum diverifikasi. Silakan verifikasi dulu.")
+        setLoading(false)
+        return
+      }
 
       toast.success("Login berhasil!")
       navigate("/dashboard")
-    } catch (error: unknown) {
-      console.error("Login error:", error)
-
-      // ✅ Gunakan pesan custom untuk semua error login
-      toast.error("Cek emailmu dan verifikasi terlebih dahulu.")
+    } catch (err) {
+      console.error("Login error:", err)
+      toast.error("Terjadi kesalahan saat login.")
     } finally {
       setLoading(false)
     }
   }
 
+  // ✅ Fungsi kirim ulang email verifikasi
+  const handleResendVerification = async () => {
+    try {
+      const { error } = await supabase.auth.resend({
+        type: "signup",
+        email: formData.email,
+      })
+
+      if (error) throw error
+      toast.success("Email verifikasi telah dikirim ulang! Periksa inbox kamu.")
+    } catch (err) {
+      console.error("Resend verification error:", err)
+      toast.error("Gagal mengirim ulang email verifikasi.")
+    }
+  }
+
   return (
-    <div className="min-h-screen bg-background flex">
+    <div className="min-h-screen bg-background flex flex-col lg:flex-row">
       {/* Left side - Illustration */}
       <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden">
-        <div 
+        <div
           className="w-full h-full flex items-center justify-center"
           style={{
-            background: 'linear-gradient(135deg, hsl(var(--primary) / 0.1), hsl(var(--income) / 0.1))'
+            background: 'linear-gradient(135deg, hsl(var(--primary) / 0.1), hsl(var(--income) / 0.1))',
           }}
         >
           <div className="text-center p-12">
@@ -71,7 +107,7 @@ export default function LoginPage() {
               Smart Financial Tracking
             </h1>
             <p className="text-xl text-muted-foreground mb-8">
-              Take control of your finances with intelligent budgeting and spending insights
+              Take control of your finances with intelligent budgeting and insights
             </p>
             <div className="flex justify-center space-x-4 text-6xl">
               <span>📊</span>
@@ -85,10 +121,10 @@ export default function LoginPage() {
       {/* Right side - Form */}
       <div className="w-full lg:w-1/2 flex items-center justify-center p-8">
         <div className="w-full max-w-md">
-          <Card 
+          <Card
             className="shadow-2xl border-0"
             style={{
-              boxShadow: '0 20px 40px -12px hsl(var(--primary) / 0.15)'
+              boxShadow: '0 20px 40px -12px hsl(var(--primary) / 0.15)',
             }}
           >
             <CardHeader className="text-center pb-8">
@@ -101,7 +137,7 @@ export default function LoginPage() {
                 Sign In
               </CardTitle>
             </CardHeader>
-            
+
             <CardContent className="px-8 pb-8">
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="space-y-2">
@@ -119,7 +155,7 @@ export default function LoginPage() {
                     disabled={loading}
                   />
                 </div>
-                
+
                 <div className="space-y-2">
                   <Label htmlFor="password" className="text-sm font-medium text-foreground">
                     Password
@@ -135,36 +171,52 @@ export default function LoginPage() {
                     disabled={loading}
                   />
                 </div>
-                
+
                 <Button
                   type="submit"
                   disabled={loading}
                   className="w-full h-12 rounded-xl text-base font-semibold transition-all duration-200 transform hover:scale-[1.02]"
                   style={{
-                    background: 'linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary) / 0.8))',
-                    boxShadow: '0 8px 16px -4px hsl(var(--primary) / 0.3)'
+                    background:
+                      'linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary) / 0.8))',
+                    boxShadow: '0 8px 16px -4px hsl(var(--primary) / 0.3)',
                   }}
                 >
                   {loading ? "Signing In..." : "Sign In"}
                 </Button>
               </form>
-              
+
+              {/* ✅ Pesan verifikasi muncul hanya jika belum verifikasi */}
+              {showVerifyMessage && (
+                <div className="mt-6 p-4 border border-yellow-400 bg-yellow-50 rounded-xl text-center">
+                  <p className="text-sm text-yellow-700 mb-2">
+                    Email kamu belum diverifikasi. Silakan cek inbox untuk verifikasi akun.
+                  </p>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleResendVerification}
+                    className="text-yellow-700 border-yellow-400 hover:bg-yellow-100"
+                  >
+                    Kirim Ulang Email Verifikasi
+                  </Button>
+                </div>
+              )}
+
               <div className="mt-8 text-center">
                 <p className="text-sm text-muted-foreground">
                   Don't have an account?{" "}
-                  <Link 
-                    to="/register" 
+                  <Link
+                    to="/register"
                     className="text-primary hover:text-primary/80 font-semibold transition-colors"
                   >
                     Create one here
                   </Link>
                 </p>
               </div>
-              
+
               <div className="mt-8 pt-6 border-t border-border/50 text-center">
-                <p className="text-xs text-muted-foreground/80">
-                  Your money, your future
-                </p>
+                <p className="text-xs text-muted-foreground/80">Your money, your future</p>
               </div>
             </CardContent>
           </Card>
