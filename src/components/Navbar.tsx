@@ -75,7 +75,7 @@ export function Navbar() {
           <span className="absolute top-0 right-0 h-2 w-2 bg-red-500 rounded-full"></span>
         </Button>
         
-        <Avatar className="h-8 w-8 cursor-pointer hover:opacity-80 transition-opacity" onClick={() => navigate('/profile')}>
+        <Avatar className="h-8 w-8 cursor-pointer hover:opacity-80 transition-opacity" onClick={() => navigate('/dashboard/profile')}>
           <AvatarImage src={photoUrl || undefined} alt="User" />
           <AvatarFallback>
             <User className="h-4 w-4" />
