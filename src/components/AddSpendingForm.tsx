@@ -64,6 +64,7 @@ export function AddSpendingForm({ onSuccess, onBack }: AddSpendingFormProps) {
         .order('category', { ascending: true })
 
       if (error) throw error
+      console.log('Budget categories with notes:', data)
       setBudgetCategories(data || [])
     } catch (error) {
       console.error('Error fetching budget categories:', error)
