@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { ArrowLeft, Check, ArrowDown, ArrowUp } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -20,18 +20,13 @@ interface AddSpendingFormProps {
 
 type TransactionType = 'spending' | 'income'
 
-interface Category {
+interface BudgetCategory {
   id: string
-  name: string
-  icon: string
+  category: string
+  notes: string | null
+  amount: number
 }
 
-const categories: Category[] = [
-  { id: 'food', name: 'Food', icon: '🍴' },
-  { id: 'transport', name: 'Transport', icon: '🚆' },
-  { id: 'fun', name: 'Fun', icon: '🎮' },
-  { id: 'shopping', name: 'Shopping', icon: '🛍️' },
-]
 
 const paymentMethods = [
   'Cash',
@@ -51,6 +46,29 @@ export function AddSpendingForm({ onSuccess, onBack }: AddSpendingFormProps) {
   })
   const [date, setDate] = useState<Date>(new Date())
   const [loading, setLoading] = useState(false)
+  const [budgetCategories, setBudgetCategories] = useState<BudgetCategory[]>([])
+
+  useEffect(() => {
+    fetchBudgetCategories()
+  }, [])
+
+  const fetchBudgetCategories = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) return
+
+      const { data, error } = await supabase
+        .from('budgeting')
+        .select('id, category, notes, amount')
+        .eq('user_id', user.id)
+        .order('category', { ascending: true })
+
+      if (error) throw error
+      setBudgetCategories(data || [])
+    } catch (error) {
+      console.error('Error fetching budget categories:', error)
+    }
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -182,25 +200,30 @@ export function AddSpendingForm({ onSuccess, onBack }: AddSpendingFormProps) {
 
           {/* Category */}
           <div className="bg-card rounded-2xl p-6 shadow-sm border space-y-4">
-            <Label className="text-base font-semibold text-foreground">Category</Label>
-            <div className="grid grid-cols-2 gap-4">
-              {categories.map((category) => (
-                <button
-                  key={category.id}
-                  type="button"
-                  onClick={() => setFormData(prev => ({ ...prev, category: category.id }))}
-                  className={cn(
-                    "flex items-center gap-3 p-4 rounded-xl border-2 transition-all duration-200 hover:scale-105",
-                    formData.category === category.id
-                      ? "border-primary bg-primary/10 shadow-lg scale-105"
-                      : "border-border hover:bg-accent hover:border-accent-foreground/20"
-                  )}
-                >
-                  <span className="text-3xl">{category.icon}</span>
-                  <span className="font-semibold text-sm">{category.name}</span>
-                </button>
-              ))}
-            </div>
+            <Label htmlFor="category-select" className="text-base font-semibold text-foreground">Category</Label>
+            <Select value={formData.category} onValueChange={(value) => setFormData(prev => ({ ...prev, category: value }))}>
+              <SelectTrigger id="category-select" className="h-12 border-0 bg-muted/50 rounded-xl">
+                <SelectValue placeholder="Select budget category" />
+              </SelectTrigger>
+              <SelectContent className="bg-popover z-50">
+                {budgetCategories.length === 0 ? (
+                  <div className="p-4 text-sm text-muted-foreground text-center">
+                    No budget categories yet. Create one first!
+                  </div>
+                ) : (
+                  budgetCategories.map((category) => (
+                    <SelectItem key={category.id} value={category.id}>
+                      <div className="flex flex-col gap-1 py-1">
+                        <span className="font-semibold">{category.category}</span>
+                        {category.notes && (
+                          <span className="text-xs text-muted-foreground">{category.notes}</span>
+                        )}
+                      </div>
+                    </SelectItem>
+                  ))
+                )}
+              </SelectContent>
+            </Select>
           </div>
 
           {/* Description */}
