@@ -6,10 +6,12 @@ import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 import { toast } from "sonner"
+import { Eye, EyeOff } from "lucide-react"
 
 export default function RegisterPage() {
   const navigate = useNavigate()
   const [loading, setLoading] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -24,8 +26,16 @@ export default function RegisterPage() {
   }
 
   const validateForm = () => {
-    if (!formData.username || !formData.email || !formData.password) {
-      toast.error("Semua field wajib diisi")
+    if (!formData.username) {
+      toast.error("Username wajib diisi")
+      return false
+    }
+    if (!formData.email) {
+      toast.error("Email wajib diisi")
+      return false
+    }
+    if (!formData.password) {
+      toast.error("Password wajib diisi")
       return false
     }
     if (formData.password.length < 6) {
@@ -37,11 +47,10 @@ export default function RegisterPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    
     if (!validateForm()) return
 
     setLoading(true)
-    
+
     try {
       const { data, error } = await supabase.auth.signUp({
         email: formData.email,
@@ -52,30 +61,35 @@ export default function RegisterPage() {
         },
       })
 
-      if (error) throw error
+      if (error) {
+        if (error.message.includes("already registered")) {
+          toast.error("Email sudah terdaftar. Silakan login atau gunakan email lain.")
+        } else {
+          toast.error(error.message)
+        }
+        throw error
+      }
 
-      // Also insert into users table
+      // Simpan ke tabel users (opsional)
       if (data.user) {
         const { error: userError } = await supabase
-          .from('users')
+          .from("users")
           .insert({
             user_id: data.user.id,
             username: formData.username,
             email: formData.email,
-            password: formData.password // Note: In production, you shouldn't store plain text passwords
+            password: formData.password // ⚠️ hanya untuk testing
           })
-        
+
         if (userError) {
-          console.error('User table insert error:', userError)
+          console.error("User table insert error:", userError)
         }
       }
 
-      console.log('Registration data:', data)
-      toast.success("Registrasi berhasil! Selamat datang!")
-      navigate('/dashboard')
+      toast.success("Registrasi berhasil! Silakan cek emailmu untuk verifikasi sebelum login.")
+      navigate("/login")
     } catch (error: any) {
-      console.error('Registration error:', error)
-      toast.error(error.message || "Terjadi kesalahan saat registrasi")
+      console.error("Registration error:", error)
     } finally {
       setLoading(false)
     }
@@ -129,6 +143,7 @@ export default function RegisterPage() {
             
             <CardContent className="px-8 pb-8">
               <form onSubmit={handleSubmit} className="space-y-6">
+                {/* Username */}
                 <div className="space-y-2">
                   <Label htmlFor="username" className="text-sm font-medium text-foreground">
                     Username
@@ -140,11 +155,12 @@ export default function RegisterPage() {
                     value={formData.username}
                     onChange={handleChange}
                     className="h-12 rounded-xl border-2 border-border/50 focus:border-income transition-colors"
-                    placeholder="Choose a username"
+                    placeholder="Masukkan username kamu"
                     disabled={loading}
                   />
                 </div>
 
+                {/* Email */}
                 <div className="space-y-2">
                   <Label htmlFor="email" className="text-sm font-medium text-foreground">
                     Email Address
@@ -156,27 +172,38 @@ export default function RegisterPage() {
                     value={formData.email}
                     onChange={handleChange}
                     className="h-12 rounded-xl border-2 border-border/50 focus:border-income transition-colors"
-                    placeholder="Enter your email"
+                    placeholder="Masukkan email aktif (gunakan email yang bisa diverifikasi)"
                     disabled={loading}
                   />
                 </div>
                 
-                <div className="space-y-2">
+                {/* Password */}
+                <div className="space-y-2 relative">
                   <Label htmlFor="password" className="text-sm font-medium text-foreground">
                     Password
                   </Label>
-                  <Input
-                    id="password"
-                    name="password"
-                    type="password"
-                    value={formData.password}
-                    onChange={handleChange}
-                    className="h-12 rounded-xl border-2 border-border/50 focus:border-income transition-colors"
-                    placeholder="Create a password (min. 6 characters)"
-                    disabled={loading}
-                  />
+                  <div className="relative">
+                    <Input
+                      id="password"
+                      name="password"
+                      type={showPassword ? "text" : "password"}
+                      value={formData.password}
+                      onChange={handleChange}
+                      className="h-12 rounded-xl border-2 border-border/50 focus:border-income transition-colors pr-10"
+                      placeholder="Minimal 6 karakter"
+                      disabled={loading}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-3.5 text-muted-foreground hover:text-income transition-colors"
+                    >
+                      {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                    </button>
+                  </div>
                 </div>
                 
+                {/* Submit */}
                 <Button
                   type="submit"
                   disabled={loading}

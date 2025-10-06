@@ -38,17 +38,35 @@ export default function LoginPage() {
     setShowVerifyMessage(false)
 
     try {
+      // Cek apakah email terdaftar
+      const { data: userData, error: userError } = await supabase
+        .from("auth.users")
+        .select("email, email_confirmed_at")
+        .eq("email", formData.email)
+        .maybeSingle()
+
+      if (userError) {
+        console.error("Supabase user check error:", userError)
+      }
+
+      if (!userData) {
+        toast.error("Email belum terdaftar. Silakan buat akun terlebih dahulu.")
+        setLoading(false)
+        return
+      }
+
+      // Coba login
       const { data, error } = await supabase.auth.signInWithPassword({
         email: formData.email,
         password: formData.password,
       })
 
       if (error) {
-        // Jika error karena kredensial salah
+        // 🔹 Password salah
         if (error.message.includes("Invalid login credentials")) {
-          toast.error("Email atau password salah")
+          toast.error("Email atau password salah.")
         } else {
-          toast.error("Terjadi kesalahan, silakan coba lagi")
+          toast.error("Terjadi kesalahan, silakan coba lagi.")
         }
         setLoading(false)
         return
@@ -56,15 +74,16 @@ export default function LoginPage() {
 
       const user = data.user
 
-      // ✅ Cek apakah email sudah terverifikasi
+      // 🔹 Belum verifikasi email
       if (!user?.email_confirmed_at) {
         await supabase.auth.signOut()
         setShowVerifyMessage(true)
-        toast.warning("Email kamu belum diverifikasi. Silakan verifikasi dulu.")
+        toast.warning("Email kamu belum diverifikasi. Silakan cek inbox untuk verifikasi.")
         setLoading(false)
         return
       }
 
+      // 🔹 Login berhasil
       toast.success("Login berhasil!")
       navigate("/dashboard")
     } catch (err) {
@@ -98,7 +117,8 @@ export default function LoginPage() {
         <div
           className="w-full h-full flex items-center justify-center"
           style={{
-            background: 'linear-gradient(135deg, hsl(var(--primary) / 0.1), hsl(var(--income) / 0.1))',
+            background:
+              "linear-gradient(135deg, hsl(var(--primary) / 0.1), hsl(var(--income) / 0.1))",
           }}
         >
           <div className="text-center p-12">
@@ -124,7 +144,7 @@ export default function LoginPage() {
           <Card
             className="shadow-2xl border-0"
             style={{
-              boxShadow: '0 20px 40px -12px hsl(var(--primary) / 0.15)',
+              boxShadow: "0 20px 40px -12px hsl(var(--primary) / 0.15)",
             }}
           >
             <CardHeader className="text-center pb-8">
@@ -178,15 +198,15 @@ export default function LoginPage() {
                   className="w-full h-12 rounded-xl text-base font-semibold transition-all duration-200 transform hover:scale-[1.02]"
                   style={{
                     background:
-                      'linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary) / 0.8))',
-                    boxShadow: '0 8px 16px -4px hsl(var(--primary) / 0.3)',
+                      "linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary) / 0.8))",
+                    boxShadow: "0 8px 16px -4px hsl(var(--primary) / 0.3)",
                   }}
                 >
                   {loading ? "Signing In..." : "Sign In"}
                 </Button>
               </form>
 
-              {/* ✅ Pesan verifikasi muncul hanya jika belum verifikasi */}
+              {/* ⚠️ Pesan verifikasi muncul hanya jika belum verifikasi */}
               {showVerifyMessage && (
                 <div className="mt-6 p-4 border border-yellow-400 bg-yellow-50 rounded-xl text-center">
                   <p className="text-sm text-yellow-700 mb-2">
