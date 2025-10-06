@@ -21,7 +21,7 @@ import {
 
 const Index = () => {
   const navigate = useNavigate()
-  const [userName, setUserName] = useState("User")
+  const [userName, setUserName] = useState("user")
   const [monthlyExpenses, setMonthlyExpenses] = useState(0)
   const [totalBudget, setTotalBudget] = useState(0)
   const [totalSpent, setTotalSpent] = useState(0)
@@ -56,7 +56,7 @@ const Index = () => {
       // 🔹 Ambil username dari tabel profiles
       const { data: profile, error: profileError } = await supabase
         .from("profiles")
-        .select("username, name")
+        .select("name")
         .eq("user_id", user.id)
         .maybeSingle()
 
@@ -65,10 +65,10 @@ const Index = () => {
       }
 
       // 🔹 Gunakan username dulu, baru fallback ke name
-      if (profile?.username && profile.username.trim() !== "") {
-        setUserName(profile.username)
-      } else if (profile?.name && profile.name.trim() !== "") {
+      if (profile?.name && profile.name.trim() !== "") {
         setUserName(profile.name)
+      // } else if (profile?.name && profile.name.trim() !== "") {
+      //   setUserName(profile.name)
       } else {
         setUserName("User") // fallback terakhir, bukan dari email
       }
