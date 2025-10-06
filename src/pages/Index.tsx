@@ -43,25 +43,34 @@ const Index = () => {
         return
       }
 
-      // Simpan user_id di state
       setUserId(user.id)
 
-      // 🔹 Cek apakah user sudah lihat onboarding
       const onboardingKey = `hasSeenOnboarding_${user.id}`
       const hasSeenOnboarding = localStorage.getItem(onboardingKey)
       if (!hasSeenOnboarding) {
         setShowOnboarding(true)
       }
 
-      // 🔹 Ambil data profil (gunakan kolom user_id)
-      const { data: profile } = await supabase
+      // 🔹 Ambil data nama dari tabel profiles
+      const { data: profile, error: profileError } = await supabase
         .from("profiles")
         .select("name")
         .eq("user_id", user.id)
-        .single()
+        .maybeSingle()
 
-      if (profile?.name) {
+      if (profileError) {
+        console.warn("Profile fetch error:", profileError)
+      }
+
+      if (profile?.name && profile.name.trim() !== "") {
         setUserName(profile.name)
+      } else if (user.user_metadata?.full_name) {
+        // 🔹 Fallback: ambil dari metadata Supabase
+        setUserName(user.user_metadata.full_name)
+      } else if (user.email) {
+        // 🔹 Fallback terakhir: ambil dari email
+        const emailName = user.email.split("@")[0]
+        setUserName(emailName.charAt(0).toUpperCase() + emailName.slice(1))
       }
 
       // 🔹 Ambil data budgeting
@@ -91,7 +100,6 @@ const Index = () => {
         setSavingsGoal(totalTarget)
       }
 
-      // 🔹 Setup realtime listener
       setupRealtime(user.id)
     } catch (error) {
       console.error("Error fetching user data:", error)
@@ -115,7 +123,6 @@ const Index = () => {
     }
   }
 
-  // ✅ Fungsi untuk menutup onboarding
   const handleCloseOnboarding = () => {
     if (userId) {
       const onboardingKey = `hasSeenOnboarding_${userId}`
