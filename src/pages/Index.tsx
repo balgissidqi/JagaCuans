@@ -45,16 +45,17 @@ const Index = () => {
 
       setUserId(user.id)
 
+      // 🔹 Cek apakah user sudah lihat onboarding
       const onboardingKey = `hasSeenOnboarding_${user.id}`
       const hasSeenOnboarding = localStorage.getItem(onboardingKey)
       if (!hasSeenOnboarding) {
         setShowOnboarding(true)
       }
 
-      // 🔹 Ambil data nama dari tabel profiles
+      // 🔹 Ambil username dari tabel profiles
       const { data: profile, error: profileError } = await supabase
         .from("profiles")
-        .select("name")
+        .select("username, name")
         .eq("user_id", user.id)
         .maybeSingle()
 
@@ -62,15 +63,13 @@ const Index = () => {
         console.warn("Profile fetch error:", profileError)
       }
 
-      if (profile?.name && profile.name.trim() !== "") {
+      // 🔹 Gunakan username dulu, baru fallback ke name
+      if (profile?.username && profile.username.trim() !== "") {
+        setUserName(profile.username)
+      } else if (profile?.name && profile.name.trim() !== "") {
         setUserName(profile.name)
-      } else if (user.user_metadata?.full_name) {
-        // 🔹 Fallback: ambil dari metadata Supabase
-        setUserName(user.user_metadata.full_name)
-      } else if (user.email) {
-        // 🔹 Fallback terakhir: ambil dari email
-        const emailName = user.email.split("@")[0]
-        setUserName(emailName.charAt(0).toUpperCase() + emailName.slice(1))
+      } else {
+        setUserName("User") // fallback terakhir, bukan dari email
       }
 
       // 🔹 Ambil data budgeting

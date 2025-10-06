@@ -161,10 +161,11 @@ export default function AddBudget() {
       }
 
       navigate("/dashboard/budgeting")
-    } catch (error) {
-      console.error("Error adding/updating budget:", error)
-      toast.error("Failed to add/update budget")
-    } finally {
+    } catch (error: any) {
+  console.error("Error adding/updating budget:", error.message || error)
+  toast.error(error.message || "Failed to add/update budget")
+}
+ finally {
       setLoading(false)
     }
   }
