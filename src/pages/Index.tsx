@@ -8,6 +8,7 @@ import { formatRupiah, formatRupiahShort } from "@/utils/currency"
 import { supabase } from "@/integrations/supabase/client"
 import { toast } from "sonner"
 import { useNavigate } from "react-router-dom"
+import { OnboardingGuide } from "@/components/OnboardingGuide"
 import { 
   TrendingDown, 
   TrendingUp, 
@@ -27,9 +28,16 @@ const Index = () => {
   const [currentSavings, setCurrentSavings] = useState(0)
   const [savingsGoal, setSavingsGoal] = useState(0)
   const [loading, setLoading] = useState(true)
+  const [showOnboarding, setShowOnboarding] = useState(false)
   
   useEffect(() => {
     fetchUserData()
+    
+    // Check if user is new (hasn't seen onboarding)
+    const hasSeenOnboarding = localStorage.getItem('hasSeenOnboarding')
+    if (!hasSeenOnboarding) {
+      setShowOnboarding(true)
+    }
     
     // Setup realtime subscriptions
     const budgetChannel = supabase
@@ -158,8 +166,17 @@ const Index = () => {
     }
   ]
 
+  const handleCloseOnboarding = () => {
+    setShowOnboarding(false)
+    localStorage.setItem('hasSeenOnboarding', 'true')
+  }
+
   return (
     <div className="min-h-screen bg-background">
+      <OnboardingGuide 
+        open={showOnboarding} 
+        onClose={handleCloseOnboarding}
+      />
       <div className="p-6 space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
