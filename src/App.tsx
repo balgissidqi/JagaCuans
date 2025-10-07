@@ -22,6 +22,7 @@ import NotFound from "./pages/NotFound";
 import RegisterPage from "./pages/RegisterPage";
 import LoginPage from "./pages/LoginPage";
 import LandingPage from "./pages/LandingPage";
+import VerifiedPage from "./pages/VerifiedPage";
 
 const queryClient = new QueryClient();
 
@@ -47,6 +48,9 @@ const App = () => (
                 <RegisterPage />
               </AuthRoute>
             } />
+
+            {/* ✅ Tambahkan route untuk halaman verifikasi */}
+            <Route path="/verified" element={<VerifiedPage />} />
             
             {/* Protected app routes with sidebar */}
             <Route path="/dashboard/*" element={
