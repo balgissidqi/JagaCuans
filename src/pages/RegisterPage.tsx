@@ -58,7 +58,7 @@ export default function RegisterPage() {
         password: formData.password,
         options: { 
           data: { username: formData.username },
-          emailRedirectTo: `${window.location.origin}/`
+          emailRedirectTo: `${window.location.origin}/dashboard`
         },
       })
 
