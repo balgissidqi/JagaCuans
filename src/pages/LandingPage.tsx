@@ -483,7 +483,7 @@ function FAQItem({ faq }: { faq: { question: string; answer: string } }) {
                 Daftar Sekarang <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
             </Button>
-            <Button asChild size="lg" variant="outline" className="border-2 border-white text-black hover:bg-white/10 backdrop-blur-sm text-lg px-10 py-7 h-auto font-bold">
+            <Button asChild size="lg" variant="outline" className="border-2 border-white text-gray-400 hover:bg-white/10 backdrop-blur-sm text-lg px-10 py-7 h-auto font-bold">
               <Link to="/login">Sudah Punya Akun?</Link>
             </Button>
           </div>
