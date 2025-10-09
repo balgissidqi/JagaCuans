@@ -16,6 +16,7 @@ interface Category {
   category_id: string
   name: string
   notes?: string
+  amount?: number
 }
 
 export function SpendingForm({ onSuccess, onCancel }: SpendingFormProps) {
@@ -61,7 +62,8 @@ export function SpendingForm({ onSuccess, onCancel }: SpendingFormProps) {
       const budgetCategories = (data || []).map(budget => ({
         category_id: budget.id,
         name: budget.category,
-        notes: budget.notes
+        notes: budget.notes,
+        amount: budget.amount
       }))
       
       setCategories(budgetCategories)
@@ -168,11 +170,18 @@ export function SpendingForm({ onSuccess, onCancel }: SpendingFormProps) {
                 className="cursor-pointer"
               >
                 <div className="flex flex-col gap-1 py-0.5 min-w-0">
-                  <span className="font-medium text-sm">{category.name}</span>
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="font-medium text-sm">{category.name}</span>
+                    {category.amount && (
+                      <span className="text-xs font-semibold text-primary">
+                        Rp {category.amount.toLocaleString('id-ID')}
+                      </span>
+                    )}
+                  </div>
                   {category.notes && (
                     <span className="text-xs text-muted-foreground/80 break-words whitespace-normal line-clamp-2">
                       Catatan: {category.notes}
-                    </span>
+                      </span>
                   )}
                 </div>
               </SelectItem>
