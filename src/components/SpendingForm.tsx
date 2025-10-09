@@ -167,22 +167,25 @@ export function SpendingForm({ onSuccess, onCancel }: SpendingFormProps) {
               <SelectItem 
                 key={category.category_id} 
                 value={category.category_id}
-                className="cursor-pointer"
+                className="cursor-pointer py-3"
               >
-                <div className="flex flex-col gap-1 py-0.5 min-w-0">
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="font-medium text-sm">{category.name}</span>
+                <div className="flex flex-col gap-1 w-full">
+                  <span className="font-medium text-sm">{category.name}</span>
+                  <div className="flex items-center gap-2 flex-wrap">
                     {category.amount && (
                       <span className="text-xs font-semibold text-primary">
                         Rp {category.amount.toLocaleString('id-ID')}
                       </span>
                     )}
+                    {category.notes && (
+                      <>
+                        {category.amount && <span className="text-xs text-muted-foreground">•</span>}
+                        <span className="text-xs text-muted-foreground/80 flex-1">
+                          {category.notes}
+                        </span>
+                      </>
+                    )}
                   </div>
-                  {category.notes && (
-                    <span className="text-xs text-muted-foreground/80 break-words whitespace-normal line-clamp-2">
-                      Catatan: {category.notes}
-                      </span>
-                  )}
                 </div>
               </SelectItem>
             ))}
