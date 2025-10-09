@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react"
 import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { supabase } from "@/integrations/supabase/client"
 import { formatRupiah } from "@/utils/currency"
-import { TrendingUp, TrendingDown, Camera, Edit3 } from "lucide-react"
+import { TrendingUp, TrendingDown, Camera, Edit3, Filter } from "lucide-react"
 import { toast } from "sonner"
 
 interface Transaction {
@@ -26,18 +27,59 @@ interface Transaction {
 export function TransactionList() {
   const [transactions, setTransactions] = useState<Transaction[]>([])
   const [loading, setLoading] = useState(true)
+  const [selectedYear, setSelectedYear] = useState<string>('all')
+  const [selectedMonth, setSelectedMonth] = useState<string>('all')
+  const [availableYears, setAvailableYears] = useState<number[]>([])
+
+  useEffect(() => {
+    fetchAvailableYears()
+  }, [])
 
   useEffect(() => {
     fetchTransactions()
-  }, [])
+  }, [selectedYear, selectedMonth])
 
-  const fetchTransactions = async () => {
+  const fetchAvailableYears = async () => {
     try {
       const { data, error } = await supabase
         .from('transactions')
+        .select('date')
+        .order('date', { ascending: false })
+
+      if (error) throw error
+      
+      const years = Array.from(new Set((data || []).map(t => new Date(t.date).getFullYear())))
+      setAvailableYears(years.sort((a, b) => b - a))
+    } catch (error) {
+      console.error('Error fetching years:', error)
+    }
+  }
+
+  const fetchTransactions = async () => {
+    try {
+      let query = supabase
+        .from('transactions')
         .select('*')
         .order('date', { ascending: false })
-        .limit(20)
+
+      // Apply year filter
+      if (selectedYear !== 'all') {
+        const year = parseInt(selectedYear)
+        const startDate = new Date(year, 0, 1).toISOString()
+        const endDate = new Date(year + 1, 0, 1).toISOString()
+        query = query.gte('date', startDate).lt('date', endDate)
+      }
+
+      // Apply month filter
+      if (selectedMonth !== 'all' && selectedYear !== 'all') {
+        const year = parseInt(selectedYear)
+        const month = parseInt(selectedMonth)
+        const startDate = new Date(year, month, 1).toISOString()
+        const endDate = new Date(year, month + 1, 1).toISOString()
+        query = query.gte('date', startDate).lt('date', endDate)
+      }
+
+      const { data, error } = await query.limit(100)
 
       if (error) throw error
       setTransactions((data || []) as Transaction[])
@@ -95,8 +137,63 @@ export function TransactionList() {
     )
   }
 
+  const months = [
+    { value: '0', label: 'Januari' },
+    { value: '1', label: 'Februari' },
+    { value: '2', label: 'Maret' },
+    { value: '3', label: 'April' },
+    { value: '4', label: 'Mei' },
+    { value: '5', label: 'Juni' },
+    { value: '6', label: 'Juli' },
+    { value: '7', label: 'Agustus' },
+    { value: '8', label: 'September' },
+    { value: '9', label: 'Oktober' },
+    { value: '10', label: 'November' },
+    { value: '11', label: 'Desember' }
+  ]
+
   return (
     <div className="space-y-3">
+      {/* Filter Section */}
+      <div className="flex items-center gap-3 mb-4">
+        <div className="flex items-center gap-2 text-muted-foreground">
+          <Filter className="h-4 w-4" />
+          <span className="text-sm font-medium">Filter:</span>
+        </div>
+        
+        <Select value={selectedYear} onValueChange={setSelectedYear}>
+          <SelectTrigger className="w-[140px]">
+            <SelectValue placeholder="Pilih Tahun" />
+          </SelectTrigger>
+          <SelectContent className="bg-background z-50">
+            <SelectItem value="all">Semua Tahun</SelectItem>
+            {availableYears.map(year => (
+              <SelectItem key={year} value={year.toString()}>
+                {year}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+
+        <Select 
+          value={selectedMonth} 
+          onValueChange={setSelectedMonth}
+          disabled={selectedYear === 'all'}
+        >
+          <SelectTrigger className="w-[140px]">
+            <SelectValue placeholder="Pilih Bulan" />
+          </SelectTrigger>
+          <SelectContent className="bg-background z-50">
+            <SelectItem value="all">Semua Bulan</SelectItem>
+            {months.map(month => (
+              <SelectItem key={month.value} value={month.value}>
+                {month.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+
       <h2 className="text-lg font-semibold text-foreground mb-4">Recent Transactions</h2>
       
       {transactions.map((transaction) => (
