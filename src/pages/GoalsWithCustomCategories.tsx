@@ -220,14 +220,6 @@ export default function GoalsWithCustomCategories() {
         </div>
 
         <div className="flex gap-2">
-          <Button 
-            variant="outline"
-            onClick={() => setIsCustomCategoryModalOpen(true)}
-          >
-            <Plus className="h-4 w-4 mr-2" />
-            Custom Category
-          </Button>
-
           <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
             <DialogTrigger asChild>
               <Button>
