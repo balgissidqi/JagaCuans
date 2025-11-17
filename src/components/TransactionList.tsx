@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client"
 import { formatRupiah } from "@/utils/currency"
 import { TrendingUp, TrendingDown, Camera, Edit3 } from "lucide-react"
 import { toast } from "sonner"
+import { useTranslation } from "react-i18next"
 
 interface TransactionListProps {
   selectedYear?: string
@@ -29,6 +30,7 @@ interface Transaction {
 }
 
 export function TransactionList({ selectedYear = 'all', selectedMonth = 'all' }: TransactionListProps) {
+  const { t } = useTranslation()
   const [transactions, setTransactions] = useState<Transaction[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -91,7 +93,7 @@ export function TransactionList({ selectedYear = 'all', selectedMonth = 'all' }:
       health: 'Kesehatan',
       other: 'Lainnya'
     }
-    return categoryId ? categories[categoryId as keyof typeof categories] || categoryId : 'No Category'
+    return categoryId ? categories[categoryId as keyof typeof categories] || categoryId : t('spending.noTransactions')
   }
 
   if (loading) {
@@ -111,7 +113,7 @@ export function TransactionList({ selectedYear = 'all', selectedMonth = 'all' }:
     return (
       <Card className="p-8 text-center">
         <div className="text-muted-foreground">
-          <p className="text-lg mb-2">No transactions yet</p>
+          <p className="text-lg mb-2">{t('spending.noTransactions')}</p>
           <p className="text-sm">Start by adding your first income or expense</p>
         </div>
       </Card>
