@@ -4,6 +4,7 @@ import { Trophy, PlusCircle, CalendarDays } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { useNavigate } from "react-router-dom"
+import { useTranslation } from "react-i18next"
 
 type DefaultChallenge = {
   id: string
@@ -22,6 +23,7 @@ type Game = {
 }
 
 export default function Challenge() {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const [weeklyChallenges, setWeeklyChallenges] = useState<DefaultChallenge[]>([])
   const [userChallenges, setUserChallenges] = useState<Game[]>([])
@@ -69,12 +71,12 @@ export default function Challenge() {
       {/* Weekly Challenges Section */}
       <section>
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-2xl font-bold">Weekly Challenges</h2>
+          <h2 className="text-2xl font-bold">{t('challenge.weekly')}</h2>
         </div>
 
         {weeklyChallenges.length === 0 ? (
           <Card className="rounded-2xl shadow-soft p-8 text-center">
-            <p className="text-muted-foreground">No active weekly challenges right now.</p>
+            <p className="text-muted-foreground">{t('challenge.noActiveChallenges')}</p>
           </Card>
         ) : (
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -88,7 +90,7 @@ export default function Challenge() {
                 </CardHeader>
                 <CardContent>
                   <p className="text-sm text-muted-foreground mb-3">{challenge.description}</p>
-                  <p className="text-sm font-medium">Reward: {challenge.reward}</p>
+                  <p className="text-sm font-medium">{t('challenge.reward')}: {challenge.reward}</p>
                   <p className="text-xs text-muted-foreground mt-2">
                     {new Date(challenge.start_date).toLocaleDateString()} -{" "}
                     {new Date(challenge.end_date).toLocaleDateString()}
@@ -103,13 +105,13 @@ export default function Challenge() {
       {/* User Challenges Section */}
       <section>
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-2xl font-bold">Your Challenges</h2>
+          <h2 className="text-2xl font-bold">{t('challenge.userChallenges')}</h2>
           <Button
             onClick={() => navigate("/dashboard/challenge/new")}
             className="bg-blue-600 hover:bg-blue-700 text-white rounded-xl"
           >
             <PlusCircle className="h-4 w-4 mr-2" />
-            New Challenge
+            {t('challenge.newChallenge')}
           </Button>
         </div>
 
@@ -131,9 +133,9 @@ export default function Challenge() {
                 </CardHeader>
                 <CardContent>
                   <p className="text-sm text-muted-foreground mb-2">
-                    Created: {new Date(challenge.created_at).toLocaleDateString()}
+                    {t('challenge.created')}: {new Date(challenge.created_at).toLocaleDateString()}
                   </p>
-                  <p className="font-semibold">Score: {challenge.score}</p>
+                  <p className="font-semibold">{t('challenge.score')}: {challenge.score}</p>
                 </CardContent>
               </Card>
             ))}

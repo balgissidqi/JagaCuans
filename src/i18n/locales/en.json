@@ -1,0 +1,141 @@
+{
+  "common": {
+    "home": "Home",
+    "dashboard": "Dashboard",
+    "budget": "Budget",
+    "spending": "Spending",
+    "goals": "Goals",
+    "challenge": "Challenge",
+    "education": "Education",
+    "profile": "Profile",
+    "logout": "Logout",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "add": "Add",
+    "back": "Back",
+    "loading": "Loading...",
+    "search": "Search",
+    "filter": "Filter"
+  },
+  "nav": {
+    "appName": "JagaCuan",
+    "subtitle": "Finance Manager"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "welcome": "Welcome back",
+    "overview": "Financial Overview"
+  },
+  "budget": {
+    "title": "Budget Management",
+    "addBudget": "Add Budget",
+    "category": "Category",
+    "amount": "Amount",
+    "spent": "Spent",
+    "remaining": "Remaining",
+    "period": "Period",
+    "monthly": "Monthly",
+    "weekly": "Weekly",
+    "notes": "Notes"
+  },
+  "spending": {
+    "title": "Spending Tracker",
+    "addSpending": "Add Spending",
+    "description": "Description",
+    "date": "Date",
+    "method": "Payment Method",
+    "filterYear": "Filter by Year",
+    "filterMonth": "Filter by Month",
+    "allMonths": "All Months",
+    "noTransactions": "No transactions found"
+  },
+  "goals": {
+    "title": "Saving Goals",
+    "addGoal": "Add Goal",
+    "goalName": "Goal Name",
+    "targetAmount": "Target Amount",
+    "currentAmount": "Current Amount",
+    "deadline": "Deadline",
+    "progress": "Progress"
+  },
+  "challenge": {
+    "title": "Challenges",
+    "weekly": "Weekly Challenges",
+    "userChallenges": "Your Challenges",
+    "newChallenge": "New Challenge",
+    "createChallenge": "Create Challenge",
+    "createYourOwn": "Create Your Own Challenge",
+    "subtitle": "Design a personalized financial challenge to reach your goals",
+    "challengeTitle": "Challenge Title",
+    "titlePlaceholder": "e.g., Save for New Phone",
+    "description": "Description",
+    "descriptionPlaceholder": "Describe your challenge and what you want to achieve...",
+    "duration": "Duration",
+    "selectDuration": "Select duration...",
+    "goalAmount": "Goal Amount or Target",
+    "goalPlaceholder": "500,000",
+    "goalHelper": "Or describe a behavioral target (e.g., \"No coffee purchases\")",
+    "challengeType": "Challenge Type",
+    "saving": "Saving",
+    "spendingCut": "Spending Cut",
+    "saveChallenge": "Save Challenge",
+    "proTips": "Pro Tips",
+    "tip1": "Set specific and achievable goals",
+    "tip2": "Start with shorter durations",
+    "tip3": "Track your progress daily",
+    "noActiveChallenges": "No active weekly challenges right now.",
+    "noUserChallenges": "You haven't created any custom challenges yet.",
+    "reward": "Reward",
+    "score": "Score",
+    "created": "Created"
+  },
+  "education": {
+    "title": "Financial Education",
+    "subtitle": "Learn about personal finance and money management",
+    "comingSoon": "Education Coming Soon",
+    "comingSoonDesc": "This feature is under development and will be available soon."
+  },
+  "profile": {
+    "title": "Profile",
+    "editProfile": "Edit Profile",
+    "settings": "Settings",
+    "language": "Language",
+    "selectLanguage": "Select Language"
+  },
+  "auth": {
+    "login": "Login",
+    "signup": "Sign Up",
+    "email": "Email",
+    "password": "Password",
+    "forgotPassword": "Forgot Password?",
+    "noAccount": "Don't have an account?",
+    "hasAccount": "Already have an account?",
+    "loginSuccess": "Logged in successfully",
+    "logoutSuccess": "Logged out successfully",
+    "signupSuccess": "Account created successfully"
+  },
+  "durations": {
+    "1week": "1 Week",
+    "2weeks": "2 Weeks",
+    "1month": "1 Month",
+    "3months": "3 Months",
+    "6months": "6 Months",
+    "1year": "1 Year"
+  },
+  "months": {
+    "january": "January",
+    "february": "February",
+    "march": "March",
+    "april": "April",
+    "may": "May",
+    "june": "June",
+    "july": "July",
+    "august": "August",
+    "september": "September",
+    "october": "October",
+    "november": "November",
+    "december": "December"
+  }
+}
