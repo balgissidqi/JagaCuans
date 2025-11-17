@@ -1,0 +1,141 @@
+{
+  "common": {
+    "home": "Beranda",
+    "dashboard": "Dasbor",
+    "budget": "Anggaran",
+    "spending": "Pengeluaran",
+    "goals": "Target",
+    "challenge": "Tantangan",
+    "education": "Edukasi",
+    "profile": "Profil",
+    "logout": "Keluar",
+    "save": "Simpan",
+    "cancel": "Batal",
+    "delete": "Hapus",
+    "edit": "Ubah",
+    "add": "Tambah",
+    "back": "Kembali",
+    "loading": "Memuat...",
+    "search": "Cari",
+    "filter": "Filter"
+  },
+  "nav": {
+    "appName": "JagaCuan",
+    "subtitle": "Manajer Keuangan"
+  },
+  "dashboard": {
+    "title": "Dasbor",
+    "welcome": "Selamat datang kembali",
+    "overview": "Ringkasan Keuangan"
+  },
+  "budget": {
+    "title": "Manajemen Anggaran",
+    "addBudget": "Tambah Anggaran",
+    "category": "Kategori",
+    "amount": "Jumlah",
+    "spent": "Terpakai",
+    "remaining": "Sisa",
+    "period": "Periode",
+    "monthly": "Bulanan",
+    "weekly": "Mingguan",
+    "notes": "Catatan"
+  },
+  "spending": {
+    "title": "Pelacak Pengeluaran",
+    "addSpending": "Tambah Pengeluaran",
+    "description": "Deskripsi",
+    "date": "Tanggal",
+    "method": "Metode Pembayaran",
+    "filterYear": "Filter Tahun",
+    "filterMonth": "Filter Bulan",
+    "allMonths": "Semua Bulan",
+    "noTransactions": "Tidak ada transaksi ditemukan"
+  },
+  "goals": {
+    "title": "Target Tabungan",
+    "addGoal": "Tambah Target",
+    "goalName": "Nama Target",
+    "targetAmount": "Jumlah Target",
+    "currentAmount": "Jumlah Saat Ini",
+    "deadline": "Batas Waktu",
+    "progress": "Progres"
+  },
+  "challenge": {
+    "title": "Tantangan",
+    "weekly": "Tantangan Mingguan",
+    "userChallenges": "Tantangan Anda",
+    "newChallenge": "Tantangan Baru",
+    "createChallenge": "Buat Tantangan",
+    "createYourOwn": "Buat Tantangan Anda Sendiri",
+    "subtitle": "Rancang tantangan keuangan yang dipersonalisasi untuk mencapai tujuan Anda",
+    "challengeTitle": "Judul Tantangan",
+    "titlePlaceholder": "Contoh: Menabung untuk HP Baru",
+    "description": "Deskripsi",
+    "descriptionPlaceholder": "Jelaskan tantangan Anda dan apa yang ingin Anda capai...",
+    "duration": "Durasi",
+    "selectDuration": "Pilih durasi...",
+    "goalAmount": "Jumlah Target",
+    "goalPlaceholder": "500.000",
+    "goalHelper": "Atau deskripsikan target perilaku (misalnya \"Tidak beli kopi\")",
+    "challengeType": "Tipe Tantangan",
+    "saving": "Menabung",
+    "spendingCut": "Potong Pengeluaran",
+    "saveChallenge": "Simpan Tantangan",
+    "proTips": "Tips Pro",
+    "tip1": "Tetapkan tujuan yang spesifik dan dapat dicapai",
+    "tip2": "Mulai dengan durasi yang lebih pendek",
+    "tip3": "Lacak kemajuan Anda setiap hari",
+    "noActiveChallenges": "Tidak ada tantangan mingguan yang aktif saat ini.",
+    "noUserChallenges": "Anda belum membuat tantangan khusus apapun.",
+    "reward": "Hadiah",
+    "score": "Skor",
+    "created": "Dibuat"
+  },
+  "education": {
+    "title": "Edukasi Keuangan",
+    "subtitle": "Pelajari tentang keuangan pribadi dan manajemen uang",
+    "comingSoon": "Edukasi Segera Hadir",
+    "comingSoonDesc": "Fitur ini sedang dalam pengembangan dan akan segera tersedia."
+  },
+  "profile": {
+    "title": "Profil",
+    "editProfile": "Ubah Profil",
+    "settings": "Pengaturan",
+    "language": "Bahasa",
+    "selectLanguage": "Pilih Bahasa"
+  },
+  "auth": {
+    "login": "Masuk",
+    "signup": "Daftar",
+    "email": "Email",
+    "password": "Kata Sandi",
+    "forgotPassword": "Lupa Kata Sandi?",
+    "noAccount": "Belum punya akun?",
+    "hasAccount": "Sudah punya akun?",
+    "loginSuccess": "Berhasil masuk",
+    "logoutSuccess": "Berhasil keluar",
+    "signupSuccess": "Akun berhasil dibuat"
+  },
+  "durations": {
+    "1week": "1 Minggu",
+    "2weeks": "2 Minggu",
+    "1month": "1 Bulan",
+    "3months": "3 Bulan",
+    "6months": "6 Bulan",
+    "1year": "1 Tahun"
+  },
+  "months": {
+    "january": "Januari",
+    "february": "Februari",
+    "march": "Maret",
+    "april": "April",
+    "may": "Mei",
+    "june": "Juni",
+    "july": "Juli",
+    "august": "Agustus",
+    "september": "September",
+    "october": "Oktober",
+    "november": "November",
+    "december": "Desember"
+  }
+}

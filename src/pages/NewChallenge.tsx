@@ -8,8 +8,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card } from "@/components/ui/card"
 import { supabase } from "@/integrations/supabase/client"
 import { toast } from "sonner"
+import { useTranslation } from "react-i18next"
 
 export default function NewChallenge() {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const [loading, setLoading] = useState(false)
   const [challengeType, setChallengeType] = useState<"saving" | "spending_cut">("saving")
@@ -67,7 +69,7 @@ export default function NewChallenge() {
           >
             <ArrowLeft className="h-5 w-5" />
           </Button>
-          <h1 className="text-xl font-semibold text-foreground">Create Challenge</h1>
+          <h1 className="text-xl font-semibold text-foreground">{t('challenge.createChallenge')}</h1>
         </div>
 
         {/* Icon */}
@@ -79,9 +81,9 @@ export default function NewChallenge() {
 
         {/* Title & Subtitle */}
         <div className="text-center space-y-2">
-          <h2 className="text-2xl font-bold text-foreground">Create Your Own Challenge</h2>
+          <h2 className="text-2xl font-bold text-foreground">{t('challenge.createYourOwn')}</h2>
           <p className="text-sm text-muted-foreground">
-            Design a personalized financial challenge to reach your goals
+            {t('challenge.subtitle')}
           </p>
         </div>
 

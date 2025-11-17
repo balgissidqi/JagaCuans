@@ -2,6 +2,7 @@ import { Bell, User, Menu } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { SidebarTrigger } from "@/components/ui/sidebar"
+import { LanguageSelector } from "@/components/LanguageSelector"
 import { useIsMobile } from "@/hooks/use-mobile"
 import { useEffect, useState } from "react"
 import { supabase } from "@/integrations/supabase/client"
@@ -70,6 +71,8 @@ export function Navbar() {
       </div>
 
       <div className="flex items-center gap-4">
+        <LanguageSelector />
+        
         <Button variant="ghost" size="icon" className="relative">
           <Bell className="h-5 w-5" />
           <span className="absolute top-0 right-0 h-2 w-2 bg-red-500 rounded-full"></span>

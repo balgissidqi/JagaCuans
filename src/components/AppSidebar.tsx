@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client"
 import { toast } from "sonner"
 import { useIsMobile } from "@/hooks/use-mobile"
 import { Button } from "@/components/ui/button"
+import { useTranslation } from "react-i18next"
 
 import {
   Sidebar,
@@ -19,23 +20,25 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar"
 
-const items = [
-  { title: "Dashboard", url: "/dashboard", icon: Home },
-  { title: "Budget", url: "/dashboard/budgeting", icon: Wallet },
-  { title: "Spending", url: "/dashboard/spending", icon: TrendingDown },
-  { title: "Goals", url: "/dashboard/goals", icon: Target },
-  { title: "Challenge", url: "/dashboard/challenge", icon: Trophy },
-  { title: "Education", url: "/dashboard/education", icon: GraduationCap },
-  { title: "Profile", url: "/dashboard/profile", icon: User },
-]
 
 export function AppSidebar() {
+  const { t } = useTranslation()
   const { state, setOpenMobile } = useSidebar()
   const location = useLocation()
   const navigate = useNavigate()
   const currentPath = location.pathname
   const collapsed = state === "collapsed"
   const isMobile = useIsMobile()
+
+  const items = [
+    { title: t('common.dashboard'), url: "/dashboard", icon: Home },
+    { title: t('common.budget'), url: "/dashboard/budgeting", icon: Wallet },
+    { title: t('common.spending'), url: "/dashboard/spending", icon: TrendingDown },
+    { title: t('common.goals'), url: "/dashboard/goals", icon: Target },
+    { title: t('common.challenge'), url: "/dashboard/challenge", icon: Trophy },
+    { title: t('common.education'), url: "/dashboard/education", icon: GraduationCap },
+    { title: t('common.profile'), url: "/dashboard/profile", icon: User },
+  ]
 
   const isActive = (path: string) => currentPath === path
   const getNavCls = ({ isActive }: { isActive: boolean }) =>
@@ -46,7 +49,7 @@ export function AppSidebar() {
       const { error } = await supabase.auth.signOut()
       if (error) throw error
       
-      toast.success("Logged out successfully")
+      toast.success(t('auth.logoutSuccess'))
       navigate('/login')
     } catch (error) {
       console.error('Logout error:', error)
@@ -68,8 +71,8 @@ export function AppSidebar() {
             </div>
             {(!collapsed || isMobile) && (
               <div>
-                <h1 className="font-bold text-lg text-foreground">JagaCuan</h1>
-                <p className="text-xs text-muted-foreground">Finance Manager</p>
+                <h1 className="font-bold text-lg text-foreground">{t('nav.appName')}</h1>
+                <p className="text-xs text-muted-foreground">{t('nav.subtitle')}</p>
               </div>
             )}
           </div>
@@ -89,7 +92,7 @@ export function AppSidebar() {
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupLabel className={collapsed ? "sr-only" : ""}>
-            Navigation
+            {t('common.home')}
           </SidebarGroupLabel>
 
           <SidebarGroupContent>
@@ -119,7 +122,7 @@ export function AppSidebar() {
             <SidebarMenuItem>
               <SidebarMenuButton onClick={handleLogout} className="text-destructive hover:text-destructive hover:bg-destructive/10">
                 <LogOut className="h-4 w-4" />
-                {(!collapsed || isMobile) && <span>Logout</span>}
+                {(!collapsed || isMobile) && <span>{t('common.logout')}</span>}
               </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>

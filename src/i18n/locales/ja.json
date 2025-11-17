@@ -1,0 +1,141 @@
+{
+  "common": {
+    "home": "ホーム",
+    "dashboard": "ダッシュボード",
+    "budget": "予算",
+    "spending": "支出",
+    "goals": "目標",
+    "challenge": "チャレンジ",
+    "education": "教育",
+    "profile": "プロフィール",
+    "logout": "ログアウト",
+    "save": "保存",
+    "cancel": "キャンセル",
+    "delete": "削除",
+    "edit": "編集",
+    "add": "追加",
+    "back": "戻る",
+    "loading": "読み込み中...",
+    "search": "検索",
+    "filter": "フィルター"
+  },
+  "nav": {
+    "appName": "JagaCuan",
+    "subtitle": "財務管理"
+  },
+  "dashboard": {
+    "title": "ダッシュボード",
+    "welcome": "おかえりなさい",
+    "overview": "財務概要"
+  },
+  "budget": {
+    "title": "予算管理",
+    "addBudget": "予算を追加",
+    "category": "カテゴリー",
+    "amount": "金額",
+    "spent": "使用済み",
+    "remaining": "残高",
+    "period": "期間",
+    "monthly": "月次",
+    "weekly": "週次",
+    "notes": "メモ"
+  },
+  "spending": {
+    "title": "支出トラッカー",
+    "addSpending": "支出を追加",
+    "description": "説明",
+    "date": "日付",
+    "method": "支払い方法",
+    "filterYear": "年でフィルター",
+    "filterMonth": "月でフィルター",
+    "allMonths": "全ての月",
+    "noTransactions": "取引が見つかりません"
+  },
+  "goals": {
+    "title": "貯蓄目標",
+    "addGoal": "目標を追加",
+    "goalName": "目標名",
+    "targetAmount": "目標金額",
+    "currentAmount": "現在の金額",
+    "deadline": "締切",
+    "progress": "進捗"
+  },
+  "challenge": {
+    "title": "チャレンジ",
+    "weekly": "週次チャレンジ",
+    "userChallenges": "あなたのチャレンジ",
+    "newChallenge": "新しいチャレンジ",
+    "createChallenge": "チャレンジを作成",
+    "createYourOwn": "独自のチャレンジを作成",
+    "subtitle": "目標を達成するための個人的な財務チャレンジを設計",
+    "challengeTitle": "チャレンジタイトル",
+    "titlePlaceholder": "例: 新しいスマホのための貯金",
+    "description": "説明",
+    "descriptionPlaceholder": "チャレンジと達成したいことを説明してください...",
+    "duration": "期間",
+    "selectDuration": "期間を選択...",
+    "goalAmount": "目標金額またはターゲット",
+    "goalPlaceholder": "500,000",
+    "goalHelper": "または行動目標を記述（例：「コーヒー購入なし」）",
+    "challengeType": "チャレンジタイプ",
+    "saving": "貯蓄",
+    "spendingCut": "支出削減",
+    "saveChallenge": "チャレンジを保存",
+    "proTips": "プロのヒント",
+    "tip1": "具体的で達成可能な目標を設定",
+    "tip2": "短い期間から始める",
+    "tip3": "毎日進捗を追跡",
+    "noActiveChallenges": "現在アクティブな週次チャレンジはありません。",
+    "noUserChallenges": "まだカスタムチャレンジを作成していません。",
+    "reward": "報酬",
+    "score": "スコア",
+    "created": "作成日"
+  },
+  "education": {
+    "title": "金融教育",
+    "subtitle": "個人金融とお金の管理について学ぶ",
+    "comingSoon": "教育機能は近日公開",
+    "comingSoonDesc": "この機能は開発中で、まもなく利用可能になります。"
+  },
+  "profile": {
+    "title": "プロフィール",
+    "editProfile": "プロフィールを編集",
+    "settings": "設定",
+    "language": "言語",
+    "selectLanguage": "言語を選択"
+  },
+  "auth": {
+    "login": "ログイン",
+    "signup": "サインアップ",
+    "email": "メール",
+    "password": "パスワード",
+    "forgotPassword": "パスワードを忘れた？",
+    "noAccount": "アカウントをお持ちでない？",
+    "hasAccount": "すでにアカウントをお持ち？",
+    "loginSuccess": "ログインに成功しました",
+    "logoutSuccess": "ログアウトしました",
+    "signupSuccess": "アカウントが作成されました"
+  },
+  "durations": {
+    "1week": "1週間",
+    "2weeks": "2週間",
+    "1month": "1ヶ月",
+    "3months": "3ヶ月",
+    "6months": "6ヶ月",
+    "1year": "1年"
+  },
+  "months": {
+    "january": "1月",
+    "february": "2月",
+    "march": "3月",
+    "april": "4月",
+    "may": "5月",
+    "june": "6月",
+    "july": "7月",
+    "august": "8月",
+    "september": "9月",
+    "october": "10月",
+    "november": "11月",
+    "december": "12月"
+  }
+}

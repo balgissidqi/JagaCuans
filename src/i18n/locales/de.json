@@ -1,0 +1,141 @@
+{
+  "common": {
+    "home": "Startseite",
+    "dashboard": "Dashboard",
+    "budget": "Budget",
+    "spending": "Ausgaben",
+    "goals": "Ziele",
+    "challenge": "Herausforderung",
+    "education": "Bildung",
+    "profile": "Profil",
+    "logout": "Abmelden",
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "delete": "Löschen",
+    "edit": "Bearbeiten",
+    "add": "Hinzufügen",
+    "back": "Zurück",
+    "loading": "Lädt...",
+    "search": "Suchen",
+    "filter": "Filter"
+  },
+  "nav": {
+    "appName": "JagaCuan",
+    "subtitle": "Finanzverwalter"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "welcome": "Willkommen zurück",
+    "overview": "Finanzübersicht"
+  },
+  "budget": {
+    "title": "Budgetverwaltung",
+    "addBudget": "Budget hinzufügen",
+    "category": "Kategorie",
+    "amount": "Betrag",
+    "spent": "Ausgegeben",
+    "remaining": "Verbleibend",
+    "period": "Zeitraum",
+    "monthly": "Monatlich",
+    "weekly": "Wöchentlich",
+    "notes": "Notizen"
+  },
+  "spending": {
+    "title": "Ausgaben-Tracker",
+    "addSpending": "Ausgabe hinzufügen",
+    "description": "Beschreibung",
+    "date": "Datum",
+    "method": "Zahlungsmethode",
+    "filterYear": "Nach Jahr filtern",
+    "filterMonth": "Nach Monat filtern",
+    "allMonths": "Alle Monate",
+    "noTransactions": "Keine Transaktionen gefunden"
+  },
+  "goals": {
+    "title": "Sparziele",
+    "addGoal": "Ziel hinzufügen",
+    "goalName": "Zielname",
+    "targetAmount": "Zielbetrag",
+    "currentAmount": "Aktueller Betrag",
+    "deadline": "Frist",
+    "progress": "Fortschritt"
+  },
+  "challenge": {
+    "title": "Herausforderungen",
+    "weekly": "Wöchentliche Herausforderungen",
+    "userChallenges": "Ihre Herausforderungen",
+    "newChallenge": "Neue Herausforderung",
+    "createChallenge": "Herausforderung erstellen",
+    "createYourOwn": "Erstellen Sie Ihre eigene Herausforderung",
+    "subtitle": "Entwerfen Sie eine personalisierte finanzielle Herausforderung, um Ihre Ziele zu erreichen",
+    "challengeTitle": "Herausforderungstitel",
+    "titlePlaceholder": "z.B. Sparen für ein neues Handy",
+    "description": "Beschreibung",
+    "descriptionPlaceholder": "Beschreiben Sie Ihre Herausforderung und was Sie erreichen möchten...",
+    "duration": "Dauer",
+    "selectDuration": "Dauer auswählen...",
+    "goalAmount": "Zielbetrag oder Ziel",
+    "goalPlaceholder": "500.000",
+    "goalHelper": "Oder beschreiben Sie ein Verhaltenziel (z.B. \"Keine Kaffeekäufe\")",
+    "challengeType": "Herausforderungstyp",
+    "saving": "Sparen",
+    "spendingCut": "Ausgaben reduzieren",
+    "saveChallenge": "Herausforderung speichern",
+    "proTips": "Profi-Tipps",
+    "tip1": "Setzen Sie spezifische und erreichbare Ziele",
+    "tip2": "Beginnen Sie mit kürzeren Zeiträumen",
+    "tip3": "Verfolgen Sie Ihren Fortschritt täglich",
+    "noActiveChallenges": "Derzeit keine aktiven wöchentlichen Herausforderungen.",
+    "noUserChallenges": "Sie haben noch keine benutzerdefinierten Herausforderungen erstellt.",
+    "reward": "Belohnung",
+    "score": "Punktzahl",
+    "created": "Erstellt"
+  },
+  "education": {
+    "title": "Finanzbildung",
+    "subtitle": "Lernen Sie über persönliche Finanzen und Geldverwaltung",
+    "comingSoon": "Bildung kommt bald",
+    "comingSoonDesc": "Diese Funktion ist in Entwicklung und wird bald verfügbar sein."
+  },
+  "profile": {
+    "title": "Profil",
+    "editProfile": "Profil bearbeiten",
+    "settings": "Einstellungen",
+    "language": "Sprache",
+    "selectLanguage": "Sprache auswählen"
+  },
+  "auth": {
+    "login": "Anmelden",
+    "signup": "Registrieren",
+    "email": "E-Mail",
+    "password": "Passwort",
+    "forgotPassword": "Passwort vergessen?",
+    "noAccount": "Noch kein Konto?",
+    "hasAccount": "Haben Sie bereits ein Konto?",
+    "loginSuccess": "Erfolgreich angemeldet",
+    "logoutSuccess": "Erfolgreich abgemeldet",
+    "signupSuccess": "Konto erfolgreich erstellt"
+  },
+  "durations": {
+    "1week": "1 Woche",
+    "2weeks": "2 Wochen",
+    "1month": "1 Monat",
+    "3months": "3 Monate",
+    "6months": "6 Monate",
+    "1year": "1 Jahr"
+  },
+  "months": {
+    "january": "Januar",
+    "february": "Februar",
+    "march": "März",
+    "april": "April",
+    "may": "Mai",
+    "june": "Juni",
+    "july": "Juli",
+    "august": "August",
+    "september": "September",
+    "october": "Oktober",
+    "november": "November",
+    "december": "Dezember"
+  }
+}
