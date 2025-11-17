@@ -6,6 +6,7 @@ import { AddSpendingForm } from "@/components/AddSpendingForm"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Filter } from "lucide-react"
 import { supabase } from "@/integrations/supabase/client"
+import { useTranslation } from "react-i18next"
 
 export type TransactionType = 'income' | 'spending'
 export type TransactionMethod = 'manual' | 'photo'
@@ -22,6 +23,7 @@ export interface TransactionData {
 }
 
 const Spending = () => {
+  const { t } = useTranslation()
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [showAddForm, setShowAddForm] = useState(false)
   const [transactionType, setTransactionType] = useState<TransactionType>('spending')
@@ -100,7 +102,7 @@ const Spending = () => {
         <div className="flex items-center justify-between flex-wrap gap-4">
           <div>
             <h1 className="text-2xl font-bold text-foreground">
-              Spending Tracker
+              {t('spending.title')}
             </h1>
             <p className="text-muted-foreground mt-1">
               Track your income and expenses
@@ -111,12 +113,12 @@ const Spending = () => {
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-2 text-muted-foreground">
               <Filter className="h-4 w-4" />
-              <span className="text-sm font-medium">Filter:</span>
+              <span className="text-sm font-medium">{t('common.filter')}:</span>
             </div>
             
             <Select value={selectedYear} onValueChange={setSelectedYear}>
               <SelectTrigger className="w-[130px]">
-                <SelectValue placeholder="Tahun" />
+                <SelectValue placeholder={t('spending.filterYear')} />
               </SelectTrigger>
               <SelectContent className="bg-background z-50">
                 <SelectItem value="all">Semua Tahun</SelectItem>

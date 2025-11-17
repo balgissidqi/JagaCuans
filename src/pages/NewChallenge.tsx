@@ -92,10 +92,10 @@ export default function NewChallenge() {
           {/* Challenge Title */}
           <div className="space-y-2">
             <label className="text-sm font-medium text-foreground">
-              Challenge Title
+              {t('challenge.challengeTitle')}
             </label>
             <Input
-              placeholder="e.g., Save for New Phone"
+              placeholder={t('challenge.titlePlaceholder')}
               value={formData.title}
               onChange={(e) => setFormData({ ...formData, title: e.target.value })}
               className="w-full"
@@ -105,10 +105,10 @@ export default function NewChallenge() {
           {/* Description */}
           <div className="space-y-2">
             <label className="text-sm font-medium text-foreground">
-              Description
+              {t('challenge.description')}
             </label>
             <Textarea
-              placeholder="Describe your challenge and what you want to achieve..."
+              placeholder={t('challenge.descriptionPlaceholder')}
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
               className="w-full min-h-[100px] resize-none"
@@ -118,19 +118,19 @@ export default function NewChallenge() {
           {/* Duration */}
           <div className="space-y-2">
             <label className="text-sm font-medium text-foreground">
-              Duration
+              {t('challenge.duration')}
             </label>
             <Select value={formData.duration} onValueChange={(value) => setFormData({ ...formData, duration: value })}>
               <SelectTrigger className="w-full">
-                <SelectValue placeholder="Select duration..." />
+                <SelectValue placeholder={t('challenge.selectDuration')} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="1week">1 Week</SelectItem>
-                <SelectItem value="2weeks">2 Weeks</SelectItem>
-                <SelectItem value="1month">1 Month</SelectItem>
-                <SelectItem value="3months">3 Months</SelectItem>
-                <SelectItem value="6months">6 Months</SelectItem>
-                <SelectItem value="1year">1 Year</SelectItem>
+                <SelectItem value="1week">{t('durations.1week')}</SelectItem>
+                <SelectItem value="2weeks">{t('durations.2weeks')}</SelectItem>
+                <SelectItem value="1month">{t('durations.1month')}</SelectItem>
+                <SelectItem value="3months">{t('durations.3months')}</SelectItem>
+                <SelectItem value="6months">{t('durations.6months')}</SelectItem>
+                <SelectItem value="1year">{t('durations.1year')}</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -138,7 +138,7 @@ export default function NewChallenge() {
           {/* Goal Amount */}
           <div className="space-y-2">
             <label className="text-sm font-medium text-foreground">
-              Goal Amount or Target
+              {t('challenge.goalAmount')}
             </label>
             <div className="relative">
               <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm">
@@ -146,21 +146,21 @@ export default function NewChallenge() {
               </span>
               <Input
                 type="number"
-                placeholder="500,000"
+                placeholder={t('challenge.goalPlaceholder')}
                 value={formData.goalAmount}
                 onChange={(e) => setFormData({ ...formData, goalAmount: e.target.value })}
                 className="w-full pl-10"
               />
             </div>
             <p className="text-xs text-muted-foreground">
-              Or describe a behavioral target (e.g., "No coffee purchases")
+              {t('challenge.goalHelper')}
             </p>
           </div>
 
           {/* Challenge Type */}
           <div className="space-y-2">
             <label className="text-sm font-medium text-foreground">
-              Challenge Type
+              {t('challenge.challengeType')}
             </label>
             <div className="grid grid-cols-2 gap-3">
               <button
@@ -178,7 +178,7 @@ export default function NewChallenge() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                   </div>
-                  <span className="text-sm font-medium">Saving</span>
+                  <span className="text-sm font-medium">{t('challenge.saving')}</span>
                 </div>
               </button>
 
@@ -197,7 +197,7 @@ export default function NewChallenge() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
                     </svg>
                   </div>
-                  <span className="text-sm font-medium">Spending Cut</span>
+                  <span className="text-sm font-medium">{t('challenge.spendingCut')}</span>
                 </div>
               </button>
             </div>
@@ -209,7 +209,7 @@ export default function NewChallenge() {
             disabled={loading}
             className="w-full bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl h-12 text-base font-medium"
           >
-            {loading ? "Creating..." : "Save Challenge"}
+            {loading ? t('common.loading') : t('challenge.saveChallenge')}
           </Button>
         </form>
 
@@ -220,11 +220,11 @@ export default function NewChallenge() {
               <Lightbulb className="h-5 w-5 text-orange-600 dark:text-orange-400" />
             </div>
             <div className="space-y-2">
-              <h3 className="font-semibold text-sm text-orange-900 dark:text-orange-100">Pro Tips</h3>
+              <h3 className="font-semibold text-sm text-orange-900 dark:text-orange-100">{t('challenge.proTips')}</h3>
               <ul className="text-xs text-orange-800 dark:text-orange-200 space-y-1 list-disc list-inside">
-                <li>Set specific and achievable goals</li>
-                <li>Start with shorter durations</li>
-                <li>Track your progress daily</li>
+                <li>{t('challenge.tip1')}</li>
+                <li>{t('challenge.tip2')}</li>
+                <li>{t('challenge.tip3')}</li>
               </ul>
             </div>
           </div>
