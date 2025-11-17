@@ -17,6 +17,7 @@ import SpendingTracker from "./pages/SpendingTracker";
 import GoalsWithCustomCategories from "./pages/GoalsWithCustomCategories";
 import Education from "./pages/Education";
 import Challenge from "./pages/Challenge";
+import NewChallenge from "./pages/NewChallenge";
 import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
 import RegisterPage from "./pages/RegisterPage";
@@ -69,6 +70,7 @@ const App = () => (
                           <Route path="/goals" element={<GoalsWithCustomCategories />} />
                           <Route path="/education" element={<Education />} />
                           <Route path="/challenge" element={<Challenge />} />
+                          <Route path="/challenge/new" element={<NewChallenge />} />
                           <Route path="/profile" element={<Profile />} />
                           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                           <Route path="*" element={<NotFound />} />
