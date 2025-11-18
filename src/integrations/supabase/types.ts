@@ -118,6 +118,42 @@ export type Database = {
         }
         Relationships: []
       }
+      default_challenges: {
+        Row: {
+          created_at: string | null
+          deleted_at: string | null
+          description: string
+          end_date: string | null
+          id: string
+          reward_points: number | null
+          start_date: string | null
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          deleted_at?: string | null
+          description: string
+          end_date?: string | null
+          id?: string
+          reward_points?: number | null
+          start_date?: string | null
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          deleted_at?: string | null
+          description?: string
+          end_date?: string | null
+          id?: string
+          reward_points?: number | null
+          start_date?: string | null
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       education: {
         Row: {
           content: string
@@ -542,6 +578,27 @@ export type Database = {
         }
         Relationships: []
       }
+      user_roles: {
+        Row: {
+          created_at: string | null
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
       users: {
         Row: {
           created_at: string
@@ -577,9 +634,16 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
+      app_role: "admin" | "user"
       budgeting_period: "weekly" | "monthly"
       category_type: "spending" | "budgeting"
       edu_type: "video" | "quiz" | "daily_tips"
@@ -713,6 +777,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      app_role: ["admin", "user"],
       budgeting_period: ["weekly", "monthly"],
       category_type: ["spending", "budgeting"],
       edu_type: ["video", "quiz", "daily_tips"],

@@ -1,4 +1,9 @@
 {
+  "sidebar": {
+    "admin": "Admin",
+    "adminChallenges": "Manage Challenges",
+    "adminEducation": "Manage Education"
+  },
   "common": {
     "home": "Home",
     "dashboard": "Dashboard",
@@ -18,6 +23,54 @@
     "loading": "Loading...",
     "search": "Search",
     "filter": "Filter"
+  },
+  "admin": {
+    "challenges": {
+      "title": "Manage Challenges",
+      "subtitle": "Create and manage weekly challenges",
+      "createChallenge": "Create New Challenge",
+      "editChallenge": "Edit Challenge",
+      "existingChallenges": "Existing Challenges",
+      "form": {
+        "title": "Title",
+        "description": "Description",
+        "rewardPoints": "Reward Points",
+        "startDate": "Start Date",
+        "endDate": "End Date (Optional)"
+      },
+      "create": "Create Challenge",
+      "update": "Update Challenge",
+      "rewardPoints": "Reward Points",
+      "startDate": "Start Date",
+      "endDate": "End Date",
+      "fetchError": "Failed to fetch challenges",
+      "createSuccess": "Challenge created successfully",
+      "updateSuccess": "Challenge updated successfully",
+      "deleteSuccess": "Challenge deleted successfully",
+      "saveError": "Failed to save challenge",
+      "deleteError": "Failed to delete challenge",
+      "deleteConfirm": "Are you sure you want to delete this challenge?"
+    },
+    "education": {
+      "title": "Manage Education",
+      "subtitle": "Create and manage education content",
+      "createContent": "Create New Content",
+      "editContent": "Edit Content",
+      "existingContent": "Existing Content",
+      "form": {
+        "title": "Title",
+        "content": "Content"
+      },
+      "create": "Create Content",
+      "update": "Update Content",
+      "fetchError": "Failed to fetch education content",
+      "createSuccess": "Content created successfully",
+      "updateSuccess": "Content updated successfully",
+      "deleteSuccess": "Content deleted successfully",
+      "saveError": "Failed to save content",
+      "deleteError": "Failed to delete content",
+      "deleteConfirm": "Are you sure you want to delete this content?"
+    }
   },
   "nav": {
     "appName": "JagaCuan",
