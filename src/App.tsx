@@ -26,6 +26,8 @@ import RegisterPage from "./pages/RegisterPage";
 import LoginPage from "./pages/LoginPage";
 import LandingPage from "./pages/LandingPage";
 import VerifiedPage from "./pages/VerifiedPage";
+import AdminLoginPage from "./pages/AdminLoginPage";
+import AdminRegisterPage from "./pages/AdminRegisterPage";
 
 const queryClient = new QueryClient();
 
@@ -40,6 +42,8 @@ const App = () => (
             <Route path="/" element={<LandingPage />} />
             <Route path="/login" element={<AuthRoute><LoginPage /></AuthRoute>} />
             <Route path="/register" element={<AuthRoute><RegisterPage /></AuthRoute>} />
+            <Route path="/admin/login" element={<AdminLoginPage />} />
+            <Route path="/admin/register" element={<AdminRegisterPage />} />
             <Route path="/verified" element={<VerifiedPage />} />
             
             <Route path="/dashboard/*" element={
