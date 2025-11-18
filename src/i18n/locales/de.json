@@ -1,4 +1,9 @@
 {
+  "sidebar": {
+    "admin": "Administrator",
+    "adminChallenges": "Herausforderungen verwalten",
+    "adminEducation": "Bildungsinhalte verwalten"
+  },
   "common": {
     "home": "Startseite",
     "dashboard": "Dashboard",
@@ -18,6 +23,54 @@
     "loading": "Lädt...",
     "search": "Suchen",
     "filter": "Filter"
+  },
+  "admin": {
+    "challenges": {
+      "title": "Herausforderungen verwalten",
+      "subtitle": "Wöchentliche Herausforderungen erstellen und verwalten",
+      "createChallenge": "Neue Herausforderung erstellen",
+      "editChallenge": "Herausforderung bearbeiten",
+      "existingChallenges": "Bestehende Herausforderungen",
+      "form": {
+        "title": "Titel",
+        "description": "Beschreibung",
+        "rewardPoints": "Belohnungspunkte",
+        "startDate": "Startdatum",
+        "endDate": "Enddatum (Optional)"
+      },
+      "create": "Herausforderung erstellen",
+      "update": "Herausforderung aktualisieren",
+      "rewardPoints": "Belohnungspunkte",
+      "startDate": "Startdatum",
+      "endDate": "Enddatum",
+      "fetchError": "Fehler beim Abrufen der Herausforderungen",
+      "createSuccess": "Herausforderung erfolgreich erstellt",
+      "updateSuccess": "Herausforderung erfolgreich aktualisiert",
+      "deleteSuccess": "Herausforderung erfolgreich gelöscht",
+      "saveError": "Fehler beim Speichern der Herausforderung",
+      "deleteError": "Fehler beim Löschen der Herausforderung",
+      "deleteConfirm": "Möchten Sie diese Herausforderung wirklich löschen?"
+    },
+    "education": {
+      "title": "Bildungsinhalte verwalten",
+      "subtitle": "Bildungsinhalte erstellen und verwalten",
+      "createContent": "Neuen Inhalt erstellen",
+      "editContent": "Inhalt bearbeiten",
+      "existingContent": "Bestehende Inhalte",
+      "form": {
+        "title": "Titel",
+        "content": "Inhalt"
+      },
+      "create": "Inhalt erstellen",
+      "update": "Inhalt aktualisieren",
+      "fetchError": "Fehler beim Abrufen der Bildungsinhalte",
+      "createSuccess": "Inhalt erfolgreich erstellt",
+      "updateSuccess": "Inhalt erfolgreich aktualisiert",
+      "deleteSuccess": "Inhalt erfolgreich gelöscht",
+      "saveError": "Fehler beim Speichern des Inhalts",
+      "deleteError": "Fehler beim Löschen des Inhalts",
+      "deleteConfirm": "Möchten Sie diesen Inhalt wirklich löschen?"
+    }
   },
   "nav": {
     "appName": "JagaCuan",

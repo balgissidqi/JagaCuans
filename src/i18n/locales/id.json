@@ -1,4 +1,9 @@
 {
+  "sidebar": {
+    "admin": "Admin",
+    "adminChallenges": "Kelola Tantangan",
+    "adminEducation": "Kelola Edukasi"
+  },
   "common": {
     "home": "Beranda",
     "dashboard": "Dasbor",
@@ -18,6 +23,54 @@
     "loading": "Memuat...",
     "search": "Cari",
     "filter": "Filter"
+  },
+  "admin": {
+    "challenges": {
+      "title": "Kelola Tantangan",
+      "subtitle": "Buat dan kelola tantangan mingguan",
+      "createChallenge": "Buat Tantangan Baru",
+      "editChallenge": "Edit Tantangan",
+      "existingChallenges": "Tantangan yang Ada",
+      "form": {
+        "title": "Judul",
+        "description": "Deskripsi",
+        "rewardPoints": "Poin Hadiah",
+        "startDate": "Tanggal Mulai",
+        "endDate": "Tanggal Selesai (Opsional)"
+      },
+      "create": "Buat Tantangan",
+      "update": "Perbarui Tantangan",
+      "rewardPoints": "Poin Hadiah",
+      "startDate": "Tanggal Mulai",
+      "endDate": "Tanggal Selesai",
+      "fetchError": "Gagal mengambil tantangan",
+      "createSuccess": "Tantangan berhasil dibuat",
+      "updateSuccess": "Tantangan berhasil diperbarui",
+      "deleteSuccess": "Tantangan berhasil dihapus",
+      "saveError": "Gagal menyimpan tantangan",
+      "deleteError": "Gagal menghapus tantangan",
+      "deleteConfirm": "Apakah Anda yakin ingin menghapus tantangan ini?"
+    },
+    "education": {
+      "title": "Kelola Edukasi",
+      "subtitle": "Buat dan kelola konten edukasi",
+      "createContent": "Buat Konten Baru",
+      "editContent": "Edit Konten",
+      "existingContent": "Konten yang Ada",
+      "form": {
+        "title": "Judul",
+        "content": "Konten"
+      },
+      "create": "Buat Konten",
+      "update": "Perbarui Konten",
+      "fetchError": "Gagal mengambil konten edukasi",
+      "createSuccess": "Konten berhasil dibuat",
+      "updateSuccess": "Konten berhasil diperbarui",
+      "deleteSuccess": "Konten berhasil dihapus",
+      "saveError": "Gagal menyimpan konten",
+      "deleteError": "Gagal menghapus konten",
+      "deleteConfirm": "Apakah Anda yakin ingin menghapus konten ini?"
+    }
   },
   "nav": {
     "appName": "JagaCuan",
