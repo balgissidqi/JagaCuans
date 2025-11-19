@@ -44,31 +44,12 @@ export default function AdminLoginPage() {
     setLoading(true)
 
     try {
-      // Cari email berdasarkan username dari profiles
-      const { data: profileData, error: profileError } = await supabase
-        .from('profiles')
-        .select('id')
-        .eq('name', formData.username)
-        .single()
-
-      if (profileError || !profileData) {
-        toast.error("Username atau password salah")
-        setLoading(false)
-        return
-      }
-
-      // Dapatkan email dari auth.users
-      const { data: { user: authUser }, error: authError } = await supabase.auth.admin.getUserById(profileData.id)
-      
-      if (authError || !authUser?.email) {
-        toast.error("Username atau password salah")
-        setLoading(false)
-        return
-      }
+      // Buat email dari username (sama seperti saat registrasi)
+      const generatedEmail = `${formData.username}@admin.jagacuan.app`
 
       // Login dengan email dan password
       const { data, error } = await supabase.auth.signInWithPassword({
-        email: authUser.email,
+        email: generatedEmail,
         password: formData.password
       })
 

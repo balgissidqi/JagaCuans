@@ -69,13 +69,14 @@ export default function AdminRegisterPage() {
       }
 
       // Buat email sementara dari username (untuk keperluan auth)
-      const generatedEmail = `${formData.username}@jagacuan-admin.local`
+      const generatedEmail = `${formData.username}@admin.jagacuan.app`
 
-      // Daftar dengan Supabase Auth
+      // Daftar dengan Supabase Auth (skip email confirmation)
       const { data, error } = await supabase.auth.signUp({
         email: generatedEmail,
         password: formData.password,
         options: {
+          emailRedirectTo: `${window.location.origin}/admin/challenges`,
           data: {
             name: formData.username,
             is_admin_account: true
@@ -100,8 +101,16 @@ export default function AdminRegisterPage() {
           .update({ name: formData.username })
           .eq('id', data.user.id)
 
-        toast.success("Pendaftaran berhasil! Silakan hubungi super admin untuk mendapatkan role admin.")
-        navigate('/admin/login')
+        // Assign admin role
+        await supabase
+          .from('user_roles')
+          .insert({
+            user_id: data.user.id,
+            role: 'admin'
+          })
+
+        toast.success("Pendaftaran berhasil! Menuju dashboard admin...")
+        navigate('/admin/challenges')
       }
     } catch (error) {
       console.error('Registration error:', error)
