@@ -60,7 +60,14 @@ export default function AdminEducation() {
           })
           .eq("education_id", editingId)
 
-        if (error) throw error
+        if (error) {
+          if (error.message.includes('JWT') || error.message.includes('row-level security')) {
+            toast.error("Silakan login sebagai admin untuk mengedit konten")
+          } else {
+            throw error
+          }
+          return
+        }
         toast.success(t("admin.education.updateSuccess"))
       } else {
         const { error } = await supabase
@@ -70,7 +77,14 @@ export default function AdminEducation() {
             content: formData.content
           })
 
-        if (error) throw error
+        if (error) {
+          if (error.message.includes('JWT') || error.message.includes('row-level security')) {
+            toast.error("Silakan login sebagai admin untuk membuat konten")
+          } else {
+            throw error
+          }
+          return
+        }
         toast.success(t("admin.education.createSuccess"))
       }
 
@@ -100,7 +114,14 @@ export default function AdminEducation() {
         .update({ deleted_at: new Date().toISOString() })
         .eq("education_id", id)
 
-      if (error) throw error
+      if (error) {
+        if (error.message.includes('JWT') || error.message.includes('row-level security')) {
+          toast.error("Silakan login sebagai admin untuk menghapus konten")
+        } else {
+          throw error
+        }
+        return
+      }
       toast.success(t("admin.education.deleteSuccess"))
       fetchEducation()
     } catch (error) {

@@ -73,35 +73,27 @@ const App = () => (
             } />
 
             <Route path="/admin/challenges" element={
-              <ProtectedRoute>
-                <AdminRoute>
-                  <SidebarProvider>
-                    <div className="min-h-screen flex w-full bg-background">
-                      <AppSidebar />
-                      <main className="flex-1">
-                        <Navbar />
-                        <AdminChallenges />
-                      </main>
-                    </div>
-                  </SidebarProvider>
-                </AdminRoute>
-              </ProtectedRoute>
+              <SidebarProvider>
+                <div className="min-h-screen flex w-full bg-background">
+                  <AppSidebar />
+                  <main className="flex-1">
+                    <Navbar />
+                    <AdminChallenges />
+                  </main>
+                </div>
+              </SidebarProvider>
             } />
 
             <Route path="/admin/education" element={
-              <ProtectedRoute>
-                <AdminRoute>
-                  <SidebarProvider>
-                    <div className="min-h-screen flex w-full bg-background">
-                      <AppSidebar />
-                      <main className="flex-1">
-                        <Navbar />
-                        <AdminEducation />
-                      </main>
-                    </div>
-                  </SidebarProvider>
-                </AdminRoute>
-              </ProtectedRoute>
+              <SidebarProvider>
+                <div className="min-h-screen flex w-full bg-background">
+                  <AppSidebar />
+                  <main className="flex-1">
+                    <Navbar />
+                    <AdminEducation />
+                  </main>
+                </div>
+              </SidebarProvider>
             } />
 
             <Route path="*" element={<NotFound />} />

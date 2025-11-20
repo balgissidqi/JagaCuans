@@ -5,7 +5,7 @@ import { toast } from "sonner"
 import { useIsMobile } from "@/hooks/use-mobile"
 import { Button } from "@/components/ui/button"
 import { useTranslation } from "react-i18next"
-import { useAdmin } from "@/hooks/useAdmin"
+
 
 import {
   Sidebar,
@@ -24,7 +24,6 @@ import {
 
 export function AppSidebar() {
   const { t } = useTranslation()
-  const { isAdmin } = useAdmin()
   const { state, setOpenMobile } = useSidebar()
   const location = useLocation()
   const navigate = useNavigate()
@@ -118,41 +117,39 @@ export function AppSidebar() {
            </SidebarGroupContent>
           </SidebarGroup>
 
-          {isAdmin && (
-            <SidebarGroup>
-              <SidebarGroupLabel className={collapsed ? "sr-only" : ""}>
-                {t("sidebar.admin")}
-              </SidebarGroupLabel>
-              <SidebarGroupContent>
-                <SidebarMenu>
-                  <SidebarMenuItem>
-                    <SidebarMenuButton asChild>
-                      <NavLink
-                        to="/admin/challenges"
-                        className={({ isActive }) => getNavCls({ isActive })}
-                        onClick={() => isMobile && setOpenMobile(false)}
-                      >
-                        <Trophy className="h-4 w-4" />
-                        {(!collapsed || isMobile) && <span>{t("sidebar.adminChallenges")}</span>}
-                      </NavLink>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                  <SidebarMenuItem>
-                    <SidebarMenuButton asChild>
-                      <NavLink
-                        to="/admin/education"
-                        className={({ isActive }) => getNavCls({ isActive })}
-                        onClick={() => isMobile && setOpenMobile(false)}
-                      >
-                        <GraduationCap className="h-4 w-4" />
-                        {(!collapsed || isMobile) && <span>{t("sidebar.adminEducation")}</span>}
-                      </NavLink>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                </SidebarMenu>
-              </SidebarGroupContent>
-            </SidebarGroup>
-          )}
+          <SidebarGroup>
+            <SidebarGroupLabel className={collapsed ? "sr-only" : ""}>
+              {t("sidebar.admin")}
+            </SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                <SidebarMenuItem>
+                  <SidebarMenuButton asChild>
+                    <NavLink
+                      to="/admin/challenges"
+                      className={({ isActive }) => getNavCls({ isActive })}
+                      onClick={() => isMobile && setOpenMobile(false)}
+                    >
+                      <Trophy className="h-4 w-4" />
+                      {(!collapsed || isMobile) && <span>{t("sidebar.adminChallenges")}</span>}
+                    </NavLink>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+                <SidebarMenuItem>
+                  <SidebarMenuButton asChild>
+                    <NavLink
+                      to="/admin/education"
+                      className={({ isActive }) => getNavCls({ isActive })}
+                      onClick={() => isMobile && setOpenMobile(false)}
+                    >
+                      <GraduationCap className="h-4 w-4" />
+                      {(!collapsed || isMobile) && <span>{t("sidebar.adminEducation")}</span>}
+                    </NavLink>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
         </SidebarContent>
 
         <SidebarFooter className="p-4 border-t">

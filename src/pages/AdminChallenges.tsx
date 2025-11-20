@@ -69,7 +69,14 @@ export default function AdminChallenges() {
           })
           .eq("id", editingId)
 
-        if (error) throw error
+        if (error) {
+          if (error.message.includes('JWT')) {
+            toast.error("Silakan login sebagai admin untuk mengedit challenge")
+          } else {
+            throw error
+          }
+          return
+        }
         toast.success(t("admin.challenges.updateSuccess"))
       } else {
         const { error } = await supabase
@@ -82,7 +89,14 @@ export default function AdminChallenges() {
             end_date: formData.end_date || null
           })
 
-        if (error) throw error
+        if (error) {
+          if (error.message.includes('JWT') || error.message.includes('row-level security')) {
+            toast.error("Silakan login sebagai admin untuk membuat challenge")
+          } else {
+            throw error
+          }
+          return
+        }
         toast.success(t("admin.challenges.createSuccess"))
       }
 
@@ -121,7 +135,14 @@ export default function AdminChallenges() {
         .update({ deleted_at: new Date().toISOString() })
         .eq("id", id)
 
-      if (error) throw error
+      if (error) {
+        if (error.message.includes('JWT') || error.message.includes('row-level security')) {
+          toast.error("Silakan login sebagai admin untuk menghapus challenge")
+        } else {
+          throw error
+        }
+        return
+      }
       toast.success(t("admin.challenges.deleteSuccess"))
       fetchChallenges()
     } catch (error) {
