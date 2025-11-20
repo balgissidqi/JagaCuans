@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { toast } from "sonner"
 import { useTranslation } from "react-i18next"
 import { z } from "zod"
+import type { User } from "@supabase/supabase-js"
 
 const adminLoginSchema = z.object({
   username: z.string().trim().min(3, "Username minimal 3 karakter").max(50, "Username maksimal 50 karakter"),
@@ -44,12 +45,39 @@ export default function AdminLoginPage() {
     setLoading(true)
 
     try {
-      // Buat email dari username (sama seperti saat registrasi)
-      const generatedEmail = `${formData.username}@admin.jagacuan.app`
+      // Cari email berdasarkan username dari profiles
+      const { data: profileData, error: profileError } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('name', formData.username)
+        .maybeSingle()
+
+      if (profileError || !profileData) {
+        toast.error("Username atau password salah")
+        setLoading(false)
+        return
+      }
+
+      // Dapatkan semua users
+      const { data: { users }, error: usersError } = await supabase.auth.admin.listUsers()
+      
+      if (usersError || !users) {
+        toast.error("Terjadi kesalahan")
+        setLoading(false)
+        return
+      }
+
+      const authUser: User | undefined = users.find((u: User) => u.id === profileData.id)
+      
+      if (!authUser?.email) {
+        toast.error("Username atau password salah")
+        setLoading(false)
+        return
+      }
 
       // Login dengan email dan password
       const { data, error } = await supabase.auth.signInWithPassword({
-        email: generatedEmail,
+        email: authUser.email,
         password: formData.password
       })
 

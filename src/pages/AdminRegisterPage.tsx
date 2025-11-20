@@ -14,6 +14,10 @@ const adminRegisterSchema = z.object({
     .min(3, "Username minimal 3 karakter")
     .max(50, "Username maksimal 50 karakter")
     .regex(/^[a-zA-Z0-9_]+$/, "Username hanya boleh mengandung huruf, angka, dan underscore"),
+  email: z.string()
+    .trim()
+    .email("Email tidak valid")
+    .max(255, "Email maksimal 255 karakter"),
   password: z.string()
     .min(8, "Password minimal 8 karakter")
     .regex(/[A-Z]/, "Password harus mengandung minimal 1 huruf besar")
@@ -30,6 +34,7 @@ export default function AdminRegisterPage() {
   const [loading, setLoading] = useState(false)
   const [formData, setFormData] = useState({
     username: "",
+    email: "",
     password: "",
     confirmPassword: ""
   })
@@ -68,12 +73,9 @@ export default function AdminRegisterPage() {
         return
       }
 
-      // Buat email sementara dari username (untuk keperluan auth)
-      const generatedEmail = `${formData.username}@admin.jagacuan.app`
-
       // Daftar dengan Supabase Auth (skip email confirmation)
       const { data, error } = await supabase.auth.signUp({
-        email: generatedEmail,
+        email: formData.email,
         password: formData.password,
         options: {
           emailRedirectTo: `${window.location.origin}/admin/challenges`,
@@ -148,6 +150,22 @@ export default function AdminRegisterPage() {
               <p className="text-xs text-muted-foreground">
                 Hanya huruf, angka, dan underscore
               </p>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="admin@example.com"
+                value={formData.email}
+                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                disabled={loading}
+                className={errors.email ? "border-red-500" : ""}
+              />
+              {errors.email && (
+                <p className="text-sm text-red-500">{errors.email}</p>
+              )}
             </div>
 
             <div className="space-y-2">
