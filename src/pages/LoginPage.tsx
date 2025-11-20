@@ -111,7 +111,10 @@ export default function LoginPage() {
           >
             <CardHeader className="text-center pb-8">
               <div className="mb-6">
-                <p className="text-muted-foreground text-base mb-2">
+                <p 
+                  className="text-muted-foreground text-base mb-2 cursor-default select-none"
+                  onClick={() => navigate('/admin/login')}
+                >
                   Welcome back! Ready to grow your savings?
                 </p>
               </div>
