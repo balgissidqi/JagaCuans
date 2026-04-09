@@ -59,7 +59,10 @@
       "existingContent": "Konten yang Ada",
       "form": {
         "title": "Judul",
-        "content": "Konten"
+        "content": "Konten",
+        "category": "Kategori",
+        "videoUrl": "URL Video (YouTube)",
+        "contentPlaceholder": "Tulis ringkasan singkat dari isi konten video..."
       },
       "create": "Buat Konten",
       "update": "Perbarui Konten",
