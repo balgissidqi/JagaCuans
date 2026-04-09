@@ -14,10 +14,6 @@ const adminRegisterSchema = z.object({
     .min(3, "Username minimal 3 karakter")
     .max(50, "Username maksimal 50 karakter")
     .regex(/^[a-zA-Z0-9_]+$/, "Username hanya boleh mengandung huruf, angka, dan underscore"),
-  email: z.string()
-    .trim()
-    .email("Email tidak valid")
-    .max(255, "Email maksimal 255 karakter"),
   password: z.string()
     .min(8, "Password minimal 8 karakter")
     .regex(/[A-Z]/, "Password harus mengandung minimal 1 huruf besar")
@@ -34,7 +30,6 @@ export default function AdminRegisterPage() {
   const [loading, setLoading] = useState(false)
   const [formData, setFormData] = useState({
     username: "",
-    email: "",
     password: "",
     confirmPassword: ""
   })
@@ -44,7 +39,6 @@ export default function AdminRegisterPage() {
     e.preventDefault()
     setErrors({})
 
-    // Validate input
     const validation = adminRegisterSchema.safeParse(formData)
     if (!validation.success) {
       const fieldErrors: Record<string, string> = {}
@@ -60,25 +54,15 @@ export default function AdminRegisterPage() {
     setLoading(true)
 
     try {
-      // Cek apakah username sudah digunakan
-      const { data: existingProfile, error: checkError } = await supabase
-        .from('profiles')
-        .select('id')
-        .eq('name', formData.username)
-        .single()
+      // Gunakan email pattern: username@admin.jagacuan.app
+      const email = `${formData.username}@admin.jagacuan.app`
 
-      if (existingProfile) {
-        toast.error("Username sudah digunakan")
-        setLoading(false)
-        return
-      }
-
-      // Daftar dengan Supabase Auth (skip email confirmation)
+      // Daftar dengan Supabase Auth
       const { data, error } = await supabase.auth.signUp({
-        email: formData.email,
+        email,
         password: formData.password,
         options: {
-          emailRedirectTo: `${window.location.origin}/admin/challenges`,
+          emailRedirectTo: `${window.location.origin}/admin/dashboard`,
           data: {
             name: formData.username,
             is_admin_account: true
@@ -104,15 +88,22 @@ export default function AdminRegisterPage() {
           .eq('id', data.user.id)
 
         // Assign admin role
-        await supabase
+        const { error: roleError } = await supabase
           .from('user_roles')
           .insert({
             user_id: data.user.id,
             role: 'admin'
           })
 
+        if (roleError) {
+          console.error('Error assigning admin role:', roleError)
+          toast.error("Gagal mengatur role admin. Hubungi administrator.")
+          setLoading(false)
+          return
+        }
+
         toast.success("Pendaftaran berhasil! Menuju dashboard admin...")
-        navigate('/admin/challenges')
+        navigate('/admin/dashboard')
       }
     } catch (error) {
       console.error('Registration error:', error)
@@ -142,30 +133,14 @@ export default function AdminRegisterPage() {
                 value={formData.username}
                 onChange={(e) => setFormData({ ...formData, username: e.target.value })}
                 disabled={loading}
-                className={errors.username ? "border-red-500" : ""}
+                className={errors.username ? "border-destructive" : ""}
               />
               {errors.username && (
-                <p className="text-sm text-red-500">{errors.username}</p>
+                <p className="text-sm text-destructive">{errors.username}</p>
               )}
               <p className="text-xs text-muted-foreground">
                 Hanya huruf, angka, dan underscore
               </p>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="admin@example.com"
-                value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                disabled={loading}
-                className={errors.email ? "border-red-500" : ""}
-              />
-              {errors.email && (
-                <p className="text-sm text-red-500">{errors.email}</p>
-              )}
             </div>
 
             <div className="space-y-2">
@@ -177,10 +152,10 @@ export default function AdminRegisterPage() {
                 value={formData.password}
                 onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                 disabled={loading}
-                className={errors.password ? "border-red-500" : ""}
+                className={errors.password ? "border-destructive" : ""}
               />
               {errors.password && (
-                <p className="text-sm text-red-500">{errors.password}</p>
+                <p className="text-sm text-destructive">{errors.password}</p>
               )}
               <p className="text-xs text-muted-foreground">
                 Min. 8 karakter, 1 huruf besar, 1 huruf kecil, 1 angka
@@ -196,10 +171,10 @@ export default function AdminRegisterPage() {
                 value={formData.confirmPassword}
                 onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
                 disabled={loading}
-                className={errors.confirmPassword ? "border-red-500" : ""}
+                className={errors.confirmPassword ? "border-destructive" : ""}
               />
               {errors.confirmPassword && (
-                <p className="text-sm text-red-500">{errors.confirmPassword}</p>
+                <p className="text-sm text-destructive">{errors.confirmPassword}</p>
               )}
             </div>
 

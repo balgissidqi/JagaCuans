@@ -6,9 +6,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { toast } from "sonner"
-import { useTranslation } from "react-i18next"
 import { z } from "zod"
-import type { User } from "@supabase/supabase-js"
 
 const adminLoginSchema = z.object({
   username: z.string().trim().min(3, "Username minimal 3 karakter").max(50, "Username maksimal 50 karakter"),
@@ -16,7 +14,6 @@ const adminLoginSchema = z.object({
 })
 
 export default function AdminLoginPage() {
-  const { t } = useTranslation()
   const navigate = useNavigate()
   const [loading, setLoading] = useState(false)
   const [formData, setFormData] = useState({
@@ -29,7 +26,6 @@ export default function AdminLoginPage() {
     e.preventDefault()
     setErrors({})
 
-    // Validate input
     const validation = adminLoginSchema.safeParse(formData)
     if (!validation.success) {
       const fieldErrors: Record<string, string> = {}
@@ -45,39 +41,11 @@ export default function AdminLoginPage() {
     setLoading(true)
 
     try {
-      // Cari email berdasarkan username dari profiles
-      const { data: profileData, error: profileError } = await supabase
-        .from('profiles')
-        .select('id')
-        .eq('name', formData.username)
-        .maybeSingle()
-
-      if (profileError || !profileData) {
-        toast.error("Username atau password salah")
-        setLoading(false)
-        return
-      }
-
-      // Dapatkan semua users
-      const { data: { users }, error: usersError } = await supabase.auth.admin.listUsers()
+      // Login menggunakan email pattern: username@admin.jagacuan.app
+      const email = `${formData.username}@admin.jagacuan.app`
       
-      if (usersError || !users) {
-        toast.error("Terjadi kesalahan")
-        setLoading(false)
-        return
-      }
-
-      const authUser: User | undefined = users.find((u: User) => u.id === profileData.id)
-      
-      if (!authUser?.email) {
-        toast.error("Username atau password salah")
-        setLoading(false)
-        return
-      }
-
-      // Login dengan email dan password
       const { data, error } = await supabase.auth.signInWithPassword({
-        email: authUser.email,
+        email,
         password: formData.password
       })
 
@@ -87,7 +55,7 @@ export default function AdminLoginPage() {
         return
       }
 
-      // Cek apakah user adalah admin
+      // Verifikasi bahwa user memiliki role admin
       const { data: roleData, error: roleError } = await supabase
         .from('user_roles')
         .select('role')
@@ -103,7 +71,7 @@ export default function AdminLoginPage() {
       }
 
       toast.success("Login berhasil!")
-      navigate('/admin/challenges')
+      navigate('/admin/dashboard')
     } catch (error) {
       console.error('Login error:', error)
       toast.error("Terjadi kesalahan saat login")
@@ -128,14 +96,14 @@ export default function AdminLoginPage() {
               <Input
                 id="username"
                 type="text"
-                placeholder="admin_balgis"
+                placeholder="admin_username"
                 value={formData.username}
                 onChange={(e) => setFormData({ ...formData, username: e.target.value })}
                 disabled={loading}
-                className={errors.username ? "border-red-500" : ""}
+                className={errors.username ? "border-destructive" : ""}
               />
               {errors.username && (
-                <p className="text-sm text-red-500">{errors.username}</p>
+                <p className="text-sm text-destructive">{errors.username}</p>
               )}
             </div>
 
@@ -148,10 +116,10 @@ export default function AdminLoginPage() {
                 value={formData.password}
                 onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                 disabled={loading}
-                className={errors.password ? "border-red-500" : ""}
+                className={errors.password ? "border-destructive" : ""}
               />
               {errors.password && (
-                <p className="text-sm text-red-500">{errors.password}</p>
+                <p className="text-sm text-destructive">{errors.password}</p>
               )}
             </div>
 
@@ -159,8 +127,14 @@ export default function AdminLoginPage() {
               {loading ? "Memproses..." : "Login"}
             </Button>
 
-            <div className="text-center text-sm">
-              <a href="/login" className="text-primary hover:underline">
+            <div className="text-center text-sm space-y-2">
+              <p>
+                Belum punya akun?{" "}
+                <a href="/admin/register" className="text-primary hover:underline">
+                  Daftar Admin
+                </a>
+              </p>
+              <a href="/login" className="text-muted-foreground hover:underline block">
                 Login sebagai user biasa
               </a>
             </div>
