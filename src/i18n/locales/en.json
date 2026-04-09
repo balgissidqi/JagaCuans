@@ -59,7 +59,10 @@
       "existingContent": "Existing Content",
       "form": {
         "title": "Title",
-        "content": "Content"
+        "content": "Content",
+        "category": "Category",
+        "videoUrl": "Video URL (YouTube)",
+        "contentPlaceholder": "Write a brief summary of the video content..."
       },
       "create": "Create Content",
       "update": "Update Content",
