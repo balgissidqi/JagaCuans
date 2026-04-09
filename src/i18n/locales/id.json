@@ -150,8 +150,16 @@
   "education": {
     "title": "Edukasi Keuangan",
     "subtitle": "Pelajari tentang keuangan pribadi dan manajemen uang",
-    "comingSoon": "Edukasi Segera Hadir",
-    "comingSoonDesc": "Fitur ini sedang dalam pengembangan dan akan segera tersedia."
+    "noContent": "Belum Ada Konten",
+    "noContentDesc": "Belum ada konten edukasi untuk kategori ini.",
+    "categories": {
+      "all": "Semua",
+      "saving": "Menabung",
+      "budgeting": "Budgeting",
+      "investing": "Investasi",
+      "spending": "Pengeluaran",
+      "financial_literacy": "Literasi Keuangan"
+    }
   },
   "profile": {
     "title": "Profil",
