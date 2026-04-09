@@ -162,6 +162,7 @@ export type Database = {
           education_id: string
           title: string
           updated_at: string
+          video_url: string | null
         }
         Insert: {
           content: string
@@ -170,6 +171,7 @@ export type Database = {
           education_id?: string
           title: string
           updated_at?: string
+          video_url?: string | null
         }
         Update: {
           content?: string
@@ -178,6 +180,7 @@ export type Database = {
           education_id?: string
           title?: string
           updated_at?: string
+          video_url?: string | null
         }
         Relationships: []
       }
@@ -218,36 +221,6 @@ export type Database = {
             referencedColumns: ["user_id"]
           },
         ]
-      }
-      income: {
-        Row: {
-          amount: number
-          category: string
-          created_at: string
-          date: string
-          id: string
-          notes: string | null
-          user_id: string | null
-        }
-        Insert: {
-          amount: number
-          category: string
-          created_at?: string
-          date?: string
-          id?: string
-          notes?: string | null
-          user_id?: string | null
-        }
-        Update: {
-          amount?: number
-          category?: string
-          created_at?: string
-          date?: string
-          id?: string
-          notes?: string | null
-          user_id?: string | null
-        }
-        Relationships: []
       }
       leaderboard: {
         Row: {
