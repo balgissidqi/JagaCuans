@@ -156,6 +156,7 @@ export type Database = {
       }
       education: {
         Row: {
+          category: string | null
           content: string
           created_at: string
           deleted_at: string | null
@@ -165,6 +166,7 @@ export type Database = {
           video_url: string | null
         }
         Insert: {
+          category?: string | null
           content: string
           created_at?: string
           deleted_at?: string | null
@@ -174,6 +176,7 @@ export type Database = {
           video_url?: string | null
         }
         Update: {
+          category?: string | null
           content?: string
           created_at?: string
           deleted_at?: string | null

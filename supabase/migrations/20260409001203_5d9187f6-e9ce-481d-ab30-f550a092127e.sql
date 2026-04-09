@@ -1,0 +1,1 @@
+ALTER TABLE public.education ADD COLUMN category text DEFAULT 'general';
