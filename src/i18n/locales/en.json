@@ -147,8 +147,16 @@
   "education": {
     "title": "Financial Education",
     "subtitle": "Learn about personal finance and money management",
-    "comingSoon": "Education Coming Soon",
-    "comingSoonDesc": "This feature is under development and will be available soon."
+    "noContent": "No Content Available",
+    "noContentDesc": "There is no educational content for this category yet.",
+    "categories": {
+      "all": "All",
+      "saving": "Saving",
+      "budgeting": "Budgeting",
+      "investing": "Investing",
+      "spending": "Spending",
+      "financial_literacy": "Financial Literacy"
+    }
   },
   "profile": {
     "title": "Profile",
