@@ -17,6 +17,7 @@ import AddBudget from "./pages/AddBudget";
 import SpendingTracker from "./pages/SpendingTracker";
 import GoalsWithCustomCategories from "./pages/GoalsWithCustomCategories";
 import Education from "./pages/Education";
+import QuizPage from "@/pages/Quiz";
 import Challenge from "./pages/Challenge";
 import NewChallenge from "./pages/NewChallenge";
 import AdminChallenges from "./pages/AdminChallenges";
@@ -43,58 +44,100 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<LandingPage />} />
-            <Route path="/login" element={<AuthRoute><LoginPage /></AuthRoute>} />
-            <Route path="/register" element={<AuthRoute><RegisterPage /></AuthRoute>} />
+            <Route
+              path="/login"
+              element={
+                <AuthRoute>
+                  <LoginPage />
+                </AuthRoute>
+              }
+            />
+            <Route
+              path="/register"
+              element={
+                <AuthRoute>
+                  <RegisterPage />
+                </AuthRoute>
+              }
+            />
             <Route path="/admin/login" element={<AdminLoginPage />} />
             <Route path="/admin/register" element={<AdminRegisterPage />} />
             <Route path="/verified" element={<VerifiedPage />} />
-            
+
             {/* User Dashboard */}
-            <Route path="/dashboard/*" element={
-              <ProtectedRoute>
-                <SidebarProvider>
-                  <div className="min-h-screen flex w-full bg-background">
-                    <AppSidebar />
-                    <main className="flex-1">
-                      <Navbar />
-                      <div className="p-0">
-                        <Routes>
-                          <Route path="/" element={<Index />} />
-                          <Route path="/budgeting" element={<Budgeting />} />
-                          <Route path="/budgeting/add" element={<AddBudget />} />
-                          <Route path="/spending" element={<SpendingTracker />} />
-                          <Route path="/goals" element={<GoalsWithCustomCategories />} />
-                          <Route path="/education" element={<Education />} />
-                          <Route path="/challenge" element={<Challenge />} />
-                          <Route path="/challenge/new" element={<NewChallenge />} />
-                          <Route path="/profile" element={<Profile />} />
-                        </Routes>
-                      </div>
-                    </main>
-                  </div>
-                </SidebarProvider>
-              </ProtectedRoute>
-            } />
+            <Route
+              path="/dashboard/*"
+              element={
+                <ProtectedRoute>
+                  <SidebarProvider>
+                    <div className="min-h-screen flex w-full bg-background">
+                      <AppSidebar />
+                      <main className="flex-1">
+                        <Navbar />
+                        <div className="p-0">
+                          <Routes>
+                            <Route path="/" element={<Index />} />
+                            <Route path="/budgeting" element={<Budgeting />} />
+                            <Route
+                              path="/budgeting/add"
+                              element={<AddBudget />}
+                            />
+                            <Route
+                              path="/spending"
+                              element={<SpendingTracker />}
+                            />
+                            <Route
+                              path="/goals"
+                              element={<GoalsWithCustomCategories />}
+                            />
+                            <Route path="/education" element={<Education />} />
+                            <Route path="/quiz/:id" element={<QuizPage />} />
+                            <Route path="/challenge" element={<Challenge />} />
+                            <Route
+                              path="/challenge/new"
+                              element={<NewChallenge />}
+                            />
+                            <Route path="/profile" element={<Profile />} />
+                          </Routes>
+                        </div>
+                      </main>
+                    </div>
+                  </SidebarProvider>
+                </ProtectedRoute>
+              }
+            />
 
             {/* Admin Panel */}
-            <Route path="/admin/*" element={
-              <AdminRoute>
-                <SidebarProvider>
-                  <div className="min-h-screen flex w-full bg-background">
-                    <AdminSidebar />
-                    <main className="flex-1">
-                      <Navbar />
-                      <Routes>
-                        <Route path="/dashboard" element={<AdminDashboard />} />
-                        <Route path="/challenges" element={<AdminChallenges />} />
-                        <Route path="/education" element={<AdminEducation />} />
-                        <Route path="/profile" element={<AdminProfile />} />
-                      </Routes>
-                    </main>
-                  </div>
-                </SidebarProvider>
-              </AdminRoute>
-            } />
+            <Route
+              path="/admin/*"
+              element={
+                <AdminRoute>
+                  <SidebarProvider>
+                    <div className="min-h-screen flex w-full bg-background">
+                      <AdminSidebar />
+                      <main className="flex-1">
+                        <Navbar />
+                        <Routes>
+                          <Route
+                            path="/dashboard"
+                            element={<AdminDashboard />}
+                          />
+                          <Route
+                            path="/challenges"
+                            element={<AdminChallenges />}
+                          />
+                          <Route
+                            path="/education"
+                            element={<AdminEducation />}
+                          />
+                          <Route path="/profile" element={<AdminProfile />} />
+                        </Routes>
+                      </main>
+                    </div>
+                  </SidebarProvider>
+                </AdminRoute>
+              }
+            />
 
             <Route path="*" element={<NotFound />} />
           </Routes>

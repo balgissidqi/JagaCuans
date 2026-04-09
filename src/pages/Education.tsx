@@ -3,9 +3,10 @@ import { GraduationCap, Play, BookOpen, PiggyBank, TrendingUp, ShoppingCart, Wal
 import { Card, CardContent } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
-import { Badge } from "@/components/ui/badge"
+import { useNavigate } from "react-router-dom"
 import { useTranslation } from "react-i18next"
 import { supabase } from "@/integrations/supabase/client"
+
 
 interface EducationContent {
   education_id: string
@@ -23,6 +24,7 @@ const CATEGORIES = [
   { key: "spending", icon: ShoppingCart },
   { key: "financial_literacy", icon: Lightbulb },
 ] as const
+
 
 function getEmbedUrl(url: string): string | null {
   try {
@@ -53,6 +55,7 @@ export default function Education() {
   const [educationList, setEducationList] = useState<EducationContent[]>([])
   const [loading, setLoading] = useState(true)
   const [activeTab, setActiveTab] = useState("all")
+  const navigate = useNavigate()
 
   useEffect(() => {
     fetchEducation()
@@ -137,12 +140,13 @@ export default function Education() {
                     <CardContent className="p-4 space-y-3">
                       <div className="flex items-start justify-between gap-2">
                         <h3 className="text-lg font-semibold text-foreground leading-tight">{item.title}</h3>
-                        {item.category && item.category !== "general" && (
-                          <Badge className={`shrink-0 text-xs ${getCategoryColor(item.category)}`}>
-                            {t(`education.categories.${item.category}`)}
-                          </Badge>
-                        )}
                       </div>
+                      <button 
+                        onClick={() => navigate(`/dashboard/quiz/${item.education_id}`)}
+                        className="text-sm font-medium text-primary hover:underline"
+                      >
+                        Kerjakan Quiz
+                      </button>
                       <p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-wrap">
                         {item.content}
                       </p>
