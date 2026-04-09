@@ -5,6 +5,7 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AppSidebar } from "@/components/AppSidebar";
+import { AdminSidebar } from "@/components/AdminSidebar";
 import { Navbar } from "@/components/Navbar";
 import { AuthProvider } from "@/hooks/useAuth";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
@@ -20,6 +21,8 @@ import Challenge from "./pages/Challenge";
 import NewChallenge from "./pages/NewChallenge";
 import AdminChallenges from "./pages/AdminChallenges";
 import AdminEducation from "./pages/AdminEducation";
+import AdminDashboard from "./pages/AdminDashboard";
+import AdminProfile from "./pages/AdminProfile";
 import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
 import RegisterPage from "./pages/RegisterPage";
@@ -46,6 +49,7 @@ const App = () => (
             <Route path="/admin/register" element={<AdminRegisterPage />} />
             <Route path="/verified" element={<VerifiedPage />} />
             
+            {/* User Dashboard */}
             <Route path="/dashboard/*" element={
               <ProtectedRoute>
                 <SidebarProvider>
@@ -72,28 +76,24 @@ const App = () => (
               </ProtectedRoute>
             } />
 
-            <Route path="/admin/challenges" element={
-              <SidebarProvider>
-                <div className="min-h-screen flex w-full bg-background">
-                  <AppSidebar />
-                  <main className="flex-1">
-                    <Navbar />
-                    <AdminChallenges />
-                  </main>
-                </div>
-              </SidebarProvider>
-            } />
-
-            <Route path="/admin/education" element={
-              <SidebarProvider>
-                <div className="min-h-screen flex w-full bg-background">
-                  <AppSidebar />
-                  <main className="flex-1">
-                    <Navbar />
-                    <AdminEducation />
-                  </main>
-                </div>
-              </SidebarProvider>
+            {/* Admin Panel */}
+            <Route path="/admin/*" element={
+              <AdminRoute>
+                <SidebarProvider>
+                  <div className="min-h-screen flex w-full bg-background">
+                    <AdminSidebar />
+                    <main className="flex-1">
+                      <Navbar />
+                      <Routes>
+                        <Route path="/dashboard" element={<AdminDashboard />} />
+                        <Route path="/challenges" element={<AdminChallenges />} />
+                        <Route path="/education" element={<AdminEducation />} />
+                        <Route path="/profile" element={<AdminProfile />} />
+                      </Routes>
+                    </main>
+                  </div>
+                </SidebarProvider>
+              </AdminRoute>
             } />
 
             <Route path="*" element={<NotFound />} />
