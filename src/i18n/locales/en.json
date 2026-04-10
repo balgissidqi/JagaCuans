@@ -12,6 +12,7 @@
     "goals": "Goals",
     "challenge": "Challenge",
     "education": "Education",
+    "leaderboard": "Leaderboard",
     "profile": "Profile",
     "logout": "Logout",
     "save": "Save",
@@ -160,6 +161,17 @@
       "spending": "Spending",
       "financial_literacy": "Financial Literacy"
     }
+  },
+  "leaderboard": {
+    "title": "Leaderboard",
+    "subtitle": "See all users ranked by total points",
+    "yourRank": "Your Rank",
+    "totalPoints": "Total Points",
+    "rankings": "Rankings",
+    "noEntries": "No leaderboard entries yet.",
+    "anonymous": "Anonymous",
+    "you": "You",
+    "points": "points"
   },
   "profile": {
     "title": "Profile",

@@ -18,6 +18,7 @@ import SpendingTracker from "./pages/SpendingTracker";
 import GoalsWithCustomCategories from "./pages/GoalsWithCustomCategories";
 import Education from "./pages/Education";
 import QuizPage from "@/pages/Quiz";
+import Leaderboard from "./pages/Leaderboard";
 import Challenge from "./pages/Challenge";
 import NewChallenge from "./pages/NewChallenge";
 import AdminChallenges from "./pages/AdminChallenges";
@@ -92,6 +93,7 @@ const App = () => (
                             />
                             <Route path="/education" element={<Education />} />
                             <Route path="/quiz/:id" element={<QuizPage />} />
+                            <Route path="/leaderboard" element={<Leaderboard />} />
                             <Route path="/challenge" element={<Challenge />} />
                             <Route
                               path="/challenge/new"

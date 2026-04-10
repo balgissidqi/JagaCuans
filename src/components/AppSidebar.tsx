@@ -1,4 +1,4 @@
-import { Home, Wallet, TrendingDown, Target, Trophy, GraduationCap, User, LogOut, X } from "lucide-react"
+import { Home, Wallet, TrendingDown, Target, Trophy, GraduationCap, Medal, User, LogOut, X } from "lucide-react"
 import { NavLink, useLocation, useNavigate } from "react-router-dom"
 import { supabase } from "@/integrations/supabase/client"
 import { toast } from "sonner"
@@ -40,6 +40,7 @@ export function AppSidebar() {
     { title: t('common.goals'), url: "/dashboard/goals", icon: Target },
     { title: t('common.challenge'), url: "/dashboard/challenge", icon: Trophy },
     { title: t('common.education'), url: "/dashboard/education", icon: GraduationCap },
+    { title: t('common.leaderboard'), url: "/dashboard/leaderboard", icon: Medal },
     { title: t('common.profile'), url: "/dashboard/profile", icon: User },
   ]
 

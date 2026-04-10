@@ -56,14 +56,12 @@ const fetchQuiz = async () => {
     }
   }
 
- const handleSubmit = () => {
+ const handleSubmit = async () => {
   let correct = 0
 
   quiz.forEach((q) => {
    const correctOption = q.quiz_options.find(opt => opt.is_correct)
-
      if (!correctOption) return
-
     if (answers[q.id] === correctOption?.option_text) {
       correct++
     }
@@ -75,6 +73,17 @@ const fetchQuiz = async () => {
 
   setShowPoints(true)
   setTimeout(() => setShowPoints(false), 1500)
+
+  // Add points to leaderboard
+  if (finalScore > 0) {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (user) {
+      await supabase.rpc("add_leaderboard_points", {
+        _user_id: user.id,
+        _points: finalScore,
+      })
+    }
+  }
 }
 
   if (quiz.length === 0) {
