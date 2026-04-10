@@ -296,6 +296,64 @@ export type Database = {
         }
         Relationships: []
       }
+      quiz_options: {
+        Row: {
+          id: string
+          is_correct: boolean | null
+          option_text: string
+          quiz_id: string | null
+        }
+        Insert: {
+          id?: string
+          is_correct?: boolean | null
+          option_text: string
+          quiz_id?: string | null
+        }
+        Update: {
+          id?: string
+          is_correct?: boolean | null
+          option_text?: string
+          quiz_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quiz_options_quiz_id_fkey"
+            columns: ["quiz_id"]
+            isOneToOne: false
+            referencedRelation: "quizzes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      quizzes: {
+        Row: {
+          created_at: string | null
+          education_id: string | null
+          id: string
+          question: string
+        }
+        Insert: {
+          created_at?: string | null
+          education_id?: string | null
+          id?: string
+          question: string
+        }
+        Update: {
+          created_at?: string | null
+          education_id?: string | null
+          id?: string
+          question?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quizzes_education_id_fkey"
+            columns: ["education_id"]
+            isOneToOne: false
+            referencedRelation: "education"
+            referencedColumns: ["education_id"]
+          },
+        ]
+      }
       reward: {
         Row: {
           created_at: string
