@@ -31,13 +31,12 @@ const fetchQuiz = async () => {
     `)
     .eq("education_id", id)
 
-  if (error) {
-    console.log(error)
-  } else {
-    console.log("DATA:", data) 
-    setQuiz(data || [])
-  }
+  console.log("ERROR:", error)
+  console.log("DATA:", data)
+
+  setQuiz(data || [])
 }
+
 
   const currentQuestion = quiz[currentIndex]
 
