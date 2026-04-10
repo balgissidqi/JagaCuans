@@ -1,4 +1,5 @@
 import { Bell, User, Menu } from "lucide-react"
+import logoImg from "@/assets/logo.png"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { SidebarTrigger } from "@/components/ui/sidebar"
@@ -64,9 +65,7 @@ export function Navbar() {
             <Menu className="h-5 w-5" />
           </SidebarTrigger>
         )}
-        <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-primary-foreground font-bold text-sm">
-          JC
-        </div>
+        <img src={logoImg} alt="JagaCuan" className="w-8 h-8 rounded-lg" />
         <span className="font-bold text-lg text-foreground">JagaCuan</span>
       </div>
 
