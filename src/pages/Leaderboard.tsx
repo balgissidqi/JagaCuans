@@ -21,16 +21,29 @@ export default function Leaderboard() {
 
   const fetchLeaderboard = async () => {
     setLoading(true)
-    const { data, error } = await supabase
+    // Fetch leaderboard
+    const { data: lbData, error: lbError } = await supabase
       .from("leaderboard")
-      .select("leaderboard_id, user_id, score, rank, profiles(name, photo_url)")
+      .select("leaderboard_id, user_id, score, rank")
       .is("deleted_at", null)
       .order("rank", { ascending: true })
       .limit(100)
 
-    if (!error && data) {
-      setEntries(data as unknown as LeaderboardEntry[])
-    }
+    if (lbError || !lbData) { setLoading(false); return }
+
+    // Fetch profiles for all user_ids
+    const userIds = lbData.map(e => e.user_id)
+    const { data: profilesData } = await supabase
+      .from("profiles")
+      .select("id, name, photo_url")
+      .in("id", userIds)
+
+    const profileMap = new Map((profilesData || []).map(p => [p.id, p]))
+
+    setEntries(lbData.map(e => ({
+      ...e,
+      profiles: profileMap.get(e.user_id) || null
+    })) as LeaderboardEntry[])
     setLoading(false)
   }
 
