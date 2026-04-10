@@ -257,7 +257,7 @@ export type Database = {
           {
             foreignKeyName: "leaderboard_user_id_fkey"
             columns: ["user_id"]
-            isOneToOne: false
+            isOneToOne: true
             referencedRelation: "users"
             referencedColumns: ["user_id"]
           },
@@ -668,6 +668,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      add_leaderboard_points: {
+        Args: { _points: number; _user_id: string }
+        Returns: undefined
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
