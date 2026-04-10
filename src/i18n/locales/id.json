@@ -12,6 +12,7 @@
     "goals": "Target",
     "challenge": "Tantangan",
     "education": "Edukasi",
+    "leaderboard": "Papan Peringkat",
     "profile": "Profil",
     "logout": "Keluar",
     "save": "Simpan",
@@ -160,6 +161,17 @@
       "spending": "Pengeluaran",
       "financial_literacy": "Literasi Keuangan"
     }
+  },
+  "leaderboard": {
+    "title": "Papan Peringkat",
+    "subtitle": "Lihat peringkat semua pengguna berdasarkan total poin",
+    "yourRank": "Peringkat Kamu",
+    "totalPoints": "Total Poin",
+    "rankings": "Peringkat",
+    "noEntries": "Belum ada data peringkat.",
+    "anonymous": "Anonim",
+    "you": "Kamu",
+    "points": "poin"
   },
   "profile": {
     "title": "Profil",
