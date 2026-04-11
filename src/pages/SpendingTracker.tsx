@@ -466,10 +466,10 @@ const sortedDates = Object.keys(groupedSpendings).sort((a, b) => {
             {groupedSpendings[date].map((spending) => (
               <div
                 key={spending.id}
-                className="flex items-center justify-between p-3 bg-muted/50 rounded-lg"
+                className="flex items-center justify-between p-3 bg-red-200 rounded-lg"
               >
-                <div className="flex-1">
-                  <p className="font-medium text-foreground">{spending.description}</p>
+                <div className="flex-1 ">
+                  <p className="font-medium text-foreground ">{spending.description}</p>
                   <p className="text-sm text-muted-foreground">
                     {spending.budgeting.category} •{" "}
                     {new Date(spending.date).toLocaleDateString("id-ID", {
