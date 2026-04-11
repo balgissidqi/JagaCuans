@@ -157,7 +157,8 @@
     "statusFailed": "Gagal",
     "statusOngoing": "Berlangsung",
     "days": "hari",
-    "challengeExpired": "Tantangan sudah berakhir"
+    "challengeExpired": "Tantangan sudah berakhir",
+    "notStartedYet": "Tantangan belum dimulai"
   },
   "education": {
     "title": "Edukasi Keuangan",
