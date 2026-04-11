@@ -267,7 +267,7 @@ export default function Budgeting() {
           </CardContent>
         </Card>
 
-        <Card className="rounded-2xl shadow-soft">
+        <Card className="rounded-2xl shadow-soft bg-red-200">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">Total Spent</CardTitle>
           </CardHeader>
@@ -276,7 +276,7 @@ export default function Budgeting() {
           </CardContent>
         </Card>
 
-        <Card className="rounded-2xl shadow-soft">
+        <Card className="rounded-2xl shadow-soft bg-green-200">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">Remaining</CardTitle>
           </CardHeader>
