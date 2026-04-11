@@ -20,6 +20,7 @@ import {
   Lightbulb
 } from "lucide-react";
 import heroImage from "@/assets/hero-finance-learning.jpg";
+import logoImg from "@/assets/logo_jagacuan.png";
 
 export default function LandingPage() {
   const problems = [
@@ -200,9 +201,7 @@ function FAQItem({ faq }: { faq: { question: string; answer: string } }) {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-2">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-[hsl(258,90%,66%)] flex items-center justify-center shadow-lg">
-                <span className="text-white font-bold text-lg">JC</span>
-              </div>
+              <img src={logoImg} alt="JagaCuan" className="w-10 h-10 rounded-xl object-contain" />
               <span className="font-bold text-xl text-foreground">JagaCuan</span>
             </div>
             
@@ -496,9 +495,7 @@ function FAQItem({ faq }: { faq: { question: string; answer: string } }) {
           <div className="grid md:grid-cols-4 gap-8 mb-8">
             <div className="md:col-span-2">
               <div className="flex items-center gap-2 mb-4">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-[hsl(258,90%,66%)] flex items-center justify-center shadow-lg">
-                  <span className="text-white font-bold text-lg">JC</span>
-                </div>
+                <img src={logoImg} alt="JagaCuan" className="w-10 h-10 rounded-xl object-contain" />
                 <span className="text-2xl font-bold">JagaCuan</span>
               </div>
               <p className="text-gray-400 mb-4 max-w-md leading-relaxed">
