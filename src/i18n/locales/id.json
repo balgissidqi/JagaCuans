@@ -146,7 +146,18 @@
     "noUserChallenges": "Anda belum membuat tantangan khusus apapun.",
     "reward": "Hadiah",
     "score": "Skor",
-    "created": "Dibuat"
+    "created": "Dibuat",
+    "joinChallenge": "Ikuti Tantangan",
+    "joinSuccess": "Berhasil bergabung dengan tantangan!",
+    "updateProgress": "Update Progres Hari Ini",
+    "alreadyUpdatedToday": "Sudah diupdate hari ini",
+    "progressUpdated": "Progres berhasil diupdate!",
+    "completed": "Tantangan Selesai",
+    "statusCompleted": "Selesai",
+    "statusFailed": "Gagal",
+    "statusOngoing": "Berlangsung",
+    "days": "hari",
+    "challengeExpired": "Tantangan sudah berakhir"
   },
   "education": {
     "title": "Edukasi Keuangan",
