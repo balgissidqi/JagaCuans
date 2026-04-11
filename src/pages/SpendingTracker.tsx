@@ -46,6 +46,7 @@ export default function SpendingTracker() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [formData, setFormData] = useState({
     budget_id: "",
+    notes: "",
     description: "",
     amount: "",
     date: "",
@@ -297,7 +298,7 @@ export default function SpendingTracker() {
 
       toast.success("Spending added successfully!");
       setIsModalOpen(false);
-      setFormData({ budget_id: "", description: "", amount: "", date: "" });
+      setFormData({ budget_id: "", notes: "", description: "", amount: "", date: "" });
     } catch (error) {
       console.error("Error adding spending:", error);
       toast.error("Failed to add spending");
@@ -479,9 +480,11 @@ const sortedDates = Object.keys(groupedSpendings).sort((a, b) => {
                     })}
                   </p>
                 </div>
-                <div className="text-right">
-                  <p className="font-semibold text-foreground">{formatRupiah(spending.amount)}</p>
-                </div>
+               <div className="text-right bg-red-50 px-2 py-1 rounded-md">
+                  <p className="font-semibold text-red-500/80">
+                    -{formatRupiah(spending.amount)}
+                  </p>
+               </div>
               </div>
             ))}
           </div>
