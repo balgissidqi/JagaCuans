@@ -157,7 +157,8 @@
     "statusFailed": "Failed",
     "statusOngoing": "Ongoing",
     "days": "days",
-    "challengeExpired": "Challenge has expired"
+    "challengeExpired": "Challenge has expired",
+    "notStartedYet": "Challenge hasn't started yet"
   },
   "education": {
     "title": "Financial Education",
