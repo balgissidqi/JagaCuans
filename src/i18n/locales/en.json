@@ -146,7 +146,18 @@
     "noUserChallenges": "You haven't created any custom challenges yet.",
     "reward": "Reward",
     "score": "Score",
-    "created": "Created"
+    "created": "Created",
+    "joinChallenge": "Join Challenge",
+    "joinSuccess": "Successfully joined the challenge!",
+    "updateProgress": "Update Today's Progress",
+    "alreadyUpdatedToday": "Already updated today",
+    "progressUpdated": "Progress updated!",
+    "completed": "Challenge Completed",
+    "statusCompleted": "Completed",
+    "statusFailed": "Failed",
+    "statusOngoing": "Ongoing",
+    "days": "days",
+    "challengeExpired": "Challenge has expired"
   },
   "education": {
     "title": "Financial Education",

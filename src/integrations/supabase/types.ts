@@ -118,6 +118,56 @@ export type Database = {
         }
         Relationships: []
       }
+      challenge_participants: {
+        Row: {
+          challenge_id: string
+          completed_at: string | null
+          created_at: string
+          id: string
+          joined_at: string
+          last_update_date: string | null
+          progress: number
+          status: string
+          target_days: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          challenge_id: string
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          joined_at?: string
+          last_update_date?: string | null
+          progress?: number
+          status?: string
+          target_days?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          challenge_id?: string
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          joined_at?: string
+          last_update_date?: string | null
+          progress?: number
+          status?: string
+          target_days?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "challenge_participants_challenge_id_fkey"
+            columns: ["challenge_id"]
+            isOneToOne: false
+            referencedRelation: "default_challenges"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       default_challenges: {
         Row: {
           created_at: string | null
