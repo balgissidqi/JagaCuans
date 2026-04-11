@@ -171,6 +171,27 @@ export default function Challenge() {
     return new Date(endDate) < new Date()
   }
 
+  const isChallengeNotStarted = (startDate: string) => {
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+    const start = new Date(startDate)
+    start.setHours(0, 0, 0, 0)
+    return start > today
+  }
+
+  const formatDateDMY = (dateStr: string) => {
+    const d = new Date(dateStr)
+    return `${d.getDate().toString().padStart(2, '0')}/${(d.getMonth() + 1).toString().padStart(2, '0')}/${d.getFullYear()}`
+  }
+
+  const getCardClassName = (participation: Participation | undefined) => {
+    const base = "rounded-xl shadow-sm transition-shadow"
+    if (!participation) return `${base} hover:shadow-md`
+    if (participation.status === "completed") return `${base} bg-green-50 border-green-200 dark:bg-green-950/20 dark:border-green-800`
+    if (participation.status === "failed") return `${base} bg-red-50 border-red-200 dark:bg-red-950/20 dark:border-red-800`
+    return `${base} hover:shadow-md`
+  }
+
   return (
     <div className="p-6 space-y-10">
       {/* Weekly Challenges Section */}
@@ -191,8 +212,11 @@ export default function Challenge() {
               const participation = participations.get(challenge.id)
               const expired = isChallengeExpired(challenge.end_date)
 
+              const notStarted = isChallengeNotStarted(challenge.start_date)
+              const isFinished = participation && (participation.status === "completed" || participation.status === "failed")
+
               return (
-                <Card key={challenge.id} className="rounded-xl shadow-sm hover:shadow-md transition-shadow">
+                <Card key={challenge.id} className={getCardClassName(participation)}>
                   <CardHeader className="pb-2">
                     <CardTitle className="flex items-center justify-between text-base">
                       <span className="truncate">{challenge.title}</span>
@@ -204,7 +228,7 @@ export default function Challenge() {
                     <div className="flex items-center justify-between text-sm">
                       <span className="font-medium text-primary">🏆 {challenge.reward_points || 0} {t("leaderboard.points")}</span>
                       <span className="text-xs text-muted-foreground">
-                        {new Date(challenge.start_date).toLocaleDateString()} - {new Date(challenge.end_date).toLocaleDateString()}
+                        {formatDateDMY(challenge.start_date)} - {formatDateDMY(challenge.end_date)}
                       </span>
                     </div>
 
@@ -241,21 +265,27 @@ export default function Challenge() {
                         )}
                       </div>
                     ) : (
-                      !expired && (
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          className="w-full mt-2"
-                          onClick={() => handleJoinChallenge(challenge.id)}
-                          disabled={actionLoading === challenge.id}
-                        >
-                          {actionLoading === challenge.id ? (
-                            <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                          ) : (
-                            <Play className="h-4 w-4 mr-2" />
-                          )}
-                          {t("challenge.joinChallenge")}
-                        </Button>
+                      !expired && !isFinished && (
+                        notStarted ? (
+                          <p className="text-xs text-muted-foreground font-medium text-center pt-2">
+                            {t("challenge.notStartedYet")}
+                          </p>
+                        ) : (
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="w-full mt-2"
+                            onClick={() => handleJoinChallenge(challenge.id)}
+                            disabled={actionLoading === challenge.id}
+                          >
+                            {actionLoading === challenge.id ? (
+                              <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                            ) : (
+                              <Play className="h-4 w-4 mr-2" />
+                            )}
+                            {t("challenge.joinChallenge")}
+                          </Button>
+                        )
                       )
                     )}
                   </CardContent>
