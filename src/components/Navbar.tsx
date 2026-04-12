@@ -1,5 +1,5 @@
 import { Bell, User, Menu } from "lucide-react"
-import logoImg from "@/assets/logo_jagacuan.png"
+import logoImg from "@/assets/logo_jagacuan_transparent.png"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { SidebarTrigger } from "@/components/ui/sidebar"
