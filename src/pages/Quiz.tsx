@@ -87,9 +87,16 @@ export default function QuizPage() {
     setShowPoints(true)
     setTimeout(() => setShowPoints(false), 1500)
 
-    if (finalScore > 0) {
-      const { data: { user } } = await supabase.auth.getUser()
-      if (user) {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (user) {
+      // Save quiz score to game table
+      await supabase.from('game').insert({
+        user_id: user.id,
+        game_name: 'quiz',
+        score: finalScore,
+      })
+
+      if (finalScore > 0) {
         await supabase.rpc("add_leaderboard_points", {
           _user_id: user.id,
           _points: finalScore,
