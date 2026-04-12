@@ -59,9 +59,7 @@ export function AdminSidebar() {
       <SidebarHeader className="p-6 border-b">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-primary-foreground font-bold text-sm">
-              JC
-            </div>
+            <img src={logoImg} alt="JagaCuan" className="w-8 h-8 rounded-lg object-contain" />
             {(!collapsed || isMobile) && (
               <div>
                 <h1 className="font-bold text-lg text-foreground">JagaCuan</h1>
