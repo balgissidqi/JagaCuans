@@ -20,7 +20,7 @@ import {
   Lightbulb
 } from "lucide-react";
 import heroImage from "@/assets/hero-finance-learning.jpg";
-import logoImg from "@/assets/logo_jagacuan_transparent.png";
+import logoImg from "@/assets/logo_jagacuan.png";
 
 export default function LandingPage() {
   const problems = [
@@ -201,7 +201,7 @@ function FAQItem({ faq }: { faq: { question: string; answer: string } }) {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-2">
-              <img src={logoImg} alt="JagaCuan" className="w-10 h-10 rounded-xl object-contain" />
+              <img src={logoImg} alt="JagaCuan" className="w-10 h-10 rounded-xl object-contain bg-transparent" />
               <span className="font-bold text-xl text-foreground">JagaCuan</span>
             </div>
             

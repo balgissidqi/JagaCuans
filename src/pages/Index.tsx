@@ -147,7 +147,7 @@ const Index = () => {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
-              Welcome, {userName}! 🤑
+              Welcome, {userName}! 
             </h1>
             <p className="text-muted-foreground mt-1">
               Ready to take control of your finances today?
