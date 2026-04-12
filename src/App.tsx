@@ -64,6 +64,7 @@ const App = () => (
             <Route path="/admin/login" element={<AdminLoginPage />} />
             <Route path="/admin/register" element={<AdminRegisterPage />} />
             <Route path="/verified" element={<VerifiedPage />} />
+          
 
             {/* User Dashboard */}
             <Route
