@@ -20,7 +20,7 @@ import {
   Lightbulb
 } from "lucide-react";
 import heroImage from "@/assets/hero-finance-learning.jpg";
-import logoImg from "@/assets/logo_jagacuan.png";
+import logoImg from "@/assets/logo_jagacuan_transparent.png";
 
 export default function LandingPage() {
   const problems = [

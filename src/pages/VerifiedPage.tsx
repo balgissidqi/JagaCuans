@@ -1,20 +1,42 @@
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { useNavigate, Link } from "react-router-dom"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { CheckCircle2 } from "lucide-react"
 import { motion } from "framer-motion"
+import { supabase } from "@/integrations/supabase/client"
 
 export default function VerifiedPage() {
   const navigate = useNavigate()
+  const [verified, setVerified] = useState(false)
 
-  // ⏳ Auto redirect ke /login setelah 5 detik
   useEffect(() => {
+    // Handle the auth callback from the email verification link
+    const handleVerification = async () => {
+      // Check if there's a hash with access_token (Supabase email confirmation)
+      const hash = window.location.hash
+      if (hash && hash.includes("access_token")) {
+        // Supabase client will automatically pick up the token from the URL hash
+        const { data, error } = await supabase.auth.getSession()
+        if (data.session) {
+          // Sign out so user goes through login flow
+          await supabase.auth.signOut()
+        }
+      }
+      setVerified(true)
+    }
+
+    handleVerification()
+  }, [])
+
+  // Auto redirect to /login after 5 seconds once verified
+  useEffect(() => {
+    if (!verified) return
     const timer = setTimeout(() => {
       navigate("/login")
     }, 5000)
     return () => clearTimeout(timer)
-  }, [navigate])
+  }, [navigate, verified])
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background px-4">
