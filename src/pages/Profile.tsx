@@ -105,23 +105,97 @@ export default function Profile() {
         setGoalsAchieved(completedGoals)
       }
 
-      // Mock data for other sections
-      setChallengesCompleted(Math.floor(Math.random() * 10) + 1)
-      setQuizStats({ average: 85, total: 12 })
+      // Fetch challenges completed
+      const { data: challengeData } = await supabase
+        .from('challenge_participants')
+        .select('status, challenge_id')
+        .eq('user_id', user.id)
+        .eq('status', 'completed')
+      setChallengesCompleted(challengeData?.length || 0)
 
-      // Achievements
+      // Fetch leaderboard score
+      const { data: leaderboardData } = await supabase
+        .from('leaderboard')
+        .select('score, rank')
+        .eq('user_id', user.id)
+        .single()
+
+      // Fetch quiz stats from game table
+      const { data: gameData } = await supabase
+        .from('game')
+        .select('score')
+        .eq('user_id', user.id)
+        .eq('game_name', 'quiz')
+      
+      if (gameData && gameData.length > 0) {
+        const totalScore = gameData.reduce((sum, g) => sum + g.score, 0)
+        const avgScore = Math.round(totalScore / gameData.length)
+        setQuizStats({ average: avgScore, total: gameData.length })
+      } else {
+        setQuizStats({ average: 0, total: 0 })
+      }
+
+      // Achievements based on real data
       setAchievements([
         { id: '1', title: 'Goal Achiever', description: 'Reached your first savings goal', type: 'gold', unlocked: completedGoals > 0 },
-        { id: '2', title: 'Consistent Saver', description: 'Saved money for 30 days straight', type: 'silver', unlocked: true },
-        { id: '3', title: 'Quiz Master', description: 'Completed your first quiz', type: 'bronze', unlocked: true }
+        { id: '2', title: 'Challenge Champion', description: 'Completed your first challenge', type: 'silver', unlocked: (challengeData?.length || 0) > 0 },
+        { id: '3', title: 'Quiz Master', description: 'Completed your first quiz', type: 'bronze', unlocked: (gameData?.length || 0) > 0 },
       ])
 
-      // Recent activity (mock)
-      setRecentActivity([
-        { id: '1', title: 'Completed savings goal', description: 'Emergency Fund', points: 100, date: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(), type: 'goal' },
-        { id: '2', title: 'Added expense', description: 'Groceries - Rp 150,000', date: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(), type: 'expense' },
-        { id: '3', title: 'Quiz completed', description: 'Financial Basics', points: 50, date: new Date().toISOString(), type: 'quiz' }
-      ])
+      // Recent activity from real data
+      const activities: Activity[] = []
+
+      // Recent transactions
+      const { data: recentTransactions } = await supabase
+        .from('transactions')
+        .select('transaction_id, name, amount, type, date')
+        .eq('user_id', user.id)
+        .is('deleted_at', null)
+        .order('date', { ascending: false })
+        .limit(3)
+
+      recentTransactions?.forEach(tx => {
+        activities.push({
+          id: tx.transaction_id,
+          title: tx.type === 'income' ? 'Income received' : 'Expense added',
+          description: `${tx.name} - Rp ${Number(tx.amount).toLocaleString()}`,
+          date: tx.date,
+          type: tx.type === 'income' ? 'goal' : 'expense',
+        })
+      })
+
+      // Recent challenge completions
+      const { data: recentChallenges } = await supabase
+        .from('challenge_participants')
+        .select('id, status, completed_at, challenge_id')
+        .eq('user_id', user.id)
+        .eq('status', 'completed')
+        .order('completed_at', { ascending: false })
+        .limit(2)
+
+      if (recentChallenges) {
+        for (const cp of recentChallenges) {
+          const { data: ch } = await supabase
+            .from('default_challenges')
+            .select('title, reward_points')
+            .eq('id', cp.challenge_id)
+            .single()
+          if (ch) {
+            activities.push({
+              id: cp.id,
+              title: 'Challenge completed',
+              description: ch.title,
+              points: ch.reward_points || 0,
+              date: cp.completed_at || '',
+              type: 'goal',
+            })
+          }
+        }
+      }
+
+      // Sort by date descending
+      activities.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+      setRecentActivity(activities.slice(0, 5))
     } catch (error) {
       toast.error('Failed to load profile data')
       console.error('Error:', error)
