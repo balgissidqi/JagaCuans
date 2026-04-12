@@ -1,5 +1,5 @@
 import { Home, Trophy, GraduationCap, User, LogOut, X } from "lucide-react"
-import logoImg from "@/assets/logo_jagacuan_transparent.png"
+import logoImg from "@/assets/logo_jagacuan.png"
 import { NavLink, useLocation, useNavigate } from "react-router-dom"
 import { supabase } from "@/integrations/supabase/client"
 import { toast } from "sonner"

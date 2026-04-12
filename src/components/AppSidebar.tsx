@@ -6,7 +6,7 @@ import { useIsMobile } from "@/hooks/use-mobile"
 import { Button } from "@/components/ui/button"
 import { useTranslation } from "react-i18next"
 import { useAdmin } from "@/hooks/useAdmin"
-import logoImg from "@/assets/logo_jagacuan_transparent.png"
+import logoImg from "@/assets/logo_jagacuan_appsidebar.png"
 
 import {
   Sidebar,
