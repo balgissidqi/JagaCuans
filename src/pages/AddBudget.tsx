@@ -93,13 +93,20 @@ export default function AddBudget() {
         return
       }
 
-      const { data: existingBudgets, error: fetchError } = await supabase
+      let query = supabase
         .from("budgeting")
         .select("*")
         .eq("user_id", user.id)
         .eq("category", selectedCategory)
-        .eq("notes", formData.notes || "")
         .gt("amount", 0)
+
+      if (formData.notes) {
+        query = query.eq("notes", formData.notes)
+      } else {
+        query = query.or("notes.is.null,notes.eq.")
+      }
+
+      const { data: existingBudgets, error: fetchError } = await query
 
       if (fetchError) throw fetchError
 
